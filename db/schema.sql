@@ -38,7 +38,7 @@ create table likes_dislikes
         unique (post_id, user_id)
 );
 
-create table tags
+create table tag
 (
     tag_id int auto_increment
         primary key,
@@ -55,10 +55,10 @@ create table posts_tags
     constraint post_tag_ibfk_1
         foreign key (post_id) references posts (post_id),
     constraint post_tag_ibfk_2
-        foreign key (tag_id) references tags (tag_id)
+        foreign key (tag_id) references tag (tag_id)
 );
 
-create table comments
+create table comment
 (
     comment_id        int auto_increment
         primary key,
