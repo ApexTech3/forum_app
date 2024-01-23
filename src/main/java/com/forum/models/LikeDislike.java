@@ -20,6 +20,9 @@ public class LikeDislike {
     @Column(name = "like_dislike")
     private LikeDislikeEnum likeOrDislike;
 
+    public LikeDislike() {
+    }
+
     public LikeDislike(Post post, User user, LikeDislikeEnum likeOrDislike) {
         this.post = post;
         this.user = user;
