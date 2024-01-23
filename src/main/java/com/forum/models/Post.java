@@ -13,8 +13,7 @@ public class Post {
     private int id;
     @Column(name = "title")
     private String title;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id")
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private Set<LikeDislike> likeDislikes;
     @Column(name = "content")
     private String content;
@@ -22,9 +21,8 @@ public class Post {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "posts_replies", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "reply_id"))
-    private Set<Post> replies;
+    @OneToMany(mappedBy = "parentPost", fetch = FetchType.EAGER)
+    private Set<Comment> replies;
 
     public int getId() {
         return id;
@@ -66,11 +64,11 @@ public class Post {
         this.createdBy = createdBy;
     }
 
-    public Set<Post> getReplies() {
+    public Set<Comment> getReplies() {
         return replies;
     }
 
-    public void setReplies(Set<Post> replies) {
+    public void setReplies(Set<Comment> replies) {
         this.replies = replies;
     }
 
