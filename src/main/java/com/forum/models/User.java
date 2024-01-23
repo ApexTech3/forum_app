@@ -21,8 +21,6 @@ public class User {
     private String email;
     @Column(name = "phone")
     private String phone;
-    @Column(name = "profile_picture")
-    private String profilePicture;
     @Column(name = "is_admin")
     private boolean isAdmin;
     @Column(name = "is_blocked")
