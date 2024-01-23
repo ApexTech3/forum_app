@@ -16,12 +16,6 @@ values ('Post2', 'Content2', 2);
 insert into posts (title, content, created_by)
 values ('Post3', 'Content3', 1);
 
-insert into posts_replies (post_id, reply_id)
-values (1, 2);
-
-insert into posts_replies (post_id, reply_id)
-values (1, 3);
-
 insert into likes_dislikes (post_id, user_id, like_dislike)
 values (1, 1, 'LIKE');
 
@@ -37,7 +31,6 @@ INSERT INTO forum.comments ( content, created_date_time, user_id, post_id)
 VALUES ( 'comment2', '2024-01-22 17:54:16', 2, 1);
 INSERT INTO forum.comments ( content, created_date_time, user_id, post_id)
 VALUES ( 'comment3', '2024-01-22 17:54:34', 3, 3);
-
 
 #
 # insert into likes_dislikes (post_id, user_id, like_dislike)

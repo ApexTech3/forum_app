@@ -8,16 +8,6 @@ create table `posts`
     `created_by` int(11)       not null
 );
 
-create table `posts_replies`
-(
-    `post_id`  int(11) not null,
-    `reply_id` int(11) not null,
-    KEY `posts_replies_posts_id_fk` (`post_id`),
-    KEY `posts_replies_posts_id_fk2` (`reply_id`),
-    CONSTRAINT `posts_replies_posts_id_fk` FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`),
-    CONSTRAINT `posts_replies_posts_id_fk2` FOREIGN KEY (`reply_id`) REFERENCES `posts` (`post_id`)
-);
-
 create table `users`
 (
     `user_id`    int(11) auto_increment primary key,
