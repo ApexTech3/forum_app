@@ -46,13 +46,13 @@ public class HibernateConfig {
 
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
-
 
         // Configure code-first capabilities
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "validate");
+        //hibernateProperties.put("hibernate.hbm2ddl.import_files",
+        //                        "file:C:\\Users\\andre\\IdeaProjects\\Forum\\db\\schema.sql," +
+        //                                "file:C:\\Users\\andre\\IdeaProjects\\Forum\\db\\data.sql");
 
         return hibernateProperties;
     }
-
 }
