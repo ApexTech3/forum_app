@@ -1,5 +1,6 @@
 package com.forum.repositories;
 
+import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,9 +17,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User get(int id) {
+    public User get(String username) {
         try (Session session = sessionFactory.openSession()) {
-            return session.get(User.class, id);
+            User user = session.get(User.class, username);
+            if (user == null) {
+                throw new EntityNotFoundException("User", "username", username);
+            }
+            return user;
         }
     }
 
