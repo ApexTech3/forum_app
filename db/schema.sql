@@ -9,7 +9,8 @@ create table `posts`
     `post_id`    int(11) auto_increment primary key,
     `title`      varchar(64)   not null,
     `content`    varchar(8192) not null,
-    `created_by` int(11)       not null
+    `created_by` int(11)       not null,
+    `archived`   tinyint(1) default 0 not null
 );
 
 create table `users`

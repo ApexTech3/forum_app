@@ -20,9 +20,21 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
+    @Column(name = "archived")
+    private boolean isArchived;
 
     @OneToMany(mappedBy = "parentPost", fetch = FetchType.EAGER)
     private Set<Comment> replies;
+
+    public Post() {
+    }
+
+    public Post(String title, Set<LikeDislike> likeDislikes, String content, User createdBy) {
+        this.title = title;
+        this.likeDislikes = likeDislikes;
+        this.content = content;
+        this.createdBy = createdBy;
+    }
 
     public int getId() {
         return id;
@@ -64,6 +76,14 @@ public class Post {
         this.createdBy = createdBy;
     }
 
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+    }
+
     public Set<Comment> getReplies() {
         return replies;
     }
@@ -71,6 +91,4 @@ public class Post {
     public void setReplies(Set<Comment> replies) {
         this.replies = replies;
     }
-
-
 }
