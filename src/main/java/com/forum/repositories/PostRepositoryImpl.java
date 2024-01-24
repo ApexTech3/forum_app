@@ -4,6 +4,7 @@ import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Post;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -73,6 +74,18 @@ public class PostRepositoryImpl implements PostRepository{
             session.merge(post);
             session.getTransaction().commit();
             return post;
+        }
+    }
+
+    @Override
+    public void archive(int id) {
+        try (Session session = sessionFactory.openSession()){
+            Transaction transaction = session.beginTransaction();
+            Query<Post> query = session.createQuery("update Post set isArchived = true" +
+                    " where id = :id");
+            query.setParameter("id", id);
+            query.executeUpdate();
+            transaction.commit();
         }
     }
 }

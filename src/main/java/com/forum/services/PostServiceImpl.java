@@ -49,12 +49,11 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public void delete(Post post, User user) {
-        if (!user.isAdmin() && user.getId() != post.getCreatedBy().getId()) {
+    public void delete(int id, User user) {
+        if (!user.isAdmin() && user.getId() != get(id).getCreatedBy().getId()) {
             throw new AuthorizationException("Only admins or creators can delete a post.");
         }
-        //repository.delete(post);
-        //TODO
+        repository.archive(id);
     }
 
     @Override
