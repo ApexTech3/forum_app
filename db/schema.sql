@@ -4,15 +4,6 @@ create schema `forum`;
 
 use `forum`;
 
-create table `posts`
-(
-    `post_id`    int(11) auto_increment primary key,
-    `title`      varchar(64)   not null,
-    `content`    varchar(8192) not null,
-    `created_by` int(11)       not null,
-    `archived`   tinyint(1) default 0 not null
-);
-
 create table `users`
 (
     `user_id`         int(11) auto_increment primary key,
@@ -28,6 +19,18 @@ create table `users`
     UNIQUE KEY `users_pk` (`username`),
     UNIQUE KEY `users_pk2` (`email`)
 );
+
+create table `posts`
+(
+    `post_id`    int(11) auto_increment primary key,
+    `title`      varchar(64)   not null,
+    `content`    varchar(8192) not null,
+    `created_by` int(11)       not null,
+    `archived`   tinyint(1) default 0 not null,
+     constraint posts_users_user_id_fk_2
+        foreign key (created_by) references users (user_id)
+);
+
 
 create table likes_dislikes
 (
