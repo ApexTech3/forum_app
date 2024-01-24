@@ -1,10 +1,12 @@
-package com.forum.repositories;
+package com.forum.services.contracts;
 
 import com.forum.models.Comment;
+import com.forum.models.User;
 
 import java.util.List;
 
-public interface CommentRepository {
+public interface CommentService {
+
     List<Comment> get();
 
     List<Comment> getByPostId(int postId);
@@ -15,7 +17,7 @@ public interface CommentRepository {
 
     void create(Comment comment);
 
-    void update(Comment comment);
+    void update(Comment comment, User user);
 
-    void delete(int id);
+    void delete(int id, User user);
 }

@@ -8,7 +8,7 @@ import com.forum.helpers.UserMapper;
 import com.forum.models.User;
 import com.forum.models.dtos.UserDto;
 import com.forum.models.filters.UserFilterOptions;
-import com.forum.services.UserService;
+import com.forum.services.contracts.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

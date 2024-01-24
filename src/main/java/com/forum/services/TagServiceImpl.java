@@ -5,7 +5,8 @@ import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Tag;
 import com.forum.models.User;
-import com.forum.repositories.TagRepository;
+import com.forum.repositories.contracts.TagRepository;
+import com.forum.services.contracts.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.forum.services;
+package com.forum.services.contracts;
 
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;

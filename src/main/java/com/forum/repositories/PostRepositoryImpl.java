@@ -2,6 +2,7 @@ package com.forum.repositories;
 
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Post;
+import com.forum.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -13,7 +14,7 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 @Repository
-public class PostRepositoryImpl implements PostRepository{
+public class PostRepositoryImpl implements PostRepository {
 
 
     private final SessionFactory sessionFactory;

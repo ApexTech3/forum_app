@@ -5,7 +5,8 @@ import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
-import com.forum.repositories.UserRepository;
+import com.forum.repositories.contracts.UserRepository;
+import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,6 +2,7 @@ package com.forum.helpers;
 
 import com.forum.models.User;
 import com.forum.models.dtos.UserDto;
+import com.forum.models.dtos.UserResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,5 +17,9 @@ public class UserMapper {
         user.setPhone(userDto.getPhone());
         user.setProfilePicture(userDto.getProfilePicture());
         return user;
+    }
+
+    public UserResponse toDto(User user) {
+        return null;//todo
     }
 }

@@ -3,7 +3,8 @@ package com.forum.services;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.models.Comment;
 import com.forum.models.User;
-import com.forum.repositories.CommentRepository;
+import com.forum.repositories.contracts.CommentRepository;
+import com.forum.services.contracts.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

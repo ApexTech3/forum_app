@@ -3,6 +3,7 @@ package com.forum.repositories;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
+import com.forum.repositories.contracts.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -68,6 +69,4 @@ public class UserRepositoryImpl implements UserRepository {
             return user;
         }
     }
-
-
 }

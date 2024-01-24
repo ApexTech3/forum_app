@@ -2,7 +2,7 @@ package com.forum.controllers;
 
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.Tag;
-import com.forum.services.TagService;
+import com.forum.services.contracts.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
