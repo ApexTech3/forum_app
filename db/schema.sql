@@ -1,4 +1,8 @@
+drop schema if exists `forum`;
+
 create schema `forum`;
+
+use `forum`;
 
 create table `posts`
 (
@@ -10,15 +14,16 @@ create table `posts`
 
 create table `users`
 (
-    `user_id`    int(11) auto_increment primary key,
-    `username`   varchar(30)           not null,
-    `password`   varchar(30)           not null,
-    `first_name` varchar(32)           not null,
-    `last_name`  varchar(32)           not null,
-    `email`      varchar(30)           not null,
-    `phone`      varchar(20) default null,
-    `is_admin`   bool        default false,
-    `is_blocked` tinyint(1)  default 0 not null,
+    `user_id`         int(11) auto_increment primary key,
+    `username`        varchar(30)           not null,
+    `password`        varchar(30)           not null,
+    `first_name`      varchar(32)           not null,
+    `last_name`       varchar(32)           not null,
+    `email`           varchar(30)           not null,
+    `phone`           varchar(20) default null,
+    `profile_picture` varchar(50) default null,
+    `is_admin`        bool        default false,
+    `is_blocked`      tinyint(1)  default 0 not null,
     UNIQUE KEY `users_pk` (`username`),
     UNIQUE KEY `users_pk2` (`email`)
 );
@@ -27,9 +32,9 @@ create table likes_dislikes
 (
     like_id      int auto_increment
         primary key,
-    post_id      int         not null,
-    user_id      int         not null,
-    like_dislike enum('LIKE', 'DISLIKE') not null,
+    post_id      int                      not null,
+    user_id      int                      not null,
+    like_dislike enum ('LIKE', 'DISLIKE') not null,
     constraint likes_posts_post_id_fk
         foreign key (post_id) references posts (post_id),
     constraint likes_users_user_id_fk
@@ -38,7 +43,7 @@ create table likes_dislikes
         unique (post_id, user_id)
 );
 
-create table tag
+create table tags
 (
     tag_id int auto_increment
         primary key,
@@ -55,10 +60,10 @@ create table posts_tags
     constraint post_tag_ibfk_1
         foreign key (post_id) references posts (post_id),
     constraint post_tag_ibfk_2
-        foreign key (tag_id) references tag (tag_id)
+        foreign key (tag_id) references tags (tag_id)
 );
 
-create table comment
+create table comments
 (
     comment_id        int auto_increment
         primary key,

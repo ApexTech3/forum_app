@@ -36,7 +36,9 @@ VALUES ( 'comment3', '2024-01-22 17:54:34', 3, 3);
 INSERT INTO forum.tags ( name) VALUES ('cars');
 INSERT INTO forum.tags ( name) VALUES ('bikes');
 INSERT INTO forum.tags ( name) VALUES ('spacecrafts');
-
+INSERT INTO forum.posts_tags (post_id, tag_id) VALUES (1, 1);
+INSERT INTO forum.posts_tags (post_id, tag_id) VALUES (2, 2);
+INSERT INTO forum.posts_tags (post_id, tag_id) VALUES (3, 1);
 
 #
 # insert into likes_dislikes (post_id, user_id, like_dislike)
