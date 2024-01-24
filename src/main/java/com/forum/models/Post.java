@@ -13,18 +13,28 @@ public class Post {
     private int id;
     @Column(name = "title")
     private String title;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id")
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private Set<LikeDislike> likeDislikes;
     @Column(name = "content")
     private String content;
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
+    @Column(name = "archived")
+    private boolean isArchived;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "posts_replies", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "reply_id"))
-    private Set<Post> replies;
+    @OneToMany(mappedBy = "parentPost", fetch = FetchType.EAGER)
+    private Set<Comment> replies;
+
+    public Post() {
+    }
+
+    public Post(String title, Set<LikeDislike> likeDislikes, String content, User createdBy) {
+        this.title = title;
+        this.likeDislikes = likeDislikes;
+        this.content = content;
+        this.createdBy = createdBy;
+    }
 
     public int getId() {
         return id;
@@ -66,13 +76,19 @@ public class Post {
         this.createdBy = createdBy;
     }
 
-    public Set<Post> getReplies() {
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+    }
+
+    public Set<Comment> getReplies() {
         return replies;
     }
 
-    public void setReplies(Set<Post> replies) {
+    public void setReplies(Set<Comment> replies) {
         this.replies = replies;
     }
-
-
 }

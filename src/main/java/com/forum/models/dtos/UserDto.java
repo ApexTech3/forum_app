@@ -1,39 +1,34 @@
-package com.forum.models;
+package com.forum.models.dtos;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-@Entity
-@Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private int id;
-    @Column(name = "username")
+public class UserDto {
+    @NotNull(message = "Username can't be empty")
     private String username;
-    @Column(name = "password")
+    @NotNull(message = "Password can't be empty")
     private String password;
-    @Column(name = "first_name")
+    @NotNull(message = "First Name can't be empty")
+    @Size(min = 4, max = 32, message = "First Name should be between 4 and 32 symbols")
     private String firstName;
-    @Column(name = "last_name")
+    @Size(min = 4, max = 32, message = "Last Name should be between 4 and 32 symbols")
+    @NotNull(message = "Last Name can't be empty")
     private String lastName;
-    @Column(name = "email")
+    @Email
+    @NotNull(message = "Email can't be empty")
     private String email;
-    @Column(name = "phone")
     private String phone;
-    @Column (name = "profile_picture")
     private String profilePicture;
-    @Column(name = "is_admin")
-    private boolean isAdmin;
-    @Column(name = "is_blocked")
-    private boolean isBlocked;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public UserDto(String username, String password, String firstName, String lastName, String email, String phone, String profilePicture) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.profilePicture = profilePicture;
     }
 
     public String getUsername() {
@@ -90,21 +85,5 @@ public class User {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
-    public boolean isBlocked() {
-        return isBlocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
     }
 }

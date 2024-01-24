@@ -1,9 +1,12 @@
 package com.forum.repositories;
 
 import com.forum.models.User;
+import com.forum.models.filters.UserFilterOptions;
 
 public interface UserRepository {
-    User get(int id);
+    User get(String username);
+
+    User get(UserFilterOptions filterOptions);
 
     User register(User user);
 
