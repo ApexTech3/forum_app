@@ -1,9 +1,15 @@
 package com.forum.repositories;
 
+import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Post;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import org.hibernate.query.Query;
+
+import java.util.List;
 
 @Repository
 public class PostRepositoryImpl implements PostRepository{
@@ -18,21 +24,47 @@ public class PostRepositoryImpl implements PostRepository{
 
     @Override
     public Post get(int id) {
-        return null;
+        try (Session session = sessionFactory.openSession()){
+            Query<Post> query = session.createQuery("from Post  where id = :id", Post.class);
+            query.setParameter("id", id);
+            List<Post> result = query.list();
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("id", id);
+            }
+            return result.get(0);
+        }
     }
 
     @Override
-    public Post get(String userName) {
-        return null;
+    public List<Post> getByUserId(int userId) {
+        try (Session session = sessionFactory.openSession()){
+            Query<Post> query = session.createQuery("from Post  where createdBy = :userId", Post.class);
+            query.setParameter("userId", userId);
+            List<Post> result = query.list();
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("id", userId);
+            }
+            return result;
+        }
     }
 
     @Override
     public Post create(Post post) {
-        return null;
+        try (Session session = sessionFactory.openSession()){
+            session.beginTransaction();
+            session.persist(post);
+            session.getTransaction().commit();
+            return post;
+        }
     }
 
     @Override
     public Post update(Post post) {
-        return null;
+        try (Session session = sessionFactory.openSession()){
+            session.beginTransaction();
+            session.merge(post);
+            session.getTransaction().commit();
+            return post;
+        }
     }
 }

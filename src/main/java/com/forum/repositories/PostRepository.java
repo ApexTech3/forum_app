@@ -2,11 +2,13 @@ package com.forum.repositories;
 
 import com.forum.models.Post;
 
+import java.util.List;
+
 public interface PostRepository {
 
     Post get(int id);
 
-    Post get(String userName);
+    List<Post> getByUserId(int userId);
 
     Post create(Post post);
 
