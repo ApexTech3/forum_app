@@ -5,6 +5,7 @@ import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.Post;
 import com.forum.models.User;
+import com.forum.models.dtos.PostRequestDto;
 import com.forum.services.contracts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -57,7 +58,10 @@ public class PostRestController {
         }
     }
 
-    
+    @PostMapping
+    public Post createPost(@RequestHeader RequestHeader header, @RequestBody PostRequestDto) {
+
+    }
 
 
 }
