@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final String UNAUTHORIZED_USER_ERROR = "You are not authorized to perform this operation";
+
     private final UserRepository repository;
 
     @Autowired
@@ -25,8 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(UserFilterOptions filterOptions, User user) {
-        if (!user.isAdmin())
-            throw new AuthorizationException("Only admins can filter search.");
+        tryAuthorize(user);
         return repository.get(filterOptions);
     }
 
@@ -48,5 +49,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user) {
         return repository.update(user);
+    }
+
+    @Override
+    public User blockUser(User user, String username) {
+        tryAuthorize(user);
+        User toBeBlocked = get(username);
+        toBeBlocked.setBlocked(true);
+        return repository.update(toBeBlocked);
+    }
+
+    @Override
+    public User unblockUser(User user, String username) {
+        tryAuthorize(user);
+        User toBeUnBlocked = get(username);
+        toBeUnBlocked.setBlocked(false);
+        return repository.update(toBeUnBlocked);
+    }
+
+    private User tryAuthorize(User user) {
+        if (!user.isAdmin()) {
+            throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
+        }
+        return user;
     }
 }

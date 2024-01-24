@@ -12,4 +12,8 @@ public interface UserService {
     User register(User user);
 
     User update(User user);
+
+    User blockUser(User user, String username);
+
+    User unblockUser(User user, String username);
 }

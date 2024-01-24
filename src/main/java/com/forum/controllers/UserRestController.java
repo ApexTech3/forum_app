@@ -19,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
-    private static final String UNAUTHORIZED_USER_ERROR = "You are not authorized to browse user information";
 
     private final UserService service;
     private final AuthenticationHelper helper;
@@ -50,7 +49,31 @@ public class UserRestController {
             UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName);
             return service.get(filterOptions, user);
         } catch (AuthorizationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, UNAUTHORIZED_USER_ERROR);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/block/{username}")
+    public User blockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
+        try {
+            User user = helper.tryGetUser(headers);
+            return service.blockUser(user, username);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/unblock/{username}")
+    public User unblockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
+        try {
+            User user = helper.tryGetUser(headers);
+            return service.unblockUser(user, username);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
