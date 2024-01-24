@@ -15,7 +15,7 @@ public interface PostService {
     Post create(Post post);
 
     Post update(Post post, User user);
-    void delete(int id, User user);
+    void archive(int id, User user);
     List<Post> filter();
 
 }

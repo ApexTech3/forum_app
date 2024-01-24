@@ -50,7 +50,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public void delete(int id, User user) {
+    public void archive(int id, User user) {
         if (!user.isAdmin() && user.getId() != get(id).getCreatedBy().getId()) {
             throw new AuthorizationException("Only admins or creators can delete a post.");
         }
