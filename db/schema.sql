@@ -23,11 +23,13 @@ create table `users`
 create table `posts`
 (
     `post_id`    int(11) auto_increment primary key,
-    `title`      varchar(64)   not null,
-    `content`    varchar(8192) not null,
-    `created_by` int(11)       not null,
+    `title`      varchar(64)          not null,
+    `content`    varchar(8192)        not null,
+    `likes`      int(11)    default 0 not null,
+    `dislikes`   int(11)    default 0 not null,
+    `created_by` int(11)              not null,
     `archived`   tinyint(1) default 0 not null,
-     constraint posts_users_user_id_fk_2
+    constraint posts_users_user_id_fk_2
         foreign key (created_by) references users (user_id)
 );
 
@@ -85,3 +87,65 @@ create table comments
 create index tag_id
     on posts_tags (tag_id);
 
+
+DELIMITER //
+CREATE TRIGGER update_likes_dislikes
+    AFTER INSERT
+    ON likes_dislikes
+    FOR EACH ROW
+BEGIN
+    DECLARE post_like INT;
+    DECLARE post_dislike INT;
+
+    -- Get the current like and dislike counts for the post
+    SELECT likes, dislikes
+    INTO post_like, post_dislike
+    FROM posts
+    WHERE post_id = NEW.post_id;
+
+    -- Check if it's a like or dislike and update the appropriate counter
+    IF NEW.like_dislike = 'LIKE' THEN
+        -- It's a like
+        UPDATE posts
+        SET likes = post_like + 1
+        WHERE post_id = NEW.post_id;
+    ELSE
+        -- It's a dislike
+        UPDATE posts
+        SET dislikes = post_dislike + 1
+        WHERE post_id = NEW.post_id;
+    END IF;
+END;
+//
+
+CREATE TRIGGER update_likes_dislikes_after_update
+    AFTER UPDATE
+    ON likes_dislikes
+    FOR EACH ROW
+BEGIN
+    DECLARE post_like INT;
+    DECLARE post_dislike INT;
+
+    -- Get the current like and dislike counts for the post
+    SELECT likes, dislikes
+    INTO post_like, post_dislike
+    FROM posts
+    WHERE post_id = NEW.post_id;
+
+    -- Check if it's a like or dislike and update the appropriate counters
+    IF NEW.like_dislike = 'LIKE' THEN
+        -- It's a like
+        UPDATE posts
+        SET likes    = post_like + 1,
+            dislikes = post_dislike - 1
+        WHERE post_id = NEW.post_id;
+    ELSE
+        -- It's a dislike
+        UPDATE posts
+        SET dislikes = post_dislike + 1,
+            likes    = post_like - 1
+        WHERE post_id = NEW.post_id;
+    END IF;
+END;
+//
+DELIMITER ;
