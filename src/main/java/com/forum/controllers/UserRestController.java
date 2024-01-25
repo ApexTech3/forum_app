@@ -46,8 +46,7 @@ public class UserRestController {
     }
 
     @GetMapping
-    public List<UserResponse> get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username,
-                                  @RequestParam(required = false) String email, @RequestParam(required = false) String firstName) {
+    public List<UserResponse> get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username, @RequestParam(required = false) String email, @RequestParam(required = false) String firstName) {
         try {
             User user = helper.tryGetUser(headers);
             UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName);
@@ -61,10 +60,10 @@ public class UserRestController {
 
     //todo id
     @PutMapping("/block/{username}")
-    public User blockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
+    public UserResponse blockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
         try {
             User user = helper.tryGetUser(headers);
-            return service.blockUser(user, username);
+            return mapper.toDto(service.blockUser(user, username));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -73,10 +72,10 @@ public class UserRestController {
     }
 
     @PutMapping("/unblock/{username}")
-    public User unblockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
+    public UserResponse unblockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
         try {
             User user = helper.tryGetUser(headers);
-            return service.unblockUser(user, username);
+            return mapper.toDto(service.unblockUser(user, username));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
