@@ -10,6 +10,7 @@ import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.dtos.CommentRequestDto;
 import com.forum.models.dtos.PostRequestDto;
+import com.forum.models.dtos.PostResponseDto;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,15 +44,15 @@ public class PostRestController {
 
     //Post
     @GetMapping
-    public List<Post> getAllPosts() {
-        return service.getAll();
+    public List<PostResponseDto> getAllPosts() {
+        return service.getAllDto();
     }
 
     @GetMapping("/byId/{id}")
-    public Post getPostById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+    public PostResponseDto getPostById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            return service.get(id);
+            return service.getDto(id);
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -61,10 +62,10 @@ public class PostRestController {
     }
 
     @GetMapping("/byUserId/{userId}")
-    public List<Post> getPostByUserId(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
+    public List<PostResponseDto> getPostByUserId(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            return service.getByUserId(userId);
+            return service.getByUserIdDto(userId);
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -109,6 +110,8 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
+
+
 
     //Comment
     @GetMapping("/{postId}/comments")

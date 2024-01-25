@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface PostRepository {
 
-    List<PostResponseDto> getAll();
-    PostResponseDto get(int id);
+    List<Post> getAll();
+    Post get(int id);
 
-    List<PostResponseDto> getByUserId(int userId);
+    List<Post> getByUserId(int userId);
 
     Post create(Post post);
 

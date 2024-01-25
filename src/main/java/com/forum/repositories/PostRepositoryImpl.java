@@ -30,15 +30,15 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<PostResponseDto> getAll() {
+    public List<Post> getAll() {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery("from Post where isArchived = false", Post.class);
-            return postMapper.fromPostListToResponseDto(query.list());
+            return query.list();
         }
     }
 
     @Override
-    public PostResponseDto get(int id) {
+    public Post get(int id) {
         try (Session session = sessionFactory.openSession()){
             Query<Post> query = session.createQuery("from Post  where id = :id", Post.class);
             query.setParameter("id", id);
@@ -46,14 +46,12 @@ public class PostRepositoryImpl implements PostRepository {
             if (result.isEmpty()) {
                 throw new EntityNotFoundException("id", id);
             }
-            List<Post> resultList = new ArrayList<>();
-            resultList.add(result.get(0));
-            return postMapper.fromPostListToResponseDto(resultList).get(0);
+            return result.get(0);
         }
     }
 
     @Override
-    public List<PostResponseDto> getByUserId(int userId) {
+    public List<Post> getByUserId(int userId) {
         try (Session session = sessionFactory.openSession()){
             Query<Post> query = session.createQuery("from Post where createdBy.id = :userId", Post.class);
             query.setParameter("userId", userId);
@@ -61,7 +59,7 @@ public class PostRepositoryImpl implements PostRepository {
             if (result.isEmpty()) {
                 throw new EntityNotFoundException("Post", userId);//todo fix the message
             }
-            return postMapper.fromPostListToResponseDto(result);
+            return result;
         }
     }
 
