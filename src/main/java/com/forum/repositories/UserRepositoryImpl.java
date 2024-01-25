@@ -35,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User get(UserFilterOptions filterOptions) {
+    public List<User> get(UserFilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where (:username is null or username = :username) and " +
                     "(:email is null or email = :email) and (:firstName is null or firstName like :firstName)", User.class);
@@ -46,7 +46,7 @@ public class UserRepositoryImpl implements UserRepository {
             if (result.isEmpty()) {
                 throw new EntityNotFoundException("User", "username", "asdf");
             }
-            return result.get(0);
+            return result;
         }
     }
 

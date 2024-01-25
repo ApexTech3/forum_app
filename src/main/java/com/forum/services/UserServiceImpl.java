@@ -10,6 +10,8 @@ import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     private static final String UNAUTHORIZED_USER_ERROR = "You are not authorized to perform this operation";
@@ -27,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(UserFilterOptions filterOptions, User user) {
+    public List<User> get(UserFilterOptions filterOptions, User user) {
         tryAuthorize(user);
         return repository.get(filterOptions);
     }

@@ -7,6 +7,7 @@ import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
 import com.forum.models.dtos.UserDto;
+import com.forum.models.dtos.UserResponse;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.UserService;
 import jakarta.validation.Valid;
@@ -15,6 +16,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -32,22 +36,22 @@ public class UserRestController {
     }
 
     @PostMapping("/register")
-    public User register(@Valid @RequestBody UserDto userDto) {
+    public UserResponse register(@Valid @RequestBody UserDto userDto) {
         try {
             User user = mapper.fromDto(userDto);
-            return service.register(user);
+            return mapper.toDto(service.register(user));
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
 
     @GetMapping
-    public User get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username,
-                    @RequestParam(required = false) String email, @RequestParam(required = false) String firstName) {
+    public List<UserResponse> get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username,
+                                  @RequestParam(required = false) String email, @RequestParam(required = false) String firstName) {
         try {
             User user = helper.tryGetUser(headers);
             UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName);
-            return service.get(filterOptions, user);
+            return service.get(filterOptions, user).stream().map(mapper::toDto).collect(Collectors.toList());
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -55,6 +59,7 @@ public class UserRestController {
         }
     }
 
+    //todo id
     @PutMapping("/block/{username}")
     public User blockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
         try {

@@ -3,10 +3,12 @@ package com.forum.repositories.contracts;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
 
+import java.util.List;
+
 public interface UserRepository {
     User get(String username);
 
-    User get(UserFilterOptions filterOptions);
+    List<User> get(UserFilterOptions filterOptions);
 
     User register(User user);
 

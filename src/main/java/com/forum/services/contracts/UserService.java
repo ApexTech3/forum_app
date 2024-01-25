@@ -3,11 +3,13 @@ package com.forum.services.contracts;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
 
+import java.util.List;
+
 public interface UserService {
 
     User get(String username);
 
-    User get(UserFilterOptions filterOptions, User user);
+    List<User> get(UserFilterOptions filterOptions, User user);
 
     User register(User user);
 
