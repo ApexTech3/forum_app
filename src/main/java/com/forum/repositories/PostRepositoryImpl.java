@@ -1,7 +1,9 @@
 package com.forum.repositories;
 
 import com.forum.exceptions.EntityNotFoundException;
+import com.forum.helpers.PostMapper;
 import com.forum.models.Post;
+import com.forum.models.dtos.PostResponseDto;
 import com.forum.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -18,22 +21,24 @@ public class PostRepositoryImpl implements PostRepository {
 
 
     private final SessionFactory sessionFactory;
+    private final PostMapper postMapper;
 
     @Autowired
-    public PostRepositoryImpl(SessionFactory sessionFactory) {
+    public PostRepositoryImpl(SessionFactory sessionFactory, PostMapper postMapper) {
         this.sessionFactory = sessionFactory;
+        this.postMapper = postMapper;
     }
 
     @Override
-    public List<Post> getAll() {
+    public List<PostResponseDto> getAll() {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery("from Post where isArchived = false", Post.class);
-            return query.list();
+            return postMapper.fromPostListToResponseDto(query.list());
         }
     }
 
     @Override
-    public Post get(int id) {
+    public PostResponseDto get(int id) {
         try (Session session = sessionFactory.openSession()){
             Query<Post> query = session.createQuery("from Post  where id = :id", Post.class);
             query.setParameter("id", id);
@@ -41,12 +46,14 @@ public class PostRepositoryImpl implements PostRepository {
             if (result.isEmpty()) {
                 throw new EntityNotFoundException("id", id);
             }
-            return result.get(0);
+            List<Post> resultList = new ArrayList<>();
+            resultList.add(result.get(0));
+            return postMapper.fromPostListToResponseDto(resultList).get(0);
         }
     }
 
     @Override
-    public List<Post> getByUserId(int userId) {
+    public List<PostResponseDto> getByUserId(int userId) {
         try (Session session = sessionFactory.openSession()){
             Query<Post> query = session.createQuery("from Post where createdBy.id = :userId", Post.class);
             query.setParameter("userId", userId);
@@ -54,7 +61,7 @@ public class PostRepositoryImpl implements PostRepository {
             if (result.isEmpty()) {
                 throw new EntityNotFoundException("Post", userId);//todo fix the message
             }
-            return result;
+            return postMapper.fromPostListToResponseDto(result);
         }
     }
 

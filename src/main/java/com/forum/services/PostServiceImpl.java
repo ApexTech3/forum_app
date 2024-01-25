@@ -3,6 +3,7 @@ package com.forum.services;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.models.Post;
 import com.forum.models.User;
+import com.forum.models.dtos.PostResponseDto;
 import com.forum.repositories.contracts.PostRepository;
 import com.forum.services.contracts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getAll() {
+    public List<PostResponseDto> getAll() {
         return repository.getAll();
     }
 
     @Override
-    public Post get(int id) {
+    public PostResponseDto get(int id) {
         return repository.get(id);
     }
 
     @Override
-    public List<Post> getByUserId(int userId) {
+    public List<PostResponseDto> getByUserId(int userId) {
         return repository.getByUserId(userId);
     }
 

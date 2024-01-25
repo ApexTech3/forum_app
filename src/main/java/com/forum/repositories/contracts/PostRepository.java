@@ -1,15 +1,16 @@
 package com.forum.repositories.contracts;
 
 import com.forum.models.Post;
+import com.forum.models.dtos.PostResponseDto;
 
 import java.util.List;
 
 public interface PostRepository {
 
-    List<Post> getAll();
-    Post get(int id);
+    List<PostResponseDto> getAll();
+    PostResponseDto get(int id);
 
-    List<Post> getByUserId(int userId);
+    List<PostResponseDto> getByUserId(int userId);
 
     Post create(Post post);
 
