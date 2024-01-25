@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
         if (!user.isAdmin() && user.getId() != post.getCreatedBy().getId()) {
             throw new AuthorizationException("Only admins or creators can edit a post.");
         }
-        return repository.create(post);
+        return repository.update(post);
     }
 
 

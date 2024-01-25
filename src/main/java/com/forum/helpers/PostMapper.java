@@ -3,7 +3,9 @@ package com.forum.helpers;
 import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.dtos.PostRequestDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PostMapper {
 
     public Post fromRequestDto(PostRequestDto postRequestDto, User creator) {

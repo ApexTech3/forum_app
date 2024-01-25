@@ -3,6 +3,7 @@ package com.forum.controllers;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
+import com.forum.helpers.PostMapper;
 import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.dtos.PostRequestDto;
@@ -21,10 +22,12 @@ public class PostRestController {
 
     private final PostService service;
     private final AuthenticationHelper authenticationHelper;
+    private final PostMapper mapper;
     @Autowired
-    public PostRestController(PostService service, AuthenticationHelper authenticationHelper) {
+    public PostRestController(PostService service, AuthenticationHelper authenticationHelper, PostMapper mapper) {
         this.service = service;
         this.authenticationHelper = authenticationHelper;
+        this.mapper = mapper;
     }
 
     @GetMapping
@@ -45,7 +48,7 @@ public class PostRestController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     public List<Post> getPostByUserId(@PathVariable int userId, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
@@ -59,10 +62,39 @@ public class PostRestController {
     }
 
     @PostMapping
-    public Post createPost(@RequestHeader HttpHeaders header, @RequestBody PostRequestDto) {
+    public Post createPost(@RequestHeader HttpHeaders header, @RequestBody PostRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(header);
+            Post post = mapper.fromRequestDto(requestDto, user);
+            service.create(post);
+            return post;
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
 
+    @PutMapping
+    public Post updatePost(@RequestHeader HttpHeaders headers, @RequestBody PostRequestDto requestDto) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            Post post = mapper.fromRequestDto(requestDto, user);
+            service.update(post, user);
+            return post;
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+        catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public void archivePost(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            service.archive(id, user);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
