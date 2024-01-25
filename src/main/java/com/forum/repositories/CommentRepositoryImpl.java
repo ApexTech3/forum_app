@@ -58,20 +58,23 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void create(Comment comment) {
+    public Comment create(Comment comment) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(comment);
             session.getTransaction().commit();
+            return comment;
         }
+
     }
 
     @Override
-    public void update(Comment comment) {
+    public Comment update(Comment comment) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(comment);
             session.getTransaction().commit();
+            return comment;
         }
     }
 
@@ -84,8 +87,6 @@ public class CommentRepositoryImpl implements CommentRepository {
             session.getTransaction().commit();
         }
     }
-
-
 
 
 }

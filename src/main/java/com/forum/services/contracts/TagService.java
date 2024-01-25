@@ -13,7 +13,7 @@ public interface TagService {
 
     Tag getById(int id);
 
-    void create(Tag tag, User user);
+    Tag create(Tag tag, User user);
 
     void delete(int id, User user);
 }

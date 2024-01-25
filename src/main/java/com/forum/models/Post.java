@@ -17,6 +17,10 @@ public class Post {
     @JsonIgnore // todo
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private Set<LikeDislike> likeDislikes;
+    @Column(name = "likes")
+    private int likes;
+    @Column(name = "dislikes")
+    private int dislikes;
     @Column(name = "content")
     private String content;
     @ManyToOne
@@ -59,6 +63,22 @@ public class Post {
 
     public void setLikeDislikes(Set<LikeDislike> likeDislikes) {
         this.likeDislikes = likeDislikes;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 
     public String getContent() {

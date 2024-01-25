@@ -42,7 +42,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void create(Tag tag, User user) {
+    public Tag create(Tag tag, User user) {
         boolean duplicateExists = true;
         try {
             repository.getByName(tag.getName());
@@ -54,7 +54,7 @@ public class TagServiceImpl implements TagService {
             throw new EntityDuplicateException("Tag", "name", tag.getName());
         }
 
-        repository.create(tag);
+        return repository.create(tag);
     }
 
 
