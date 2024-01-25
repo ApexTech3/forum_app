@@ -15,9 +15,9 @@ public interface CommentService {
 
     Comment get(int id);
 
-    void create(Comment comment);
+    Comment create(Comment comment);
 
-    void update(Comment comment, User user);
+    Comment update(Comment comment, User user);
 
     void delete(int id, User user);
 }

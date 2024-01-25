@@ -34,7 +34,7 @@ public class TagRepositoryImpl implements TagRepository {
             Query<Tag> query = session.createQuery("from Tag where name = :name", Tag.class);
             query.setParameter("name", name);
             List<Tag> result = query.list();
-            if (result.size() == 0) {
+            if (result.isEmpty()) {
                 throw new EntityNotFoundException("Tag", "name", name);
             }
 
@@ -54,20 +54,22 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
-    public void create(Tag tag) {
+    public Tag create(Tag tag) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(tag);
             session.getTransaction().commit();
+            return tag;
         }
     }
 
     @Override
-    public void update(Tag tag) {
+    public Tag update(Tag tag) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(tag);
             session.getTransaction().commit();
+            return tag;
         }
     }
 

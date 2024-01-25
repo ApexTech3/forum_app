@@ -43,16 +43,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void create(Comment comment) {
-        repository.create(comment);
-
-    }
+    public Comment create(Comment comment) {return repository.create(comment);}
 
     @Override
-    public void update(Comment comment, User user) {
+    public Comment update(Comment comment, User user) {
         checkModifyPermissions(comment.getCommentId(), user);
 
-        repository.update(comment);
+        return repository.update(comment);
+
     }
 
     @Override

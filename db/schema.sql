@@ -74,7 +74,6 @@ create table comments
     comment_id        int auto_increment
         primary key,
     content           text                                  not null,
-    created_date_time timestamp default current_timestamp() null,
     user_id           int                                   null,
     post_id           int                                   null,
     constraint FK_Comment_Post
