@@ -35,7 +35,7 @@ public class PostRestController {
         return service.getAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/byId/{id}")
     public Post getPostById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
@@ -48,8 +48,8 @@ public class PostRestController {
         }
     }
 
-    @GetMapping("/{userId}")
-    public List<Post> getPostByUserId(@PathVariable int userId, @RequestHeader HttpHeaders headers) {
+    @GetMapping("/byUserId/{userId}")
+    public List<Post> getPostByUserId(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             return service.getByUserId(userId);
@@ -73,7 +73,7 @@ public class PostRestController {
         }
     }
 
-    @PutMapping
+    @PutMapping//todo fix this. Creates new object every time
     public Post updatePost(@RequestHeader HttpHeaders headers, @RequestBody PostRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);

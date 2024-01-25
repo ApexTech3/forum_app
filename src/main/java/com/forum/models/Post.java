@@ -1,5 +1,6 @@
 package com.forum.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -13,6 +14,7 @@ public class Post {
     private int id;
     @Column(name = "title")
     private String title;
+    @JsonIgnore // todo
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private Set<LikeDislike> likeDislikes;
     @Column(name = "content")
@@ -22,7 +24,6 @@ public class Post {
     private User createdBy;
     @Column(name = "archived")
     private boolean isArchived;
-
     @OneToMany(mappedBy = "parentPost", fetch = FetchType.EAGER)
     private Set<Comment> replies;
 
