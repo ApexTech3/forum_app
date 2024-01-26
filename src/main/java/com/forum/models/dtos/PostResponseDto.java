@@ -12,12 +12,12 @@ public class PostResponseDto {
     private int likes;
     private int dislikes;
     private String content;
-    private User createdBy;
+    private String createdBy;
     private Set<Comment> replies;
 
 
     public PostResponseDto(String title, int likes, int dislikes, String content,
-                           User createdBy, Set<Comment> replies) {
+                           String createdBy, Set<Comment> replies) {
         this.title = title;
         this.likes = likes;
         this.dislikes = dislikes;
@@ -42,11 +42,11 @@ public class PostResponseDto {
         this.content = content;
     }
 
-    public User getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
