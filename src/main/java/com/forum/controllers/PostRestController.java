@@ -13,6 +13,7 @@ import com.forum.models.dtos.PostRequestDto;
 import com.forum.models.dtos.PostResponseDto;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,14 +46,16 @@ public class PostRestController {
     //Post
     @GetMapping
     public List<PostResponseDto> getAllPosts() {
-        return service.getAllDto();
+        return mapper.fromPostListToResponseDto(service.getAll());
     }
 
     @GetMapping("/byId/{id}")
     public PostResponseDto getPostById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            return service.getDto(id);
+            List<Post> postListOfOne = new ArrayList<>();
+            postListOfOne.add(service.get(id));
+            return mapper.fromPostListToResponseDto(postListOfOne).get(0);
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -65,7 +68,7 @@ public class PostRestController {
     public List<PostResponseDto> getPostByUserId(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            return service.getByUserIdDto(userId);
+            return mapper.fromPostListToResponseDto(service.getByUserId(userId));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
@@ -75,7 +78,7 @@ public class PostRestController {
     }
 
     @PostMapping
-    public Post createPost(@RequestHeader HttpHeaders header, @RequestBody PostRequestDto requestDto) {
+    public Post createPost(@RequestHeader HttpHeaders header, @Valid @RequestBody PostRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(header);
             Post post = mapper.fromRequestDto(requestDto, user);
@@ -86,11 +89,11 @@ public class PostRestController {
         }
     }
 
-    @PutMapping//todo fix this. Creates new object every time - PostId is needed to be recognized
-    public Post updatePost(@RequestHeader HttpHeaders headers, @RequestBody PostRequestDto requestDto) {
+    @PutMapping("/update/{id}")
+    public Post updatePost(@RequestHeader HttpHeaders headers, @PathVariable int id, @Valid @RequestBody PostRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            Post post = mapper.fromRequestDto(requestDto, user);
+            Post post = mapper.fromRequestDto(id, requestDto, user);
             service.update(post, user);
             return post;
         } catch (AuthorizationException e) {

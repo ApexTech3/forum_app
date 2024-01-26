@@ -21,12 +21,10 @@ public class PostRepositoryImpl implements PostRepository {
 
 
     private final SessionFactory sessionFactory;
-    private final PostMapper postMapper;
 
     @Autowired
-    public PostRepositoryImpl(SessionFactory sessionFactory, PostMapper postMapper) {
+    public PostRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.postMapper = postMapper;
     }
 
     @Override
