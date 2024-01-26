@@ -3,7 +3,6 @@ package com.forum.services;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
-import com.forum.helpers.PostMapper;
 import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.repositories.contracts.PostRepository;
