@@ -14,9 +14,6 @@ public class Post {
     private int id;
     @Column(name = "title")
     private String title;
-    @JsonIgnore // todo
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
-    private Set<LikeDislike> likeDislikes;
     @Column(name = "likes")
     private int likes;
     @Column(name = "dislikes")
@@ -34,11 +31,16 @@ public class Post {
     public Post() {
     }
 
-    public Post(String title, Set<LikeDislike> likeDislikes, String content, User createdBy) {
+    public Post(int id, String title, int likes, int dislikes, String content,
+                User createdBy, boolean isArchived, Set<Comment> replies) {
+        this.id = id;
         this.title = title;
-        this.likeDislikes = likeDislikes;
+        this.likes = likes;
+        this.dislikes = dislikes;
         this.content = content;
         this.createdBy = createdBy;
+        this.isArchived = isArchived;
+        this.replies = replies;
     }
 
     public int getId() {
@@ -57,13 +59,6 @@ public class Post {
         this.title = title;
     }
 
-    public Set<LikeDislike> getLikeDislikes() {
-        return likeDislikes;
-    }
-
-    public void setLikeDislikes(Set<LikeDislike> likeDislikes) {
-        this.likeDislikes = likeDislikes;
-    }
 
     public int getLikes() {
         return likes;

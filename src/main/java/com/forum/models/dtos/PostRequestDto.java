@@ -6,10 +6,10 @@ import jakarta.validation.constraints.Size;
 
 public class PostRequestDto {
     @NotNull(message = "Title can't be empty")
-    @Size(min = 2, max = 20, message = "Title should be between 5 and 50 symbols")
+    @Size(min = 16, max = 64, message = "Title should be between 16 and 64 symbols")
     private String title;
     @NotNull(message = "The content can't be empty")
-    @Size(min = 2, max = 20, message = "The content should be between 5 and 500 symbols")
+    @Size(min = 32, max = 8192, message = "The content should be between 32 and 8192 symbols")
     private String content;
 
 

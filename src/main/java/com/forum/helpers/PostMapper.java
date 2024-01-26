@@ -23,7 +23,7 @@ public class PostMapper {
     public List<PostResponseDto> fromPostListToResponseDto(List<Post> list) {
         List<PostResponseDto> dtos = new ArrayList<>();
         for (Post post : list) {
-            PostResponseDto newDto = new PostResponseDto(post.getTitle(), post.getLikeDislikes(),
+            PostResponseDto newDto = new PostResponseDto(post.getTitle(), post.getLikes(), post.getDislikes(),
                     post.getContent(), post.getCreatedBy(), post.getReplies());
             dtos.add(newDto);
         }
