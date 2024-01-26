@@ -44,9 +44,7 @@ create table likes_dislikes
     constraint likes_posts_post_id_fk
         foreign key (post_id) references posts (post_id),
     constraint likes_users_user_id_fk
-        foreign key (user_id) references users (user_id),
-    constraint uc_post_user
-        unique (post_id, user_id)
+        foreign key (user_id) references users (user_id)
 );
 
 create table tags

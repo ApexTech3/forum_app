@@ -134,7 +134,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public boolean userLikedPost(int user_id, int post_id) {
         try (Session session = sessionFactory.openSession()){
-            String sql = "SELECT like_dislike from likes_dislikes WHERE post_id = :post_id and user_id = :user_id and like_dislike = :str;";
+            String sql = "SELECT like_dislike from likes_dislikes WHERE post_id = :post_id and user_id = :user_id and like_dislike = :str";
             Query nativeQuery = session.createNativeQuery(sql);
             nativeQuery.setParameter("user_id", user_id);
             nativeQuery.setParameter("post_id", post_id);
@@ -151,7 +151,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public boolean userDislikedPost(int user_id, int post_id) {
         try (Session session = sessionFactory.openSession()){
-            String sql = "SELECT like_dislike from likes_dislikes WHERE post_id = :post_id and user_id = :user_id and like_dislike = :str;";
+            String sql = "SELECT like_dislike from likes_dislikes WHERE post_id = :post_id and user_id = :user_id and like_dislike = :str";
             Query nativeQuery = session.createNativeQuery(sql);
             nativeQuery.setParameter("user_id", user_id);
             nativeQuery.setParameter("post_id", post_id);

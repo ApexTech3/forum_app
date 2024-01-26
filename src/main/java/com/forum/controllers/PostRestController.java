@@ -1,5 +1,6 @@
 package com.forum.controllers;
 
+import com.forum.exceptions.AlreadyLikedDislikedException;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
@@ -35,7 +36,7 @@ public class PostRestController {
     private final CommentMapper commentMapper;
 
     @Autowired
-    public PostRestController(PostService service, CommentService commentService,AuthenticationHelper authenticationHelper, PostMapper mapper, CommentMapper commentMapper) {
+    public PostRestController(PostService service, CommentService commentService, AuthenticationHelper authenticationHelper, PostMapper mapper, CommentMapper commentMapper) {
         this.service = service;
         this.commentService = commentService;
         this.authenticationHelper = authenticationHelper;
@@ -59,8 +60,7 @@ public class PostRestController {
             return mapper.fromPostListToResponseDto(postListOfOne).get(0);
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-        catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -72,8 +72,7 @@ public class PostRestController {
             return mapper.fromPostListToResponseDto(service.getByUserId(userId));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-        catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -101,8 +100,7 @@ public class PostRestController {
             return post;
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        }
-        catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -118,7 +116,6 @@ public class PostRestController {
     }
 
 
-
     //Comment
     @GetMapping("/{postId}/comments")
     public List<Comment> getAllPostComments(@PathVariable int postId) {
@@ -126,7 +123,7 @@ public class PostRestController {
     }
 
     @PostMapping("/{postId}/comments")
-    public Comment createComment(@RequestHeader HttpHeaders header,@PathVariable int postId, @RequestBody CommentRequestDto requestDto) {
+    public Comment createComment(@RequestHeader HttpHeaders header, @PathVariable int postId, @RequestBody CommentRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(header);
             Comment comment = commentMapper.fromRequestDto(requestDto, user, service.get(postId));
@@ -138,16 +135,16 @@ public class PostRestController {
     }
 
     @PutMapping("{postId}/comments/{commentId}") //todo is postId needed?
-    public Comment editComment(@RequestHeader HttpHeaders headers, @PathVariable int postId ,@PathVariable int commentId, @RequestBody CommentRequestDto requestDto) {
+    public Comment editComment(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int commentId, @RequestBody CommentRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Comment comment = commentMapper.fromRequestDto(commentId, requestDto, user, service.get(postId));
             comment.setContent(requestDto.getContent());
             commentService.update(comment, user);
             return comment;
-        } catch(EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch(AuthorizationException e) {
+        } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
 
@@ -163,5 +160,31 @@ public class PostRestController {
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
+    }
+
+    @PostMapping("/like/{post_id}")
+    public HttpStatus likePost(@RequestHeader HttpHeaders headers, @PathVariable int post_id) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            service.like(user, post_id);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (AlreadyLikedDislikedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        return HttpStatus.OK;
+    }
+
+    @PostMapping("/dislike/{post_id}")
+    public HttpStatus dislikePost(@RequestHeader HttpHeaders headers, @PathVariable int post_id) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            service.dislike(user, post_id);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (AlreadyLikedDislikedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        return HttpStatus.OK;
     }
 }
