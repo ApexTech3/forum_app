@@ -1,9 +1,7 @@
 package com.forum.repositories;
 
 import com.forum.exceptions.EntityNotFoundException;
-import com.forum.helpers.PostMapper;
 import com.forum.models.Post;
-import com.forum.models.dtos.PostResponseDto;
 import com.forum.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import org.hibernate.query.Query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -105,4 +102,68 @@ public class PostRepositoryImpl implements PostRepository {
             transaction.commit();
         }
     }
+
+    @Override
+    public void like(int user_id, int post_id) {
+        try (Session session = sessionFactory.openSession()){
+            Transaction transaction = session.beginTransaction();
+            String sql = "INSERT INTO likes_dislikes (post_id, user_id, like_dislike)\n" +
+                    " VALUES (:post_id, :user_id, 'LIKE');";
+            Query nativeQuery = session.createNativeQuery(sql);
+            nativeQuery.setParameter("post_id", post_id);
+            nativeQuery.setParameter("user_id", user_id);
+            nativeQuery.executeUpdate();
+            transaction.commit();
+        }
+    }
+
+    @Override
+    public void dislike(int user_id, int post_id) {
+        try (Session session = sessionFactory.openSession()){
+            Transaction transaction = session.beginTransaction();
+            String sql = "INSERT INTO likes_dislikes (post_id, user_id, like_dislike)\n" +
+                    " VALUES (:post_id, :user_id, 'DISLIKE');";
+            Query nativeQuery = session.createNativeQuery(sql);
+            nativeQuery.setParameter("post_id", post_id);
+            nativeQuery.setParameter("user_id", user_id);
+            nativeQuery.executeUpdate();
+            transaction.commit();
+        }
+    }
+
+    @Override
+    public boolean userLikedPost(int user_id, int post_id) {
+        try (Session session = sessionFactory.openSession()){
+            String sql = "SELECT like_dislike from likes_dislikes WHERE post_id = :post_id and user_id = :user_id and like_dislike = :str;";
+            Query nativeQuery = session.createNativeQuery(sql);
+            nativeQuery.setParameter("user_id", user_id);
+            nativeQuery.setParameter("post_id", post_id);
+            nativeQuery.setParameter("str", "LIKE");
+            List<String> result = nativeQuery.getResultList();
+            if (result.isEmpty()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    @Override
+    public boolean userDislikedPost(int user_id, int post_id) {
+        try (Session session = sessionFactory.openSession()){
+            String sql = "SELECT like_dislike from likes_dislikes WHERE post_id = :post_id and user_id = :user_id and like_dislike = :str;";
+            Query nativeQuery = session.createNativeQuery(sql);
+            nativeQuery.setParameter("user_id", user_id);
+            nativeQuery.setParameter("post_id", post_id);
+            nativeQuery.setParameter("str", "DISLIKE");
+            List<String> result = nativeQuery.getResultList();
+            if (result.isEmpty()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.forum.services;
 
+import com.forum.exceptions.AlreadyLikedDislikedException;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
@@ -69,6 +70,20 @@ public class PostServiceImpl implements PostService {
             throw new AuthorizationException("Only admins or creators can delete a post.");
         }
         repository.archive(id);
+    }
+
+    @Override
+    public void like(User user, int post_id) {
+        if (repository.userLikedPost(user.getId(), post_id)) {
+            throw new AlreadyLikedDislikedException("The post was already liked by this user.");
+        } else repository.like(user.getId(), post_id);
+    }
+
+    @Override
+    public void dislike(User user, int post_id) {
+        if (repository.userDislikedPost(user.getId(), post_id)) {
+            throw new AlreadyLikedDislikedException("The post was already disliked by this user.");
+        } else repository.dislike(user.getId(), post_id);
     }
 
     @Override
