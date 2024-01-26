@@ -9,6 +9,7 @@ public interface PostRepository {
 
     List<Post> getAll();
     Post get(int id);
+    Post get(String title);
 
     List<Post> getByUserId(int userId);
 

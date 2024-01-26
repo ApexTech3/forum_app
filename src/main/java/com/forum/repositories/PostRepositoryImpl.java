@@ -49,6 +49,19 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public Post get(String title) {
+        try (Session session = sessionFactory.openSession()){
+            Query<Post> query = session.createQuery("from Post  where title = :title", Post.class);
+            query.setParameter("title", title);
+            List<Post> result = query.list();
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("title", "title", title);//todo
+            }
+            return result.get(0);
+        }
+    }
+
+    @Override
     public List<Post> getByUserId(int userId) {
         try (Session session = sessionFactory.openSession()){
             Query<Post> query = session.createQuery("from Post where createdBy.id = :userId", Post.class);

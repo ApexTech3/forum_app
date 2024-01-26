@@ -1,6 +1,8 @@
 package com.forum.services;
 
 import com.forum.exceptions.AuthorizationException;
+import com.forum.exceptions.EntityDuplicateException;
+import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.PostMapper;
 import com.forum.models.Post;
 import com.forum.models.User;
@@ -32,6 +34,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Post get(String title) {
+        return repository.get(title);
+    }
+
+    @Override
     public List<Post> getByUserId(int userId) {
         return repository.getByUserId(userId);
     }
@@ -39,7 +46,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post create(Post post) {
-        return repository.create(post);
+        try {
+            get(post.getTitle());
+            throw new EntityDuplicateException("Post", "title", post.getTitle());
+        } catch (EntityNotFoundException e) {
+            return repository.create(post);
+        }
+
     }
 
     @Override

@@ -10,6 +10,7 @@ public interface PostService {
 
     List<Post> getAll();
     Post get(int id);
+    Post get(String title);
     List<Post> getByUserId(int userId);
     Post create(Post post);
     Post update(Post post, User user);
