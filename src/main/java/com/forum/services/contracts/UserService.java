@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface UserService {
 
+    User get(int id);
+
     User get(String username);
 
     List<User> get(UserFilterOptions filterOptions, User user);
 
     User register(User user);
 
-    User update(User user);
+    User update(User user, User requester);
 
-    User blockUser(User user, String username);
-
-    User unblockUser(User user, String username);
+    User updateAsAdmin(User user, User requester);
 }

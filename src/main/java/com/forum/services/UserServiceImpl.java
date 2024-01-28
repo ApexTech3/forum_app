@@ -24,13 +24,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User get(int id) {
+        return repository.get(id);
+    }
+
+    @Override
     public User get(String username) {
         return repository.get(username);
     }
 
     @Override
     public List<User> get(UserFilterOptions filterOptions, User user) {
-        tryAuthorize(user);
+        tryAuthorizeAdmin(user);
         return repository.get(filterOptions);
     }
 
@@ -50,28 +55,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) {
+    public User update(User user, User requester) {
+        tryAuthorizeUser(requester, user.getId());
         return repository.update(user);
     }
 
     @Override
-    public User blockUser(User user, String username) {
-        tryAuthorize(user);
-        User toBeBlocked = get(username);
-        toBeBlocked.setBlocked(true);
-        return repository.update(toBeBlocked);
+    public User updateAsAdmin(User user, User requester) {
+        tryAuthorizeAdmin(requester);
+        return repository.update(user);
     }
 
-    @Override
-    public User unblockUser(User user, String username) {
-        tryAuthorize(user);
-        User toBeUnBlocked = get(username);
-        toBeUnBlocked.setBlocked(false);
-        return repository.update(toBeUnBlocked);
-    }
-
-    private User tryAuthorize(User user) {
+    private User tryAuthorizeAdmin(User user) {
         if (!user.isAdmin()) {
+            throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
+        }
+        return user;
+    }
+
+    private User tryAuthorizeUser(User user, int id) {
+        if (user.getId() != id) {
             throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
         }
         return user;

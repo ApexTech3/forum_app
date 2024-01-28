@@ -6,6 +6,8 @@ import com.forum.models.filters.UserFilterOptions;
 import java.util.List;
 
 public interface UserRepository {
+    User get(int id);
+
     User get(String username);
 
     List<User> get(UserFilterOptions filterOptions);

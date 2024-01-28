@@ -22,6 +22,17 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User get(int id) {
+        try (Session session = sessionFactory.openSession()) {
+            User user = session.get(User.class, id);
+            if (user == null) {
+                throw new EntityNotFoundException("User", id);
+            }
+            return user;
+        }
+    }
+
+    @Override
     public User get(String username) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where username = :username", User.class);

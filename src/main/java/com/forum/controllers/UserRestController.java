@@ -6,10 +6,13 @@ import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
+import com.forum.models.dtos.UserAdminDto;
 import com.forum.models.dtos.UserDto;
 import com.forum.models.dtos.UserResponse;
+import com.forum.models.dtos.UserUpdateDto;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SecurityRequirement(name = "Authorization")
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
@@ -35,7 +39,7 @@ public class UserRestController {
         this.mapper = mapper;
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public UserResponse register(@Valid @RequestBody UserDto userDto) {
         try {
             User user = mapper.fromDto(userDto);
@@ -46,8 +50,10 @@ public class UserRestController {
     }
 
     @GetMapping
-    public List<UserResponse> get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username, @RequestParam(required = false) String email, @RequestParam(required = false) String firstName) {
+    public List<UserResponse> get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username,
+                                  @RequestParam(required = false) String email, @RequestParam(required = false) String firstName) {
         try {
+            System.out.println();
             User user = helper.tryGetUser(headers);
             UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName);
             return service.get(filterOptions, user).stream().map(mapper::toDto).collect(Collectors.toList());
@@ -58,12 +64,12 @@ public class UserRestController {
         }
     }
 
-    //todo id
-    @PutMapping("/block/{username}")
-    public UserResponse blockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
+    @PutMapping
+    public UserResponse updateInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserUpdateDto userUpdateDto) {
         try {
-            User user = helper.tryGetUser(headers);
-            return mapper.toDto(service.blockUser(user, username));
+            User requester = helper.tryGetUser(headers);
+            User user = mapper.fromDto(userUpdateDto);
+            return mapper.toDto(service.update(user, requester));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -71,11 +77,12 @@ public class UserRestController {
         }
     }
 
-    @PutMapping("/unblock/{username}")
-    public UserResponse unblockUser(@RequestHeader HttpHeaders headers, @PathVariable String username) {
+    @PutMapping("/admins")
+    public UserResponse updateAdminInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserAdminDto userAdminDto) {
         try {
-            User user = helper.tryGetUser(headers);
-            return mapper.toDto(service.unblockUser(user, username));
+            User requester = helper.tryGetUser(headers);
+            User user = mapper.fromDto(userAdminDto);
+            return mapper.toDto(service.updateAsAdmin(user, requester));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
