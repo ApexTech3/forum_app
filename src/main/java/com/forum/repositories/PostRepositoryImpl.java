@@ -72,6 +72,32 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public List<Post> getByTitle(String sentence) {
+        try (Session session = sessionFactory.openSession()){
+            Query<Post> query = session.createQuery("from Post where title LIKE concat('%',  :sentence, '%')", Post.class);
+            query.setParameter("sentence", sentence);
+            List<Post> result = query.list();
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("Post", "title", sentence);//todo fix the message
+            }
+            return result;
+        }
+    }
+
+    @Override
+    public List<Post> getByContent(String sentence) {
+        try (Session session = sessionFactory.openSession()){
+            Query<Post> query = session.createQuery("from Post where content LIKE concat('%',  :sentence, '%')", Post.class);
+            query.setParameter("sentence", sentence);
+            List<Post> result = query.list();
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("Post", "content", sentence);//todo fix the message
+            }
+            return result;
+        }
+    }
+
+    @Override
     public Post create(Post post) {
         try (Session session = sessionFactory.openSession()){
             session.beginTransaction();

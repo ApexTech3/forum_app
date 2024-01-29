@@ -77,6 +77,18 @@ public class PostRestController {
         }
     }
 
+    @GetMapping("/byTitle/{sentence}")
+    public List<PostResponseDto> getByWordInTitle(@RequestHeader HttpHeaders headers, @PathVariable String sentence) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            return mapper.fromPostListToResponseDto(service.);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
     @PostMapping
     public Post createPost(@RequestHeader HttpHeaders header, @Valid @RequestBody PostRequestDto requestDto) {
         try {

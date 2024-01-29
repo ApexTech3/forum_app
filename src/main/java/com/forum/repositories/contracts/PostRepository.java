@@ -12,6 +12,8 @@ public interface PostRepository {
     Post get(int id);
     Post get(String title);
     List<Post> getByUserId(int userId);
+    List<Post> getByTitle(String sentence);
+    List<Post> getByContent(String sentence);
     Post create(Post post);
     Post update(Post post);
     void archive(int id);
