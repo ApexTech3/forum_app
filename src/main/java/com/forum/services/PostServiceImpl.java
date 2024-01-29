@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post update(Post post, User user) {
-        if (!user.isAdmin() && user.getId() != post.getCreatedBy().getId()) {
+        if (!user.isAdmin() && user.getId() != post.getCreatedBy().getId()) {//todo check if user is blocked
             throw new AuthorizationException("Only admins or creators can edit a post.");
         }
         return repository.update(post);
