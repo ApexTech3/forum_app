@@ -15,6 +15,7 @@ import com.forum.models.dtos.PostRequestDto;
 import com.forum.models.dtos.PostResponseDto;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@SecurityRequirement(name = "Authorization")
 @RestController
 @RequestMapping("/api/posts")
 public class PostRestController {
