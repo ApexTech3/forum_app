@@ -10,6 +10,8 @@ public interface UserRepository {
 
     User get(String username);
 
+    User getByEmail(String email);
+
     List<User> get(UserFilterOptions filterOptions);
 
     User register(User user);

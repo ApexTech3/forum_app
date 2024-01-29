@@ -50,20 +50,35 @@ public class UserServiceImpl implements UserService {
         if (duplicateExists) {
             throw new EntityDuplicateException("User", "username", user.getUsername());
         }
-
+        duplicateExists = true;
+        try {
+            repository.getByEmail(user.getEmail());
+        } catch (EntityNotFoundException e) {
+            duplicateExists = false;
+        }
+        if (duplicateExists) {
+            throw new EntityDuplicateException("User", "email", user.getEmail());
+        }
         return repository.register(user);
     }
 
     @Override
     public User update(User user, User requester) {
-        tryAuthorizeUser(requester, user.getId());
+        tryAuthorizeUser(requester, user.getUsername());
+        checkIfUniqueEmail(user);
         return repository.update(user);
     }
 
     @Override
     public User updateAsAdmin(User user, User requester) {
         tryAuthorizeAdmin(requester);
+        checkIfUniqueEmail(user);
         return repository.update(user);
+    }
+
+    private void checkIfUniqueEmail(User user) {
+        if (repository.getByEmail(user.getEmail()).getId() != user.getId())
+            throw new EntityDuplicateException("User", "email", user.getEmail());
     }
 
     private User tryAuthorizeAdmin(User user) {
@@ -73,8 +88,8 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private User tryAuthorizeUser(User user, int id) {
-        if (user.getId() != id) {
+    private User tryAuthorizeUser(User user, String username) {
+        if (!user.getUsername().equals(username)) {
             throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
         }
         return user;

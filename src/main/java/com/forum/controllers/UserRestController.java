@@ -51,11 +51,12 @@ public class UserRestController {
 
     @GetMapping
     public List<UserResponse> get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username,
-                                  @RequestParam(required = false) String email, @RequestParam(required = false) String firstName) {
+                                  @RequestParam(required = false) String email, @RequestParam(required = false) String firstName,
+                                  @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
         try {
             System.out.println();
             User user = helper.tryGetUser(headers);
-            UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName);
+            UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName, sortBy, sortOrder);
             return service.get(filterOptions, user).stream().map(mapper::toDto).collect(Collectors.toList());
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -64,24 +65,28 @@ public class UserRestController {
         }
     }
 
-    @PutMapping
-    public UserResponse updateInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserUpdateDto userUpdateDto) {
+    @PutMapping("/{username}")
+    public UserResponse updateInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserUpdateDto userUpdateDto,
+                                   @PathVariable String username) {
         try {
             User requester = helper.tryGetUser(headers);
-            User user = mapper.fromDto(userUpdateDto);
+            User user = mapper.fromDto(userUpdateDto, username);
             return mapper.toDto(service.update(user, requester));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (EntityDuplicateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
 
-    @PutMapping("/admins")
-    public UserResponse updateAdminInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserAdminDto userAdminDto) {
+    @PutMapping("/admins/{username}")
+    public UserResponse updateAdminInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserAdminDto userAdminDto,
+                                        @PathVariable String username) {
         try {
             User requester = helper.tryGetUser(headers);
-            User user = mapper.fromDto(userAdminDto);
+            User user = mapper.fromDto(userAdminDto, username);
             return mapper.toDto(service.updateAsAdmin(user, requester));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

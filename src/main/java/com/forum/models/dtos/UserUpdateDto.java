@@ -12,19 +12,15 @@ public class UserUpdateDto implements BaseUserDto {
     private String lastName;
     @Email
     private String email;
-    private String phone;
-    private String profilePicture;
 
     public UserUpdateDto() {
     }
 
-    public UserUpdateDto(String password, String firstName, String lastName, String email, String phone, String profilePicture) {
+    public UserUpdateDto(String password, String firstName, String lastName, String email) {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.phone = phone;
-        this.profilePicture = profilePicture;
     }
 
     @Override
@@ -61,21 +57,5 @@ public class UserUpdateDto implements BaseUserDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
     }
 }

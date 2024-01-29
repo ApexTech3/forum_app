@@ -19,17 +19,13 @@ public class UserDto implements BaseUserDto {
     @Email
     @NotNull(message = "Email can't be empty")
     private String email;
-    private String phone;
-    private String profilePicture;
 
-    public UserDto(String username, String password, String firstName, String lastName, String email, String phone, String profilePicture) {
+    public UserDto(String username, String password, String firstName, String lastName, String email) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.phone = phone;
-        this.profilePicture = profilePicture;
     }
 
     public String getUsername() {
@@ -74,21 +70,5 @@ public class UserDto implements BaseUserDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
     }
 }

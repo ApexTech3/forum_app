@@ -46,18 +46,30 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> get(UserFilterOptions filterOptions) {
+    public User getByEmail(String email) {
         try (Session session = sessionFactory.openSession()) {
-            Query<User> query = session.createQuery("from User where (:username is null or username = :username) and " +
-                    "(:email is null or email = :email) and (:firstName is null or firstName like :firstName)", User.class);
-            query.setParameter("username", filterOptions.getUsername().isPresent() ? filterOptions.getUsername().get() : null);
-            query.setParameter("email", filterOptions.getEmail().isPresent() ? filterOptions.getEmail().get() : null);
-            query.setParameter("firstName", filterOptions.getFirstName().isPresent() ? filterOptions.getFirstName().get() : null);
+            Query<User> query = session.createQuery("from User where email = :email", User.class);
+            query.setParameter("email", email);
             List<User> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("User", "username", "asdf");
+                throw new EntityNotFoundException("User", "email", email);
             }
-            return result;
+            return result.get(0);
+        }
+    }
+
+
+    @Override
+    public List<User> get(UserFilterOptions filterOptions) {
+        try (Session session = sessionFactory.openSession()) {
+            String queryStr = "from User where (:username is null or username = :username) and " +
+                    "(:email is null or email = :email) and (:firstName is null or firstName like :firstName)"
+                    + sortOrder(filterOptions);
+            Query<User> query = session.createQuery(queryStr, User.class);
+            query.setParameter("username", filterOptions.getUsername().orElse(null));
+            query.setParameter("email", filterOptions.getEmail().orElse(null));
+            query.setParameter("firstName", filterOptions.getFirstName().orElse(null));
+            return query.list();
         }
     }
 
@@ -69,6 +81,15 @@ public class UserRepositoryImpl implements UserRepository {
             session.getTransaction().commit();
             return user;
         }
+    }
+
+    private String sortOrder(UserFilterOptions filterOptions) {
+        if (filterOptions.getSortBy().isEmpty())
+            return "";
+        String orderBy = String.format(" order by %s", filterOptions.getSortBy().get());
+        if (filterOptions.getSortOrder().isPresent() && filterOptions.getSortOrder().get().equals("desc"))
+            orderBy = String.format("%s desc", orderBy);
+        return orderBy;
     }
 
     @Override
