@@ -56,7 +56,7 @@ public class PostRestController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             List<Post> postListOfOne = new ArrayList<>();
-            postListOfOne.add(service.get(id));
+            postListOfOne.add(service.getById(id));
             return mapper.fromPostListToResponseDto(postListOfOne).get(0);
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -81,7 +81,19 @@ public class PostRestController {
     public List<PostResponseDto> getByWordInTitle(@RequestHeader HttpHeaders headers, @PathVariable String sentence) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            return mapper.fromPostListToResponseDto(service.);
+            return mapper.fromPostListToResponseDto(service.getByTitle(sentence));
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+
+    @GetMapping("/byContent/{sentence}")
+    public List<PostResponseDto> getByWordInTitle(@PathVariable String sentence, @RequestHeader HttpHeaders headers) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            return mapper.fromPostListToResponseDto(service.getByContent(sentence));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -131,14 +143,14 @@ public class PostRestController {
     //Comment
     @GetMapping("/{postId}/comments")
     public List<Comment> getAllPostComments(@PathVariable int postId) {
-        return new ArrayList<>(service.get(postId).getReplies());
+        return new ArrayList<>(service.getById(postId).getReplies());
     }
 
     @PostMapping("/{postId}/comments")
     public Comment createComment(@RequestHeader HttpHeaders header, @PathVariable int postId, @RequestBody CommentRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(header);
-            Comment comment = commentMapper.fromRequestDto(requestDto, user, service.get(postId));
+            Comment comment = commentMapper.fromRequestDto(requestDto, user, service.getById(postId));
             commentService.create(comment);
             return comment;
         } catch (AuthorizationException e) {
@@ -150,7 +162,7 @@ public class PostRestController {
     public Comment editComment(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int commentId, @RequestBody CommentRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            Comment comment = commentMapper.fromRequestDto(commentId, requestDto, user, service.get(postId));
+            Comment comment = commentMapper.fromRequestDto(commentId, requestDto, user, service.getById(postId));
             comment.setContent(requestDto.getContent());
             commentService.update(comment, user);
             return comment;

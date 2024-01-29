@@ -23,7 +23,7 @@ public class PostMapper {
     public Post fromRequestDto(int id, PostRequestDto postRequestDto, User creator) {
         Post post = fromRequestDto(postRequestDto, creator);
         post.setId(id);
-        Post repositoryPost = postService.get(id);
+        Post repositoryPost = postService.getById(id);
         post.setLikes(repositoryPost.getLikes());
         post.setDislikes(repositoryPost.getDislikes());
         post.setArchived(repositoryPost.isArchived());

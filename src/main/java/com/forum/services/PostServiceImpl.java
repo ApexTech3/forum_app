@@ -29,13 +29,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post get(int id) {
+    public Post getById(int id) {
         return repository.get(id);
     }
 
     @Override
-    public Post get(String title) {
-        return repository.get(title);
+    public List<Post> getByTitle(String title) {
+        return repository.getByTitle(title);
+    }
+
+    @Override
+    public List<Post> getByContent(String content) {
+        return repository.getByContent(content);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post create(Post post) {
         try {
-            get(post.getTitle());
+            getByTitle(post.getTitle());
             throw new EntityDuplicateException("Post", "title", post.getTitle());
         } catch (EntityNotFoundException e) {
             return repository.create(post);
@@ -66,7 +71,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void archive(int id, User user) {
-        if (!user.isAdmin() && user.getId() != get(id).getCreatedBy().getId()) {
+        if (!user.isAdmin() && user.getId() != getById(id).getCreatedBy().getId()) {
             throw new AuthorizationException("Only admins or creators can delete a post.");
         }
         repository.archive(id);
