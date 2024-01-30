@@ -31,7 +31,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> get(PostFilterOptions filterOptions) {
-        return null;
+        return repository.get(filterOptions);
     }
 
     @Override

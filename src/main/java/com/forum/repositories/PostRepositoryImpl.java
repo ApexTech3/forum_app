@@ -39,14 +39,18 @@ public class PostRepositoryImpl implements PostRepository {
     public List<Post> get(PostFilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
             String queryStr = "from Post where (:id is null or id = :id) and " +
-                    "(:title is null or title IS LIKE %(:title)% and (:content is null or content IS LIKE (%:content%)) and " +
-                    "(:created_by is null or created_by = :created_by) and archived = 0"
+                    "(:title is null or title LIKE :title) and " +
+                    "(:content is null or content LIKE :content) and " +
+                    "(:createdBy is null or createdBy = :created_by) and isArchived = 0"
                     + sortOrder(filterOptions);
             Query<Post> query = session.createQuery(queryStr, Post.class);
             query.setParameter("id", filterOptions.getId().orElse(null));
-            query.setParameter("title", filterOptions.getTitle().orElse(null));
-            query.setParameter("content", filterOptions.getContent().orElse(null));
+            query.setParameter("title", "%" + filterOptions.getTitle().orElse(null) + "%");
+            query.setParameter("content", "%" + filterOptions.getContent().orElse(null) + "%");
             query.setParameter("created_by", filterOptions.getCreator().orElse(null));
+            if (query.list().isEmpty()) {
+                throw new EntityNotFoundException("Not found", "not found", "not found");//todo
+            }
             return query.list();
         }
     }
