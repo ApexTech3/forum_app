@@ -38,7 +38,7 @@ public class PostRepositoryImpl implements PostRepository {
             String queryStr = "from Post where (:id is null or id = :id) and " +
                     "(:title is null or title LIKE CONCAT('%', :title, '%')) and " +
                     "(:content is null or content LIKE CONCAT('%', :content, '%')) and " +
-                    "(:createdBy is null or createdBy = :createdBy) and isArchived = false"
+                    "(:createdBy is null or createdBy.id = :createdBy) and isArchived = false"
                     + sortOrder(filterOptions);
             Query<Post> query = session.createQuery(queryStr, Post.class);
             query.setParameter("id", filterOptions.getId().orElse(null));

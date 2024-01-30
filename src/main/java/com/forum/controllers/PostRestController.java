@@ -36,16 +36,14 @@ public class PostRestController {
 
     private final PostService service;
     private final CommentService commentService;
-    private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
     private final PostMapper mapper;
     private final CommentMapper commentMapper;
 
     @Autowired
-    public PostRestController(PostService service, CommentService commentService, UserService userService, AuthenticationHelper authenticationHelper, PostMapper mapper, CommentMapper commentMapper) {
+    public PostRestController(PostService service, CommentService commentService, AuthenticationHelper authenticationHelper, PostMapper mapper, CommentMapper commentMapper) {
         this.service = service;
         this.commentService = commentService;
-        this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.mapper = mapper;
         this.commentMapper = commentMapper;
@@ -68,8 +66,7 @@ public class PostRestController {
             @RequestParam(required = false) String sortOrder
     ) {
         try {
-            User creator = creatorId != null ? userService.get(creatorId) : null;//todo
-            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creator, sortBy, sortOrder);
+            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creatorId, sortBy, sortOrder);
             return mapper.fromPostListToResponseDto(service.get(filterOptions));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

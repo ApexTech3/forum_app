@@ -8,13 +8,13 @@ public class PostFilterOptions {
     private Optional<Integer> id;
     private Optional<String> title;
     private Optional<String> content;
-    private Optional<User> creator;
+    private Optional<Integer> creator;
     private Optional<String> sortBy;
     private Optional<String> sortOrder;
 
 
     public PostFilterOptions(Integer id, String title, String content,
-                             User creator, String sortBy, String sortOrder) {
+                             Integer creator, String sortBy, String sortOrder) {
         this.id = Optional.ofNullable(id);
         this.title = Optional.ofNullable(title);
         this.content = Optional.ofNullable(content);
@@ -48,11 +48,11 @@ public class PostFilterOptions {
         this.content = content;
     }
 
-    public Optional<User> getCreator() {
+    public Optional<Integer> getCreator() {
         return creator;
     }
 
-    public void setCreator(Optional<User> creator) {
+    public void setCreator(Optional<Integer> creator) {
         this.creator = creator;
     }
 
