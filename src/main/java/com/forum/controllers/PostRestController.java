@@ -11,6 +11,7 @@ import com.forum.models.Comment;
 import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.dtos.CommentRequestDto;
+import com.forum.models.dtos.CommentResponseDto;
 import com.forum.models.dtos.PostRequestDto;
 import com.forum.models.dtos.PostResponseDto;
 import com.forum.models.filters.PostFilterOptions;
@@ -168,30 +169,31 @@ public class PostRestController {
 
     //Comment
     @GetMapping("/{postId}/comments")
-    public List<Comment> getAllPostComments(@PathVariable int postId) {
-        return new ArrayList<>(service.getById(postId).getReplies());
+    public List<CommentResponseDto> getAllPostComments(@PathVariable int postId) {
+        return service.getById(postId).getReplies().stream()
+                .map(comment -> new CommentResponseDto(comment)).toList();
     }
 
     @PostMapping("/{postId}/comments")
-    public Comment createComment(@RequestHeader HttpHeaders header, @PathVariable int postId, @RequestBody CommentRequestDto requestDto) {
+    public CommentResponseDto createComment(@RequestHeader HttpHeaders header, @PathVariable int postId, @RequestBody CommentRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(header);
             Comment comment = commentMapper.fromRequestDto(requestDto, user, service.getById(postId));
             commentService.create(comment);
-            return comment;
+            return new CommentResponseDto(comment);
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
     @PutMapping("{postId}/comments/{commentId}") //todo is postId needed?
-    public Comment editComment(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int commentId, @RequestBody CommentRequestDto requestDto) {
+    public CommentResponseDto editComment(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int commentId, @RequestBody CommentRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Comment comment = commentMapper.fromRequestDto(commentId, requestDto, user, service.getById(postId));
             comment.setContent(requestDto.getContent());
             commentService.update(comment, user);
-            return comment;
+            return new CommentResponseDto(comment);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {
