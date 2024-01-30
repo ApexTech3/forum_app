@@ -1,18 +1,20 @@
 package com.forum.models.filters;
 
+import com.forum.models.User;
+
 import java.util.Optional;
 
 public class PostFilterOptions {
     private Optional<Integer> id;
     private Optional<String> title;
     private Optional<String> content;
-    private Optional<Integer> creator;
+    private Optional<User> creator;
     private Optional<String> sortBy;
     private Optional<String> sortOrder;
 
 
     public PostFilterOptions(Integer id, String title, String content,
-                             Integer creator, String sortBy, String sortOrder) {
+                             User creator, String sortBy, String sortOrder) {
         this.id = Optional.ofNullable(id);
         this.title = Optional.ofNullable(title);
         this.content = Optional.ofNullable(content);
@@ -46,11 +48,11 @@ public class PostFilterOptions {
         this.content = content;
     }
 
-    public Optional<Integer> getCreator() {
+    public Optional<User> getCreator() {
         return creator;
     }
 
-    public void setCreator(Optional<Integer> creator) {
+    public void setCreator(Optional<User> creator) {
         this.creator = creator;
     }
 

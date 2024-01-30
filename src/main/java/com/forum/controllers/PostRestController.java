@@ -16,6 +16,7 @@ import com.forum.models.dtos.PostResponseDto;
 import com.forum.models.filters.PostFilterOptions;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
+import com.forum.services.contracts.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @SecurityRequirement(name = "Authorization")
 @RestController
 @RequestMapping("/api/posts")
@@ -33,14 +35,16 @@ public class PostRestController {
 
     private final PostService service;
     private final CommentService commentService;
+    private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
     private final PostMapper mapper;
     private final CommentMapper commentMapper;
 
     @Autowired
-    public PostRestController(PostService service, CommentService commentService, AuthenticationHelper authenticationHelper, PostMapper mapper, CommentMapper commentMapper) {
+    public PostRestController(PostService service, CommentService commentService, UserService userService, AuthenticationHelper authenticationHelper, PostMapper mapper, CommentMapper commentMapper) {
         this.service = service;
         this.commentService = commentService;
+        this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.mapper = mapper;
         this.commentMapper = commentMapper;
@@ -63,7 +67,8 @@ public class PostRestController {
             @RequestParam(required = false) String sortOrder
     ) {
         try {
-            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creatorId, sortBy, sortOrder);
+            User creator = creatorId != null ? userService.get(creatorId) : null;//todo
+            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creator, sortBy, sortOrder);
             return mapper.fromPostListToResponseDto(service.get(filterOptions));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
