@@ -1,6 +1,7 @@
 package com.forum.services;
 
 import com.forum.exceptions.AuthorizationException;
+import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.Comment;
 import com.forum.models.User;
 import com.forum.repositories.contracts.CommentRepository;
@@ -62,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
 
     private void checkModifyPermissions(int id, User user) {
         Comment comment = repository.get(id);
-        if (!(user.isAdmin() || comment.getCreatedBy().equals(user))) {
+        if (!(AuthenticationHelper.isAdmin(user) || comment.getCreatedBy().equals(user))){
             throw new AuthorizationException(MODIFY_COMMENT_ERROR_MESSAGE);
         }
     }

@@ -4,6 +4,7 @@ import com.forum.exceptions.AlreadyLikedDislikedException;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
+import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.Post;
 import com.forum.models.Tag;
 import com.forum.models.User;
@@ -73,7 +74,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post update(Post post, User user) {
-        if (!user.isAdmin() && user.getId() != post.getCreatedBy().getId()) {//todo check if user is blocked
+        if (!AuthenticationHelper.isAdmin(user) && user.getId() != post.getCreatedBy().getId()) {//todo check if user is blocked
             throw new AuthorizationException("Only admins or creators can edit a post.");
         }
         return repository.update(post);
@@ -82,7 +83,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void archive(int id, User user) {
-        if (!user.isAdmin() && user.getId() != getById(id).getCreatedBy().getId()) {
+        if (!AuthenticationHelper.isAdmin(user) && user.getId() != getById(id).getCreatedBy().getId()) {
             throw new AuthorizationException("Only admins or creators can delete a post.");
         }
         repository.archive(id);

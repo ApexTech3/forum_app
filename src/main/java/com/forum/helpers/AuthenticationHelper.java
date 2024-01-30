@@ -20,6 +20,10 @@ public class AuthenticationHelper {
         this.userService = userService;
     }
 
+    public static boolean isAdmin(User user) {
+        return user.getRoles().stream().anyMatch(r -> r.getRole().equals("ADMIN"));
+    }
+
     public User tryGetUser(HttpHeaders headers) {
         if (!headers.containsKey(AUTHORIZATION_HEADER_NAME)) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
