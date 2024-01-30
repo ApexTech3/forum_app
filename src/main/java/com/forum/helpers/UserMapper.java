@@ -25,21 +25,22 @@ public class UserMapper {
         return user;
     }
 
-    public User fromDto(UserUpdateDto userUpdateDto, String username) {
+    public User fromDto(UserUpdateDto userUpdateDto, int id) {
         User user = extractBaseInfo(userUpdateDto);
-        user.setUsername(username);
-        user.setId(service.get(user.getUsername()).getId());
+        user.setId(id);
+        user.setUsername(service.get(id).getUsername());
+        user.setRoles(service.get(id).getRoles());
         return user;
     }
 
-    public User fromDto(UserAdminDto userAdminDto, String username) {
+    public User fromDto(UserAdminDto userAdminDto, int id) {
         User user = extractBaseInfo(userAdminDto);
         user.setPhone(userAdminDto.getPhone());
         user.setProfilePicture(userAdminDto.getProfilePicture());
         user.setBlocked(userAdminDto.isBlocked());
-        user.setRoles(userAdminDto.getRoles());
-        user.setUsername(username);
-        user.setId(service.get(user.getUsername()).getId());
+        user.setId(id);
+        user.setUsername(service.get(id).getUsername());
+        user.setRoles(service.get(id).getRoles());
         return user;
     }
 

@@ -65,12 +65,12 @@ public class UserRestController {
         }
     }
 
-    @PutMapping("/{username}")
+    @PutMapping("/{id}")
     public UserResponse updateInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserUpdateDto userUpdateDto,
-                                   @PathVariable String username) {
+                                   @PathVariable int id) {
         try {
             User requester = helper.tryGetUser(headers);
-            User user = mapper.fromDto(userUpdateDto, username);
+            User user = mapper.fromDto(userUpdateDto, id);
             return mapper.toDto(service.update(user, requester));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -81,12 +81,12 @@ public class UserRestController {
         }
     }
 
-    @PutMapping("/admins/{username}")
+    @PutMapping("/admins/{id}")
     public UserResponse updateAdminInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserAdminDto userAdminDto,
-                                        @PathVariable String username) {
+                                        @PathVariable int id) {
         try {
             User requester = helper.tryGetUser(headers);
-            User user = mapper.fromDto(userAdminDto, username);
+            User user = mapper.fromDto(userAdminDto, id);
             return mapper.toDto(service.updateAsAdmin(user, requester));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
