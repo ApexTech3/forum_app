@@ -35,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User get(String username) {
         try (Session session = sessionFactory.openSession()) {
-            Query<User> query = session.createQuery("from User where username = :username", User.class);
+            Query<User> query = session.createQuery("from User where username = :username and isDeleted = false", User.class);
             query.setParameter("username", username);
             List<User> result = query.list();
             if (result.isEmpty()) {
@@ -48,7 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getByEmail(String email) {
         try (Session session = sessionFactory.openSession()) {
-            Query<User> query = session.createQuery("from User where email = :email", User.class);
+            Query<User> query = session.createQuery("from User where email = :email and isDeleted = false", User.class);
             query.setParameter("email", email);
             List<User> result = query.list();
             if (result.isEmpty()) {
@@ -63,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> get(UserFilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
             String queryStr = "from User where (:username is null or username = :username) and " +
-                    "(:email is null or email = :email) and (:firstName is null or firstName like :firstName)"
+                    "(:email is null or email = :email) and (:firstName is null or firstName like :firstName) and isDeleted = false "
                     + sortOrder(filterOptions);
             Query<User> query = session.createQuery(queryStr, User.class);
             query.setParameter("username", filterOptions.getUsername().orElse(null));
@@ -96,6 +96,18 @@ public class UserRepositoryImpl implements UserRepository {
     public User update(User user) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+            session.merge(user);
+            session.getTransaction().commit();
+            return user;
+        }
+    }
+
+    @Override
+    public User delete(int id) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            User user = get(id);
+            user.setDeleted(true);
             session.merge(user);
             session.getTransaction().commit();
             return user;

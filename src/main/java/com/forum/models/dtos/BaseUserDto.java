@@ -9,4 +9,5 @@ public interface BaseUserDto {
     public String getLastName();
 
     public String getEmail();
+    public String getProfilePicture();
 }

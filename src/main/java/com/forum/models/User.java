@@ -2,8 +2,13 @@ package com.forum.models;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
+@SecondaryTable(name = "phones", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id"))
+@SecondaryTable(name = "pictures", pkJoinColumns = @PrimaryKeyJoinColumn(name = "user_id"))
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,14 +24,21 @@ public class User {
     private String lastName;
     @Column(name = "email")
     private String email;
-    @Column(name = "phone")
+    @Column(name = "phone", table = "phones")
     private String phone;
-    @Column (name = "profile_picture")
+    @Column(name = "picture", table = "pictures")
     private String profilePicture;
-    @Column(name = "is_admin")
-    private boolean isAdmin;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
     @Column(name = "is_blocked")
     private boolean isBlocked;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    public User() {
+        this.roles = new HashSet<>();
+    }
 
     public int getId() {
         return id;
@@ -92,12 +104,20 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+
+    public boolean isAdmin() {
+        return roles.stream().anyMatch(r -> r.getRole().equals("ADMIN"));
     }
 
     public boolean isBlocked() {
@@ -106,5 +126,13 @@ public class User {
 
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

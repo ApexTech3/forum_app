@@ -1,5 +1,7 @@
 package com.forum.models.dtos;
 
+import com.forum.models.Role;
+
 import java.util.Set;
 
 public class UserResponse {
@@ -9,7 +11,8 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String email;
-    private boolean admin;
+    private String profilePicture;
+    private Set<Role> roles;
     private boolean isBlocked;
 
     public int getId() {
@@ -52,12 +55,12 @@ public class UserResponse {
         this.email = email;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public boolean isBlocked() {
@@ -66,5 +69,13 @@ public class UserResponse {
 
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

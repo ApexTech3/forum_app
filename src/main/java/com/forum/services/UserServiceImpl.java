@@ -6,6 +6,7 @@ import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.repositories.contracts.UserRepository;
+import com.forum.services.contracts.RoleService;
 import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,12 @@ public class UserServiceImpl implements UserService {
     private static final String UNAUTHORIZED_USER_ERROR = "You are not authorized to perform this operation";
 
     private final UserRepository repository;
+    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, RoleService roleService) {
         this.repository = repository;
+        this.roleService = roleService;
     }
 
     @Override
@@ -59,6 +62,7 @@ public class UserServiceImpl implements UserService {
         if (duplicateExists) {
             throw new EntityDuplicateException("User", "email", user.getEmail());
         }
+        user.addRole(roleService.get("USER"));
         return repository.register(user);
     }
 
@@ -76,9 +80,25 @@ public class UserServiceImpl implements UserService {
         return repository.update(user);
     }
 
+    @Override
+    public User delete(User user, int id) {
+        if (!user.isAdmin() && user.getId() != id)
+            throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
+        return repository.delete(id);
+    }
+
     private void checkIfUniqueEmail(User user) {
-        if (repository.getByEmail(user.getEmail()).getId() != user.getId())
+        boolean duplicateExists = true;
+        try {
+            User userByEmail = repository.getByEmail(user.getEmail());
+            if (userByEmail.getId() == user.getId())
+                duplicateExists = false;
+        } catch (EntityNotFoundException e) {
+            duplicateExists = false;
+        }
+        if (duplicateExists) {
             throw new EntityDuplicateException("User", "email", user.getEmail());
+        }
     }
 
     private User tryAuthorizeAdmin(User user) {

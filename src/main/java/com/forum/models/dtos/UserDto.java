@@ -1,6 +1,5 @@
 package com.forum.models.dtos;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,13 +18,15 @@ public class UserDto implements BaseUserDto {
     @Email
     @NotNull(message = "Email can't be empty")
     private String email;
+    private String profilePicture;
 
-    public UserDto(String username, String password, String firstName, String lastName, String email) {
+    public UserDto(String username, String password, String firstName, String lastName, String email, String profilePicture) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.profilePicture = profilePicture;
     }
 
     public String getUsername() {
@@ -70,5 +71,14 @@ public class UserDto implements BaseUserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

@@ -18,4 +18,6 @@ public interface UserService {
     User update(User user, User requester);
 
     User updateAsAdmin(User user, User requester);
+
+    User delete(User user, int id);
 }
