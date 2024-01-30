@@ -54,7 +54,6 @@ public class UserRestController {
                                   @RequestParam(required = false) String email, @RequestParam(required = false) String firstName,
                                   @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
         try {
-            System.out.println();
             User user = helper.tryGetUser(headers);
             UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName, sortBy, sortOrder);
             return service.get(filterOptions, user).stream().map(mapper::toDto).collect(Collectors.toList());

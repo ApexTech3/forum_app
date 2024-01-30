@@ -3,6 +3,7 @@ package com.forum.services;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
+import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.Tag;
 import com.forum.models.User;
 import com.forum.repositories.contracts.TagRepository;
@@ -66,7 +67,7 @@ public class TagServiceImpl implements TagService {
 
 
     private void checkModifyPermissions(User user) {
-        if (!(user.isAdmin())) {
+        if (!(AuthenticationHelper.isAdmin(user))) {
         throw new AuthorizationException(MODIFY_TAG_ERROR_MESSAGE);
         }
     }

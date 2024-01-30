@@ -20,27 +20,24 @@ public class UserMapper {
     }
 
     public User fromDto(UserDto userDto) {
-        User user = extractBaseInfo(userDto);
+        User user = new User();
         user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setProfilePicture(userDto.getProfilePicture());
         return user;
     }
 
     public User fromDto(UserUpdateDto userUpdateDto, int id) {
-        User user = extractBaseInfo(userUpdateDto);
-        user.setId(id);
-        user.setUsername(service.get(id).getUsername());
-        user.setRoles(service.get(id).getRoles());
-        return user;
+        return extractBaseInfo(userUpdateDto, id);
     }
 
     public User fromDto(UserAdminDto userAdminDto, int id) {
-        User user = extractBaseInfo(userAdminDto);
+        User user = extractBaseInfo(userAdminDto, id);
         user.setPhone(userAdminDto.getPhone());
-        user.setProfilePicture(userAdminDto.getProfilePicture());
         user.setBlocked(userAdminDto.isBlocked());
-        user.setId(id);
-        user.setUsername(service.get(id).getUsername());
-        user.setRoles(service.get(id).getRoles());
         return user;
     }
 
@@ -57,8 +54,9 @@ public class UserMapper {
         return userResponse;
     }
 
-    private <T extends BaseUserDto> User extractBaseInfo(T dto) {
-        User user = new User();
+
+    private <T extends BaseUserDto> User extractBaseInfo(T dto, int id) {
+        User user = service.get(id);
         user.setPassword(dto.getPassword());
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());

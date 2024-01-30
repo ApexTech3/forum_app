@@ -2,7 +2,6 @@ package com.forum.models;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -37,7 +36,6 @@ public class User {
     private boolean isDeleted;
 
     public User() {
-        this.roles = new HashSet<>();
     }
 
     public int getId() {
@@ -110,14 +108,6 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public void addRole(Role role) {
-        this.roles.add(role);
-    }
-
-    public boolean isAdmin() {
-        return roles.stream().anyMatch(r -> r.getRole().equals("ADMIN"));
     }
 
     public boolean isBlocked() {

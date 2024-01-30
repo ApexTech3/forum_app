@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
 
     private void checkModifyPermissions(int id, User user) {
         Comment comment = repository.get(id);
-        if (!(user.isAdmin() || comment.getCreatedBy().equals(user))) {
+        if (!(AuthenticationHelper.isAdmin(user) || comment.getCreatedBy().equals(user))){
             throw new AuthorizationException(MODIFY_COMMENT_ERROR_MESSAGE);
         }
     }

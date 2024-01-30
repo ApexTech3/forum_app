@@ -3,6 +3,7 @@ package com.forum.services;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
+import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.repositories.contracts.UserRepository;
@@ -11,6 +12,7 @@ import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -62,7 +64,8 @@ public class UserServiceImpl implements UserService {
         if (duplicateExists) {
             throw new EntityDuplicateException("User", "email", user.getEmail());
         }
-        user.addRole(roleService.get("USER"));
+        user.setRoles(new HashSet<>());
+        user.getRoles().add(roleService.get("USER"));
         return repository.register(user);
     }
 
@@ -82,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User delete(User user, int id) {
-        if (!user.isAdmin() && user.getId() != id)
+        if (!AuthenticationHelper.isAdmin(user) && user.getId() != id)
             throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
         return repository.delete(id);
     }
@@ -102,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User tryAuthorizeAdmin(User user) {
-        if (!user.isAdmin()) {
+        if (!AuthenticationHelper.isAdmin(user)) {
             throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
         }
         return user;
