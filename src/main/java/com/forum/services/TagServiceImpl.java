@@ -42,7 +42,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag create(Tag tag, User user) {
+    public Tag create(Tag tag) {
         boolean duplicateExists = true;
         try {
             repository.getByName(tag.getName());

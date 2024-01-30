@@ -17,7 +17,6 @@ import com.forum.models.dtos.PostResponseDto;
 import com.forum.models.filters.PostFilterOptions;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
-import com.forum.services.contracts.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
