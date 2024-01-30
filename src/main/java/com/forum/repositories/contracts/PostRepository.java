@@ -3,12 +3,14 @@ package com.forum.repositories.contracts;
 import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.dtos.PostResponseDto;
+import com.forum.models.filters.PostFilterOptions;
 
 import java.util.List;
 
 public interface PostRepository {
 
     List<Post> getAll();
+    List<Post> get(PostFilterOptions filterOptions);
     Post get(int id);
     Post get(String title);
     List<Post> getByUserId(int userId);

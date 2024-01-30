@@ -2,12 +2,14 @@ package com.forum.services.contracts;
 
 import com.forum.models.Post;
 import com.forum.models.User;
+import com.forum.models.filters.PostFilterOptions;
 
 import java.util.List;
 
 public interface PostService {
 
     List<Post> getAll();
+    List<Post> get(PostFilterOptions filterOptions);
     Post getById(int id);
     List<Post> getByTitle(String title);
     List<Post> getByContent(String content);

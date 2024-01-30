@@ -13,6 +13,7 @@ import com.forum.models.User;
 import com.forum.models.dtos.CommentRequestDto;
 import com.forum.models.dtos.PostRequestDto;
 import com.forum.models.dtos.PostResponseDto;
+import com.forum.models.filters.PostFilterOptions;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -47,9 +48,26 @@ public class PostRestController {
 
 
     //Post
+//    @GetMapping
+//    public List<PostResponseDto> getAllPosts() {
+//        return mapper.fromPostListToResponseDto(service.getAll());
+//    }
+
     @GetMapping
-    public List<PostResponseDto> getAllPosts() {
-        return mapper.fromPostListToResponseDto(service.getAll());
+    public List<PostResponseDto> get(
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) Integer creatorId,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder
+    ) {
+        try {
+            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creatorId, sortBy, sortOrder);
+            return mapper.fromPostListToResponseDto(service.get(filterOptions));
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
     }
 
     @GetMapping("/byId/{id}")

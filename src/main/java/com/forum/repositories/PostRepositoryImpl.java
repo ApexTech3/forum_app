@@ -2,6 +2,9 @@ package com.forum.repositories;
 
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Post;
+import com.forum.models.User;
+import com.forum.models.filters.PostFilterOptions;
+import com.forum.models.filters.UserFilterOptions;
 import com.forum.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -30,6 +33,30 @@ public class PostRepositoryImpl implements PostRepository {
             Query<Post> query = session.createQuery("from Post where isArchived = false", Post.class);
             return query.list();
         }
+    }
+
+    @Override
+    public List<Post> get(PostFilterOptions filterOptions) {
+        try (Session session = sessionFactory.openSession()) {
+            String queryStr = "from Post where (:id is null or id = :id) and " +
+                    "(:title is null or title IS LIKE %(:title)% and (:content is null or content IS LIKE (%:content%)) and " +
+                    "(:created_by is null or created_by = :created_by) and archived = 0"
+                    + sortOrder(filterOptions);
+            Query<Post> query = session.createQuery(queryStr, Post.class);
+            query.setParameter("id", filterOptions.getId().orElse(null));
+            query.setParameter("title", filterOptions.getTitle().orElse(null));
+            query.setParameter("content", filterOptions.getContent().orElse(null));
+            query.setParameter("created_by", filterOptions.getCreator().orElse(null));
+            return query.list();
+        }
+    }
+    private String sortOrder(PostFilterOptions filterOptions) {
+        if (filterOptions.getSortBy().isEmpty())
+            return "";
+        String orderBy = String.format(" order by %s", filterOptions.getSortBy().get());
+        if (filterOptions.getSortOrder().isPresent() && filterOptions.getSortOrder().get().equals("desc"))
+            orderBy = String.format("%s desc", orderBy);
+        return orderBy;
     }
 
     @Override

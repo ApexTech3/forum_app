@@ -3,29 +3,30 @@ package com.forum.models.filters;
 import java.util.Optional;
 
 public class PostFilterOptions {
-    private Optional<String> id;
+    private Optional<Integer> id;
     private Optional<String> title;
     private Optional<String> content;
-    private Optional<String> creator;
+    private Optional<Integer> creator;
     private Optional<String> sortBy;
     private Optional<String> sortOrder;
 
 
-    public PostFilterOptions(Optional<String> id, Optional<String> title, Optional<String> content,
-                             Optional<String> creator, Optional<String> sortBy, Optional<String> sortOrder) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.creator = creator;
-        this.sortBy = sortBy;
-        this.sortOrder = sortOrder;
+    public PostFilterOptions(Integer id, String title, String content,
+                             Integer creator, String sortBy, String sortOrder) {
+        this.id = Optional.ofNullable(id);
+        this.title = Optional.ofNullable(title);
+        this.content = Optional.ofNullable(content);
+        this.creator = Optional.ofNullable(creator);
+        this.sortBy = Optional.ofNullable(sortBy);
+        this.sortOrder = Optional.ofNullable(sortOrder);
+
     }
 
-    public Optional<String> getId() {
+    public Optional<Integer> getId() {
         return id;
     }
 
-    public void setId(Optional<String> id) {
+    public void setId(Optional<Integer> id) {
         this.id = id;
     }
 
@@ -45,11 +46,11 @@ public class PostFilterOptions {
         this.content = content;
     }
 
-    public Optional<String> getCreator() {
+    public Optional<Integer> getCreator() {
         return creator;
     }
 
-    public void setCreator(Optional<String> creator) {
+    public void setCreator(Optional<Integer> creator) {
         this.creator = creator;
     }
 

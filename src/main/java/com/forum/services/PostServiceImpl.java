@@ -6,6 +6,7 @@ import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Post;
 import com.forum.models.User;
+import com.forum.models.filters.PostFilterOptions;
 import com.forum.repositories.contracts.PostRepository;
 import com.forum.services.contracts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getAll() {
         return repository.getAll();
+    }
+
+    @Override
+    public List<Post> get(PostFilterOptions filterOptions) {
+        return null;
     }
 
     @Override
