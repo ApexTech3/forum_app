@@ -2,6 +2,7 @@ package com.forum.helpers;
 
 import com.forum.models.User;
 import com.forum.models.dtos.*;
+import com.forum.services.contracts.RoleService;
 import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,10 +11,12 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     private final UserService service;
+    private final RoleService roleService;
 
     @Autowired
-    public UserMapper(UserService service) {
+    public UserMapper(UserService service, RoleService roleService) {
         this.service = service;
+        this.roleService = roleService;
     }
 
     public User fromDto(UserDto userDto) {
@@ -34,7 +37,7 @@ public class UserMapper {
         user.setPhone(userAdminDto.getPhone());
         user.setProfilePicture(userAdminDto.getProfilePicture());
         user.setBlocked(userAdminDto.isBlocked());
-        user.setAdmin(userAdminDto.isAdmin());
+        user.setRoles(userAdminDto.getRoles());
         user.setUsername(username);
         user.setId(service.get(user.getUsername()).getId());
         return user;
@@ -47,7 +50,8 @@ public class UserMapper {
         userResponse.setFirstName(user.getFirstName());
         userResponse.setLastName(user.getLastName());
         userResponse.setEmail(user.getEmail());
-        userResponse.setAdmin(user.isAdmin());
+        user.setProfilePicture(user.getProfilePicture());
+        userResponse.setRoles(user.getRoles());
         userResponse.setBlocked(user.isBlocked());
         return userResponse;
     }
@@ -58,6 +62,7 @@ public class UserMapper {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
+        user.setProfilePicture(dto.getProfilePicture());
         return user;
     }
 

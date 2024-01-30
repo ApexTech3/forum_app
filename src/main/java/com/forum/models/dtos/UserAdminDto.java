@@ -1,19 +1,21 @@
 package com.forum.models.dtos;
 
+import com.forum.models.Role;
+
+import java.util.Set;
+
 public class UserAdminDto extends UserUpdateDto {
     private String phone;
-    private String profilePicture;
-    private boolean isAdmin;
+    private Set<Role> roles;
     private boolean isBlocked;
 
     public UserAdminDto() {
     }
 
-    public UserAdminDto(String password, String firstName, String lastName, String email, String phone, String profilePicture, boolean isAdmin, boolean isBlocked) {
-        super(password, firstName, lastName, email);
+    public UserAdminDto(String password, String firstName, String lastName, String email, String phone, String profilePicture, Set<Role> roles, boolean isBlocked) {
+        super(password, firstName, lastName, email, profilePicture);
         this.phone = phone;
-        this.profilePicture = profilePicture;
-        this.isAdmin = isAdmin;
+        this.roles = roles;
         this.isBlocked = isBlocked;
     }
 
@@ -25,20 +27,12 @@ public class UserAdminDto extends UserUpdateDto {
         this.phone = phone;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public boolean isBlocked() {

@@ -1,7 +1,6 @@
 package com.forum.models.dtos;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class UserUpdateDto implements BaseUserDto {
@@ -12,15 +11,17 @@ public class UserUpdateDto implements BaseUserDto {
     private String lastName;
     @Email
     private String email;
+    private String profilePicture;
 
     public UserUpdateDto() {
     }
 
-    public UserUpdateDto(String password, String firstName, String lastName, String email) {
+    public UserUpdateDto(String password, String firstName, String lastName, String email, String profilePicture) {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.profilePicture = profilePicture;
     }
 
     @Override
@@ -57,5 +58,14 @@ public class UserUpdateDto implements BaseUserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

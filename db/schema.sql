@@ -6,16 +6,14 @@ use `forum`;
 
 create table `users`
 (
-    `user_id`         int(11) auto_increment primary key,
-    `username`        varchar(30)           not null,
-    `password`        varchar(30)           not null,
-    `first_name`      varchar(32)           not null,
-    `last_name`       varchar(32)           not null,
-    `email`           varchar(30)           not null,
-    `phone`           varchar(20) default null,
-    `profile_picture` varchar(50) default null,
-    `is_admin`        bool        default false,
-    `is_blocked`      tinyint(1)  default 0 not null,
+    `user_id`    int(11) auto_increment primary key,
+    `username`   varchar(30) not null,
+    `password`   varchar(30) not null,
+    `first_name` varchar(32) not null,
+    `last_name`  varchar(32) not null,
+    `email`      varchar(30) not null,
+    `is_blocked` tinyint(1)           default 0 not null,
+    `is_deleted` tinyint(1)  NOT NULL DEFAULT 0,
     UNIQUE KEY `users_pk` (`username`),
     UNIQUE KEY `users_pk2` (`email`)
 );
@@ -46,6 +44,21 @@ create table likes_dislikes
     constraint likes_users_user_id_fk
         foreign key (user_id) references users (user_id)
 );
+CREATE TABLE `phones`
+(
+    `phone_id` int(11)     NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id`  int(11)     NOT NULL,
+    `phone`    varchar(50) NOT NULL,
+    CONSTRAINT `phones_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+);
+
+CREATE TABLE `pictures`
+(
+    `picture_id` int(11)     NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id`    int(11)     NOT NULL,
+    `picture`    varchar(50) NOT NULL,
+    CONSTRAINT `pictures_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+);
 
 create table tags
 (
@@ -67,19 +80,33 @@ create table posts_tags
         foreign key (tag_id) references tags (tag_id)
 );
 
+CREATE TABLE `roles`
+(
+    `role_id` int(11)     NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `role`    varchar(20) NOT NULL
+);
+
 create table comments
 (
-    comment_id        int auto_increment
+    comment_id int auto_increment
         primary key,
-    content           text                                  not null,
-    user_id           int                                   null,
-    post_id           int                                   null,
+    content    text not null,
+    user_id    int  null,
+    post_id    int  null,
     constraint FK_Comment_Post
         foreign key (post_id) references posts (post_id),
     constraint FK_Comment_User
         foreign key (user_id) references users (user_id)
 );
 
+CREATE TABLE `users_roles`
+(
+    `users_roles_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_id`        int(11) NOT NULL,
+    `role_id`        int(11) NOT NULL,
+    CONSTRAINT `users_roles_roles_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`),
+    CONSTRAINT `users_roles_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+);
 
 create index tag_id
     on posts_tags (tag_id);
@@ -133,7 +160,7 @@ BEGIN
     IF NEW.like_dislike = 'LIKE' THEN
         -- It's a like
         UPDATE posts
-        SET likes    = post_like + 1
+        SET likes = post_like + 1
         WHERE post_id = NEW.post_id;
     ELSE
         -- It's a dislike
