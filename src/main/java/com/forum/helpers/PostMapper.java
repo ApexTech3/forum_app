@@ -28,6 +28,7 @@ public class PostMapper {
         post.setDislikes(repositoryPost.getDislikes());
         post.setArchived(repositoryPost.isArchived());
         post.setReplies(repositoryPost.getReplies());
+        post.setTags(repositoryPost.getTags());
         return post;
     }
     public Post fromRequestDto(PostRequestDto postRequestDto, User creator) {
@@ -44,7 +45,7 @@ public class PostMapper {
         List<PostResponseDto> dtos = new ArrayList<>();
         for (Post post : list) {
             PostResponseDto newDto = new PostResponseDto(post.getTitle(), post.getLikes(), post.getDislikes(),
-                    post.getContent(), post.getCreatedBy().getUsername(), post.getReplies());
+                    post.getContent(), post.getCreatedBy().getUsername(), post.getReplies(), post.getTags());
             dtos.add(newDto);
         }
         return dtos;

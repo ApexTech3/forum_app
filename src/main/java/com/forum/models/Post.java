@@ -28,11 +28,18 @@ public class Post {
     @OneToMany(mappedBy = "parentPost", fetch = FetchType.EAGER)
     private Set<Comment> replies;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "posts_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags;
+
     public Post() {
     }
 
     public Post(int id, String title, int likes, int dislikes, String content,
-                User createdBy, boolean isArchived, Set<Comment> replies) {
+                User createdBy, boolean isArchived, Set<Comment> replies, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.likes = likes;
@@ -41,6 +48,7 @@ public class Post {
         this.createdBy = createdBy;
         this.isArchived = isArchived;
         this.replies = replies;
+        this.tags = tags;
     }
 
     public int getId() {
@@ -108,11 +116,15 @@ public class Post {
         this.replies = replies;
     }
 
+    public Set<Tag> getTags() { return tags; }
+
+    public void setTags(Set<Tag> tags) { this.tags = tags; }
+
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
         return id == post.id;
     }

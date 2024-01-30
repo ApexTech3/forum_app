@@ -5,9 +5,11 @@ import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Post;
+import com.forum.models.Tag;
 import com.forum.models.User;
 import com.forum.models.filters.PostFilterOptions;
 import com.forum.repositories.contracts.PostRepository;
+import com.forum.repositories.contracts.TagRepository;
 import com.forum.services.contracts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,12 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository repository;
 
+    private final TagRepository tagRepository;
+
     @Autowired
-    public PostServiceImpl(PostRepository repository) {
+    public PostServiceImpl(PostRepository repository, TagRepository tagRepository) {
         this.repository = repository;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -95,6 +100,22 @@ public class PostServiceImpl implements PostService {
         if (repository.userDislikedPost(user.getId(), post_id)) {
             throw new AlreadyLikedDislikedException("The post was already disliked by this user.");
         } else repository.dislike(user.getId(), post_id);
+    }
+
+    public void associateTagWithPost(int postId, int tagId) {
+        Post post = repository.get(postId);
+        Tag tag = tagRepository.getById(tagId);
+
+        post.getTags().add(tag);
+        repository.update(post);
+    }
+
+    public void dissociateTagWithPost(int postId, int tagId) {
+        Post post = repository.get(postId);
+        Tag tag = tagRepository.getById(tagId);
+
+        if(!post.getTags().remove(tag)) throw new EntityNotFoundException("Post", "Tag", "Not Found") ;
+        repository.update(post);
     }
 
     @Override

@@ -210,6 +210,9 @@ public class PostRestController {
         }
     }
 
+
+    //Like/Dislike
+
     @PostMapping("/like/{post_id}")
     public HttpStatus likePost(@RequestHeader HttpHeaders headers, @PathVariable int post_id) {
         try {
@@ -235,4 +238,33 @@ public class PostRestController {
         }
         return HttpStatus.OK;
     }
+
+    //TagHandling
+
+    @PostMapping("/{postId}/tags/{tagId}")
+    public HttpStatus addTagToPost(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int tagId){
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            service.associateTagWithPost(postId, tagId);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (AlreadyLikedDislikedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        return HttpStatus.OK;
+    }
+
+    @DeleteMapping("/{postId}/tags/{tagId}")
+    public HttpStatus removeTagFromPost(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int tagId){
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            service.dissociateTagWithPost(postId, tagId);
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (AlreadyLikedDislikedException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        return HttpStatus.OK;
+    }
+
 }

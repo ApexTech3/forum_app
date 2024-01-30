@@ -1,8 +1,7 @@
 package com.forum.models.dtos;
 
 import com.forum.models.Comment;
-import com.forum.models.User;
-import jakarta.persistence.Column;
+import com.forum.models.Tag;
 
 import java.util.Set;
 
@@ -14,16 +13,17 @@ public class PostResponseDto {
     private String content;
     private String createdBy;
     private Set<Comment> replies;
-
+    private Set<Tag> tags;
 
     public PostResponseDto(String title, int likes, int dislikes, String content,
-                           String createdBy, Set<Comment> replies) {
+                           String createdBy, Set<Comment> replies, Set<Tag> tags) {
         this.title = title;
         this.likes = likes;
         this.dislikes = dislikes;
         this.content = content;
         this.createdBy = createdBy;
         this.replies = replies;
+        this.tags= tags;
     }
 
     public String getTitle() {
@@ -72,5 +72,13 @@ public class PostResponseDto {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 }

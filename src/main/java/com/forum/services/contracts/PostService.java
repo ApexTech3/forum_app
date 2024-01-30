@@ -1,6 +1,7 @@
 package com.forum.services.contracts;
 
 import com.forum.models.Post;
+import com.forum.models.Tag;
 import com.forum.models.User;
 import com.forum.models.filters.PostFilterOptions;
 
@@ -19,6 +20,9 @@ public interface PostService {
     void archive(int id, User user);
     void like(User user, int post_id);
     void dislike(User user, int post_id);
+    void associateTagWithPost(int postId, int tagId);
+    public void dissociateTagWithPost(int postId, int tagId);
+
     List<Post> filter();
 
 }
