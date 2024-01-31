@@ -64,6 +64,11 @@ public class UserRestController {
         }
     }
 
+    @GetMapping("/count")
+    public long get() {
+        return service.getCount();
+    }
+
     @PutMapping("/{id}")
     public UserResponse updateInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserUpdateDto userUpdateDto,
                                    @PathVariable int id) {

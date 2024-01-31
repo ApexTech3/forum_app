@@ -9,6 +9,8 @@ public interface UserService {
 
     User get(int id);
 
+    long getCount();
+
     User get(String username);
 
     List<User> get(UserFilterOptions filterOptions, User user);
