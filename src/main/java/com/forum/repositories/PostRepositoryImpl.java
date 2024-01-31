@@ -51,6 +51,13 @@ public class PostRepositoryImpl implements PostRepository {
             return query.list();
         }
     }
+    @Override
+    public long getCount() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Long> query = session.createQuery("select count(*)from Post where isArchived = false", Long.class);
+            return query.uniqueResult();
+        }
+    }
 
     private String sortOrder(PostFilterOptions filterOptions) {
         if (filterOptions.getSortBy().isEmpty())

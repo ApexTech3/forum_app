@@ -74,6 +74,10 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+    @GetMapping("/count")
+    public long get() {
+        return service.getCount();
+    }
 
     @GetMapping("/byId/{id}")
     public PostResponseDto getPostById(@PathVariable int id,

@@ -10,6 +10,9 @@ import java.util.List;
 public interface PostService {
 
     List<Post> getAll();
+
+    long getCount();
+
     List<Post> get(PostFilterOptions filterOptions);
     Post getById(int id);
     List<Post> getByTitle(String title);

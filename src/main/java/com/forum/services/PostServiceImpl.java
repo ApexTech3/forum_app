@@ -36,6 +36,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public long getCount() {
+        return repository.getCount();
+    }
+
+    @Override
     public List<Post> get(PostFilterOptions filterOptions) {
         return repository.get(filterOptions);
     }
@@ -115,7 +120,7 @@ public class PostServiceImpl implements PostService {
         Post post = repository.get(postId);
         Tag tag = tagRepository.getById(tagId);
 
-        if(!post.getTags().remove(tag)) throw new EntityNotFoundException("Post", "Tag", "Not Found") ;
+        if (!post.getTags().remove(tag)) throw new EntityNotFoundException("Post", "Tag", "Not Found");
         repository.update(post);
     }
 
