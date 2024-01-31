@@ -34,6 +34,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public long getCount() {
+        return repository.getCount();
+    }
+
+    @Override
     public User get(String username) {
         return repository.get(username);
     }

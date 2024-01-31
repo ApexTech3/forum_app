@@ -33,6 +33,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public long getCount() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Long> query = session.createQuery("select count(*)from User where isDeleted = false", Long.class);
+            return query.uniqueResult();
+        }
+    }
+
+    @Override
     public User get(String username) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User where username = :username and isDeleted = false", User.class);
