@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -75,7 +76,8 @@ public class PostRestController {
     }
 
     @GetMapping("/byId/{id}")
-    public PostResponseDto getPostById(@PathVariable int id, @RequestHeader HttpHeaders headers) {
+    public PostResponseDto getPostById(@PathVariable int id,
+                                       @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             List<Post> postListOfOne = new ArrayList<>();
@@ -89,7 +91,8 @@ public class PostRestController {
     }
 
     @GetMapping("/byUserId/{userId}")
-    public List<PostResponseDto> getPostByUserId(@RequestHeader HttpHeaders headers, @PathVariable int userId) {
+    public List<PostResponseDto> getPostByUserId(@RequestHeader HttpHeaders headers,
+                                                 @PathVariable int userId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             return mapper.fromPostListToResponseDto(service.getByUserId(userId));
@@ -101,7 +104,8 @@ public class PostRestController {
     }
 
     @GetMapping("/byTitle/{sentence}")
-    public List<PostResponseDto> getByWordInTitle(@RequestHeader HttpHeaders headers, @PathVariable String sentence) {
+    public List<PostResponseDto> getByWordInTitle(@RequestHeader HttpHeaders headers,
+                                                  @PathVariable String sentence) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             return mapper.fromPostListToResponseDto(service.getByTitle(sentence));
@@ -113,7 +117,8 @@ public class PostRestController {
     }
 
     @GetMapping("/byContent/{sentence}")
-    public List<PostResponseDto> getByWordInTitle(@PathVariable String sentence, @RequestHeader HttpHeaders headers) {
+    public List<PostResponseDto> getByWordInTitle(@PathVariable String sentence,
+                                                  @RequestHeader HttpHeaders headers) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             return mapper.fromPostListToResponseDto(service.getByContent(sentence));
@@ -125,7 +130,8 @@ public class PostRestController {
     }
 
     @PostMapping
-    public Post createPost(@RequestHeader HttpHeaders header, @Valid @RequestBody PostRequestDto requestDto) {
+    public Post createPost(@RequestHeader HttpHeaders header,
+                           @Valid @RequestBody PostRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(header);
             Post post = mapper.fromRequestDto(requestDto, user);
@@ -139,7 +145,9 @@ public class PostRestController {
     }
 
     @PutMapping("/update/{id}")
-    public Post updatePost(@RequestHeader HttpHeaders headers, @PathVariable int id, @Valid @RequestBody PostRequestDto requestDto) {
+    public Post updatePost(@RequestHeader HttpHeaders headers,
+                           @PathVariable int id, @Valid
+                                                        @RequestBody PostRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = mapper.fromRequestDto(id, requestDto, user);
@@ -167,11 +175,13 @@ public class PostRestController {
     @GetMapping("/{postId}/comments")
     public List<CommentResponseDto> getAllPostComments(@PathVariable int postId) {
         return service.getById(postId).getReplies().stream()
-                .map(comment -> new CommentResponseDto(comment)).toList();
+                .map(CommentResponseDto::new).toList();
     }
 
     @PostMapping("/{postId}/comments")
-    public CommentResponseDto createComment(@RequestHeader HttpHeaders header, @PathVariable int postId, @RequestBody CommentRequestDto requestDto) {
+    public CommentResponseDto createComment(@RequestHeader HttpHeaders header,
+                                            @PathVariable int postId,
+                                            @RequestBody CommentRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(header);
             Comment comment = commentMapper.fromRequestDto(requestDto, user, service.getById(postId));
@@ -182,11 +192,13 @@ public class PostRestController {
         }
     }
 
-    @PutMapping("{postId}/comments/{commentId}") //todo is postId needed?
-    public CommentResponseDto editComment(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int commentId, @RequestBody CommentRequestDto requestDto) {
+    @PutMapping("/comments/{commentId}") //todo is postId needed?
+    public CommentResponseDto editComment(@RequestHeader HttpHeaders headers,
+                                          @PathVariable int commentId,
+                                          @RequestBody CommentRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            Comment comment = commentMapper.fromRequestDto(commentId, requestDto, user, service.getById(postId));
+            Comment comment = commentService.get(commentId);
             comment.setContent(requestDto.getContent());
             commentService.update(comment, user);
             return new CommentResponseDto(comment);

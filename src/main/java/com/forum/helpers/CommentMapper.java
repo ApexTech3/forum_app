@@ -25,5 +25,12 @@ public class CommentMapper {
         comment.setPostId(parentPost);
         return comment;
     }
+
+    public Comment fromRequestDto(int commentId, CommentRequestDto commentRequestDto) {
+        Comment comment = new Comment();
+        comment.setCommentId(commentId);
+        comment.setContent(commentRequestDto.getContent());
+        return comment;
+    }
 }
 
