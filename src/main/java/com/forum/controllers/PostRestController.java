@@ -48,17 +48,21 @@ public class PostRestController {
         this.mapper = mapper;
         this.commentMapper = commentMapper;
     }
-
-
-    //Post
-//    @GetMapping
-//    public List<PostResponseDto> getAllPosts() {
-//        return mapper.fromPostListToResponseDto(service.getAll());
-//    }
+//no registration
+    @GetMapping("/count")
+    public long get() {
+        return service.getCount();
+    }
     @GetMapping("/mostCommented")
     public List<PostResponseDto> getMostCommented() {
         return mapper.fromPostListToResponseDto(service.getMostCommented());
     }
+    @GetMapping("/mostLiked")
+    public List<PostResponseDto> getMostLiked() {
+        return mapper.fromPostListToResponseDto(service.getMostLiked());
+    }
+
+
     @GetMapping
     public List<PostResponseDto> get(
             @RequestParam(required = false) Integer id,
@@ -77,10 +81,7 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-    @GetMapping("/count")
-    public long get() {
-        return service.getCount();
-    }
+
 
     @GetMapping("/byId/{id}")
     public PostResponseDto getPostById(@PathVariable int id,

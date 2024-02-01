@@ -46,6 +46,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> getMostLiked() {
+        return repository.getMostLiked();
+    }
+
+    @Override
     public List<Post> get(PostFilterOptions filterOptions) {
         return repository.get(filterOptions);
     }

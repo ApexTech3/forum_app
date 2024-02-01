@@ -13,6 +13,7 @@ public interface PostRepository {
     List<Post> get(PostFilterOptions filterOptions);
     long getCount();
     List<Post> getMostCommented();
+    List<Post> getMostLiked();
     Post get(int id);
     Post get(String title);
     List<Post> getByUserId(int userId);

@@ -68,7 +68,19 @@ public class PostRepositoryImpl implements PostRepository {
                             "LEFT JOIN c.parentPost p " +
                             "ON c.parentPost.id = p.id " +
                             "GROUP BY p.id " +
-                            "ORDER BY COUNT(c.parentPost) DESC", Post.class);
+                            "ORDER BY COUNT(c.parentPost) DESC ", Post.class).setMaxResults(10);
+            return query.list();
+        }
+    }
+
+    @Override
+    public List<Post> getMostLiked() {
+        try (Session session = sessionFactory.openSession()){
+            Query<Post> query = session.createQuery(
+                    "SELECT p " +
+                            "FROM Post p " +
+                            "ORDER BY p.likes DESC", Post.class)
+                    .setMaxResults(10);
             return query.list();
         }
     }
