@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -36,14 +37,14 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
-    @Column(name = "stamp_created")
-    private LocalDate stampCreated;
+    @Column(name = "stamp_created", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime stampCreated;
 
     public Post() {
     }
 
     public Post(int id, String title, int likes, int dislikes, String content,
-                User createdBy, boolean isArchived, Set<Comment> replies, Set<Tag> tags, LocalDate localDate) {
+                User createdBy, boolean isArchived, Set<Comment> replies, Set<Tag> tags, LocalDateTime localDate) {
         this.id = id;
         this.title = title;
         this.likes = likes;
@@ -125,11 +126,11 @@ public class Post {
 
     public void setTags(Set<Tag> tags) { this.tags = tags; }
 
-    public LocalDate getStampCreated() {
+    public LocalDateTime getStampCreated() {
         return stampCreated;
     }
 
-    public void setStampCreated(LocalDate stampCreated) {
+    public void setStampCreated(LocalDateTime stampCreated) {
         this.stampCreated = stampCreated;
     }
 

@@ -51,6 +51,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> getRecentlyCreated() {
+        return repository.getRecentlyCreated();
+    }
+
+    @Override
     public List<Post> get(PostFilterOptions filterOptions) {
         return repository.get(filterOptions);
     }

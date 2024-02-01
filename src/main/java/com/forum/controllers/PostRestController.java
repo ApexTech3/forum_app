@@ -62,6 +62,11 @@ public class PostRestController {
         return mapper.fromPostListToResponseDto(service.getMostLiked());
     }
 
+    @GetMapping("/new")
+    public List<PostResponseDto> getRecentlyCreated() {
+        return mapper.fromPostListToResponseDto(service.getRecentlyCreated());
+    }
+
 
     @GetMapping
     public List<PostResponseDto> get(

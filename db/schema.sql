@@ -27,6 +27,7 @@ create table `posts`
     `dislikes`   int(11)    default 0 not null,
     `created_by` int(11)              not null,
     `archived`   tinyint(1) default 0 not null,
+    stamp_created datetime default current_timestamp,
     constraint posts_users_user_id_fk_2
         foreign key (created_by) references users (user_id)
 );

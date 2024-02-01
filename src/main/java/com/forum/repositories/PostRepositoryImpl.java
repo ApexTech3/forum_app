@@ -85,6 +85,18 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
+    @Override
+    public List<Post> getRecentlyCreated() {
+        try (Session session = sessionFactory.openSession()){
+            Query<Post> query = session.createQuery(
+                            "SELECT p " +
+                                    "FROM Post p " +
+                                    "ORDER BY p.stampCreated DESC", Post.class)
+                    .setMaxResults(10);
+            return query.list();
+        }
+    }
+
     private String sortOrder(PostFilterOptions filterOptions) {
         if (filterOptions.getSortBy().isEmpty())
             return "";
