@@ -3,6 +3,7 @@ package com.forum.models.dtos;
 import com.forum.models.Comment;
 import com.forum.models.Tag;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 public class PostResponseDto {
@@ -14,9 +15,11 @@ public class PostResponseDto {
     private String createdBy;
     private Set<Comment> replies;
     private Set<Tag> tags;
+    private LocalDate stampCreated;
+
 
     public PostResponseDto(String title, int likes, int dislikes, String content,
-                           String createdBy, Set<Comment> replies, Set<Tag> tags) {
+                           String createdBy, Set<Comment> replies, Set<Tag> tags, LocalDate stampCreated) {
         this.title = title;
         this.likes = likes;
         this.dislikes = dislikes;
@@ -24,6 +27,7 @@ public class PostResponseDto {
         this.createdBy = createdBy;
         this.replies = replies;
         this.tags= tags;
+        this.stampCreated = stampCreated;
     }
 
     public String getTitle() {
@@ -80,5 +84,13 @@ public class PostResponseDto {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public LocalDate getStampCreated() {
+        return stampCreated;
+    }
+
+    public void setStampCreated(LocalDate stampCreated) {
+        this.stampCreated = stampCreated;
     }
 }
