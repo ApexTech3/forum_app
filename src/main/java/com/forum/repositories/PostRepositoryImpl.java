@@ -59,6 +59,20 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
+    @Override
+    public List<Post> getMostCommented() {
+        try (Session session = sessionFactory.openSession()){
+            Query<Post> query = session.createQuery(
+                    "SELECT p " +
+                            "FROM Comment c " +
+                            "LEFT JOIN c.parentPost p " +
+                            "ON c.parentPost.id = p.id " +
+                            "GROUP BY p.id " +
+                            "ORDER BY COUNT(c.parentPost) DESC", Post.class);
+            return query.list();
+        }
+    }
+
     private String sortOrder(PostFilterOptions filterOptions) {
         if (filterOptions.getSortBy().isEmpty())
             return "";

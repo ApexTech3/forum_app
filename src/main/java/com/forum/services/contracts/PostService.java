@@ -12,7 +12,7 @@ public interface PostService {
     List<Post> getAll();
 
     long getCount();
-
+    public List<Post> getMostCommented();
     List<Post> get(PostFilterOptions filterOptions);
     Post getById(int id);
     List<Post> getByTitle(String title);

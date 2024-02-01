@@ -11,9 +11,8 @@ public interface PostRepository {
 
     List<Post> getAll();
     List<Post> get(PostFilterOptions filterOptions);
-
     long getCount();
-
+    List<Post> getMostCommented();
     Post get(int id);
     Post get(String title);
     List<Post> getByUserId(int userId);

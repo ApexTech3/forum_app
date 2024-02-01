@@ -55,7 +55,10 @@ public class PostRestController {
 //    public List<PostResponseDto> getAllPosts() {
 //        return mapper.fromPostListToResponseDto(service.getAll());
 //    }
-
+    @GetMapping("/mostCommented")
+    public List<PostResponseDto> getMostCommented() {
+        return mapper.fromPostListToResponseDto(service.getMostCommented());
+    }
     @GetMapping
     public List<PostResponseDto> get(
             @RequestParam(required = false) Integer id,
