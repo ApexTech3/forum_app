@@ -1,10 +1,9 @@
 package com.forum.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,14 +36,15 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
-    @Column(name = "stamp_created", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime stampCreated;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "stamp_created")
+    private Timestamp stampCreated;
 
     public Post() {
     }
 
     public Post(int id, String title, int likes, int dislikes, String content,
-                User createdBy, boolean isArchived, Set<Comment> replies, Set<Tag> tags, LocalDateTime localDate) {
+                User createdBy, boolean isArchived, Set<Comment> replies, Set<Tag> tags, Timestamp localDate) {
         this.id = id;
         this.title = title;
         this.likes = likes;
@@ -126,11 +126,11 @@ public class Post {
 
     public void setTags(Set<Tag> tags) { this.tags = tags; }
 
-    public LocalDateTime getStampCreated() {
+    public Timestamp getStampCreated() {
         return stampCreated;
     }
 
-    public void setStampCreated(LocalDateTime stampCreated) {
+    public void setStampCreated(Timestamp stampCreated) {
         this.stampCreated = stampCreated;
     }
 
