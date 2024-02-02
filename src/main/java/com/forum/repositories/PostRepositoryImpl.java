@@ -51,6 +51,7 @@ public class PostRepositoryImpl implements PostRepository {
             return query.list();
         }
     }
+
     @Override
     public long getCount() {
         try (Session session = sessionFactory.openSession()) {
@@ -61,7 +62,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getMostCommented() {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery(
                     "SELECT p " +
                             "FROM Comment c " +
@@ -75,11 +76,11 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getMostLiked() {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery(
-                    "SELECT p " +
-                            "FROM Post p " +
-                            "ORDER BY p.likes DESC", Post.class)
+                            "SELECT p " +
+                                    "FROM Post p " +
+                                    "ORDER BY p.likes DESC", Post.class)
                     .setMaxResults(10);
             return query.list();
         }
@@ -87,7 +88,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getRecentlyCreated() {
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery(
                             "SELECT p " +
                                     "FROM Post p " +
@@ -196,7 +197,7 @@ public class PostRepositoryImpl implements PostRepository {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             Query<Post> query = session.createQuery("update Post set isArchived = true" +
-                    " where id = :id");
+                    " where id = :id", Post.class);
             query.setParameter("id", id);
             query.executeUpdate();
             transaction.commit();
@@ -204,64 +205,19 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public void like(int user_id, int post_id) {
+    public Post likeDislike(int userId, int postId, String likeDislike) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            String sql = "INSERT INTO likes_dislikes (post_id, user_id, like_dislike)\n" +
-                    " VALUES (:post_id, :user_id, 'LIKE');";
-            Query nativeQuery = session.createNativeQuery(sql);
-            nativeQuery.setParameter("post_id", post_id);
-            nativeQuery.setParameter("user_id", user_id);
+            String sql = "INSERT INTO  likes_dislikes (post_id, user_id, like_dislike) VALUES " +
+                    "(:postId, :userId, :likeDislike) on duplicate key update like_dislike = :likeDislike";
+            Query<?> nativeQuery = session.createNativeQuery(sql, Integer.class);
+            nativeQuery.setParameter("postId", postId);
+            nativeQuery.setParameter("userId", userId);
+            nativeQuery.setParameter("likeDislike", likeDislike);
+            nativeQuery.setParameter("likeDislike", likeDislike);
             nativeQuery.executeUpdate();
             transaction.commit();
-        }
-    }
-
-    @Override
-    public void dislike(int user_id, int post_id) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            String sql = "INSERT INTO likes_dislikes (post_id, user_id, like_dislike)\n" +
-                    " VALUES (:post_id, :user_id, 'DISLIKE');";
-            Query nativeQuery = session.createNativeQuery(sql);
-            nativeQuery.setParameter("post_id", post_id);
-            nativeQuery.setParameter("user_id", user_id);
-            nativeQuery.executeUpdate();
-            transaction.commit();
-        }
-    }
-
-    @Override
-    public boolean userLikedPost(int user_id, int post_id) {
-        try (Session session = sessionFactory.openSession()) {
-            String sql = "SELECT like_dislike from likes_dislikes WHERE post_id = :post_id and user_id = :user_id and like_dislike = :str";
-            Query nativeQuery = session.createNativeQuery(sql);
-            nativeQuery.setParameter("user_id", user_id);
-            nativeQuery.setParameter("post_id", post_id);
-            nativeQuery.setParameter("str", "LIKE");
-            List<String> result = nativeQuery.getResultList();
-            if (result.isEmpty()) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-    }
-
-    @Override
-    public boolean userDislikedPost(int user_id, int post_id) {
-        try (Session session = sessionFactory.openSession()) {
-            String sql = "SELECT like_dislike from likes_dislikes WHERE post_id = :post_id and user_id = :user_id and like_dislike = :str";
-            Query nativeQuery = session.createNativeQuery(sql);
-            nativeQuery.setParameter("user_id", user_id);
-            nativeQuery.setParameter("post_id", post_id);
-            nativeQuery.setParameter("str", "DISLIKE");
-            List<String> result = nativeQuery.getResultList();
-            if (result.isEmpty()) {
-                return false;
-            } else {
-                return true;
-            }
+            return get(postId);
         }
     }
 

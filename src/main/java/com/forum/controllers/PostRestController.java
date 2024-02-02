@@ -22,7 +22,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -48,15 +47,18 @@ public class PostRestController {
         this.mapper = mapper;
         this.commentMapper = commentMapper;
     }
-//no registration
+
+    //no registration
     @GetMapping("/count")
     public long get() {
         return service.getCount();
     }
+
     @GetMapping("/mostCommented")
     public List<PostResponseDto> getMostCommented() {
         return mapper.fromPostListToResponseDto(service.getMostCommented());
     }
+
     @GetMapping("/mostLiked")
     public List<PostResponseDto> getMostLiked() {
         return mapper.fromPostListToResponseDto(service.getMostLiked());
@@ -160,7 +162,7 @@ public class PostRestController {
     @PutMapping("/update/{id}")
     public Post updatePost(@RequestHeader HttpHeaders headers,
                            @PathVariable int id, @Valid
-                                                        @RequestBody PostRequestDto requestDto) {
+                           @RequestBody PostRequestDto requestDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Post post = mapper.fromRequestDto(id, requestDto, user);
@@ -238,36 +240,30 @@ public class PostRestController {
 
     //Like/Dislike
 
-    @PostMapping("/like/{post_id}")
-    public HttpStatus likePost(@RequestHeader HttpHeaders headers, @PathVariable int post_id) {
+    @PostMapping("/like/{postId}")
+    public PostResponseDto likePost(@RequestHeader HttpHeaders headers, @PathVariable int postId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            service.like(user, post_id);
+            return mapper.toPostResponseDto(service.like(user, postId));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AlreadyLikedDislikedException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-        return HttpStatus.OK;
     }
 
-    @PostMapping("/dislike/{post_id}")
-    public HttpStatus dislikePost(@RequestHeader HttpHeaders headers, @PathVariable int post_id) {
+    @PostMapping("/dislike/{postId}")
+    public PostResponseDto dislikePost(@RequestHeader HttpHeaders headers, @PathVariable int postId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            service.dislike(user, post_id);
+            return mapper.toPostResponseDto(service.dislike(user, postId));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AlreadyLikedDislikedException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-        return HttpStatus.OK;
     }
 
     //TagHandling
 
     @PostMapping("/{postId}/tags/{tagId}")
-    public HttpStatus addTagToPost(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int tagId){
+    public HttpStatus addTagToPost(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int tagId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             service.associateTagWithPost(postId, tagId);
@@ -280,7 +276,7 @@ public class PostRestController {
     }
 
     @DeleteMapping("/{postId}/tags/{tagId}")
-    public HttpStatus removeTagFromPost(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int tagId){
+    public HttpStatus removeTagFromPost(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int tagId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             service.dissociateTagWithPost(postId, tagId);
