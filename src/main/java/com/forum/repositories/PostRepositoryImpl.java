@@ -214,7 +214,6 @@ public class PostRepositoryImpl implements PostRepository {
             nativeQuery.setParameter("postId", postId);
             nativeQuery.setParameter("userId", userId);
             nativeQuery.setParameter("likeDislike", likeDislike);
-            nativeQuery.setParameter("likeDislike", likeDislike);
             nativeQuery.executeUpdate();
             transaction.commit();
             return get(postId);
