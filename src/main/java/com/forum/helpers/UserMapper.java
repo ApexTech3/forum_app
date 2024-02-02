@@ -37,6 +37,7 @@ public class UserMapper {
     public User fromDto(UserAdminDto userAdminDto, int id) {
         User user = extractBaseInfo(userAdminDto, id);
         user.setPhone(userAdminDto.getPhone());
+        user.setRoles(userAdminDto.getRoles());
         user.setBlocked(userAdminDto.isBlocked());
         return user;
     }
