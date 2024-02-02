@@ -161,12 +161,14 @@ BEGIN
     IF NEW.like_dislike = 'LIKE' THEN
         -- It's a like
         UPDATE posts
-        SET likes = post_like + 1
+        SET likes    = post_like + 1,
+            dislikes = post_dislike - 1
         WHERE post_id = NEW.post_id;
     ELSE
         -- It's a dislike
         UPDATE posts
-        SET dislikes = post_dislike + 1
+        SET dislikes = post_dislike + 1,
+            likes    = post_like - 1
         WHERE post_id = NEW.post_id;
     END IF;
 END;
