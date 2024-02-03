@@ -271,7 +271,7 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (AlreadyLikedDislikedException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        }//todo AlreadyLikedDislikedException why does it throw this? EntityNotFoundException not handled for either post or tag
         return HttpStatus.OK;
     }
 

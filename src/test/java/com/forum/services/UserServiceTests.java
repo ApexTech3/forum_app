@@ -3,7 +3,6 @@ package com.forum.services;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
-import com.forum.models.Role;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.repositories.contracts.UserRepository;
@@ -68,7 +67,7 @@ public class UserServiceTests {
 
     @Test
     public void get_Should_ReturnListOfUsers_When_Exists() {
-        UserFilterOptions mockFilterOptions = createMockFilterOptions();
+        UserFilterOptions mockFilterOptions = createMockUserFilterOptions();
         User mockAdmin = createMockAdmin();
         service.get(mockFilterOptions, mockAdmin);
 
@@ -77,7 +76,7 @@ public class UserServiceTests {
 
     @Test
     public void get_Should_Throw_When_UserNotAuthorized() {
-        UserFilterOptions mockFilterOptions = createMockFilterOptions();
+        UserFilterOptions mockFilterOptions = createMockUserFilterOptions();
         User mockUser = createMockUser();
 
         Assertions.assertThrows(AuthorizationException.class, () -> service.get(mockFilterOptions, mockUser));
@@ -191,7 +190,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void delete_Should_Throw_When_UserIsNotAdminOrRequester() {
+    public void delete_Should_Throw_When_UserNotAdminOrRequester() {
         User mockUser = createMockUser();
 
         Assertions.assertThrows(AuthorizationException.class, () -> service.delete(mockUser, 2));
