@@ -12,8 +12,8 @@ import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -69,14 +69,13 @@ public class UserServiceImpl implements UserService {
         if (duplicateExists) {
             throw new EntityDuplicateException("User", "email", user.getEmail());
         }
-        user.setRoles(new HashSet<>());
-        user.getRoles().add(roleService.get("USER"));
+        user.setRoles(Set.of(roleService.get("USER")));
         return repository.register(user);
     }
 
     @Override
     public User update(User user, User requester) {
-        tryAuthorizeUser(requester, user.getUsername());
+        tryAuthorizeUser(user, requester);
         checkIfUniqueEmail(user);
         return repository.update(user);
     }
@@ -116,8 +115,8 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private User tryAuthorizeUser(User user, String username) {
-        if (!user.getUsername().equals(username)) {
+    private User tryAuthorizeUser(User user, User requester) {
+        if (!user.getUsername().equals(requester.getUsername())) {
             throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
         }
         return user;

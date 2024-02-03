@@ -4,6 +4,8 @@ import com.forum.models.Role;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
 
+import java.util.Set;
+
 public class Helpers {
 
     public static User createMockUser() {
@@ -14,6 +16,7 @@ public class Helpers {
         mockUser.setFirstName("MockFirstName");
         mockUser.setLastName("MockLastName");
         mockUser.setEmail("mock@user.com");
+        mockUser.setRoles(Set.of(new Role("USER")));
         return mockUser;
     }
 
@@ -25,7 +28,7 @@ public class Helpers {
         mockUser.setFirstName("MockFirstName");
         mockUser.setLastName("MockLastName");
         mockUser.setEmail("mock@user.com");
-        mockUser.addRole(new Role("ADMIN"));
+        mockUser.setRoles(Set.of(new Role("ADMIN"), new Role("USER")));
         return mockUser;
     }
 
