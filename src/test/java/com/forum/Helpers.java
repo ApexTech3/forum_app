@@ -1,10 +1,10 @@
 package com.forum;
 
-import com.forum.models.Role;
-import com.forum.models.Tag;
-import com.forum.models.User;
+import com.forum.models.*;
+import com.forum.models.filters.PostFilterOptions;
 import com.forum.models.filters.UserFilterOptions;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Helpers {
@@ -29,12 +29,37 @@ public class Helpers {
         mockUser.setFirstName("MockFirstName");
         mockUser.setLastName("MockLastName");
         mockUser.setEmail("mock@user.com");
-        mockUser.setRoles(Set.of(createMockAdminRole(), createMockUserRole()));
+        mockUser.setRoles(new HashSet<>(Set.of(createMockAdminRole(), createMockUserRole())));
         return mockUser;
     }
 
-    public static UserFilterOptions createMockFilterOptions() {
-        return new UserFilterOptions("username", "fake@email.com", "fakeUser", "sort", "order");
+    public static UserFilterOptions createMockUserFilterOptions() {
+        return new UserFilterOptions("username", "fake@email.com", "fakeUser", "mockSort", "mockOrder");
+    }
+
+    public static PostFilterOptions createMockPostFilterOptions() {
+        return new PostFilterOptions(1, "mockTitle", "mockContext", 1, "mockSort", "mockOrder");
+    }
+
+    public static Post createMockPost() {
+        Post post = new Post();
+        post.setId(1);
+        post.setTitle("MockTitle");
+        post.setContent("MockContent");
+        post.setLikes(1);
+        post.setDislikes(1);
+        post.setCreatedBy(createMockUser());
+        post.setTags(new HashSet<>(Set.of(createMockTag())));
+        post.setReplies(new HashSet<>(Set.of(createMockComment())));
+        return post;
+    }
+
+    public static Comment createMockComment() {
+        Comment comment = new Comment();
+        comment.setCommentId(1);
+        comment.setContent("MockContent");
+        comment.setCreatedBy(createMockUser());
+        return comment;
     }
 
     public static Tag createMockTag() {
