@@ -1,6 +1,7 @@
 package com.forum;
 
 import com.forum.models.Role;
+import com.forum.models.Tag;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
 
@@ -16,7 +17,7 @@ public class Helpers {
         mockUser.setFirstName("MockFirstName");
         mockUser.setLastName("MockLastName");
         mockUser.setEmail("mock@user.com");
-        mockUser.setRoles(Set.of(new Role("USER")));
+        mockUser.setRoles(Set.of(createMockUserRole()));
         return mockUser;
     }
 
@@ -28,11 +29,26 @@ public class Helpers {
         mockUser.setFirstName("MockFirstName");
         mockUser.setLastName("MockLastName");
         mockUser.setEmail("mock@user.com");
-        mockUser.setRoles(Set.of(new Role("ADMIN"), new Role("USER")));
+        mockUser.setRoles(Set.of(createMockAdminRole(), createMockUserRole()));
         return mockUser;
     }
 
     public static UserFilterOptions createMockFilterOptions() {
         return new UserFilterOptions("username", "fake@email.com", "fakeUser", "sort", "order");
+    }
+
+    public static Tag createMockTag() {
+        Tag tag = new Tag();
+        tag.setTagId(1);
+        tag.setName("MockTag");
+        return tag;
+    }
+
+    public static Role createMockAdminRole() {
+        return new Role("ADMIN");
+    }
+
+    public static Role createMockUserRole() {
+        return new Role("USER");
     }
 }
