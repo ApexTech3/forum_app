@@ -1,4 +1,4 @@
-package com.forum.controllers;
+package com.forum.controllers.rest;
 
 import com.forum.exceptions.AlreadyLikedDislikedException;
 import com.forum.exceptions.AuthorizationException;

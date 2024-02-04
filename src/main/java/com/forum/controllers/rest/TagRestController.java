@@ -1,4 +1,4 @@
-package com.forum.controllers;
+package com.forum.controllers.rest;
 
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityNotFoundException;
