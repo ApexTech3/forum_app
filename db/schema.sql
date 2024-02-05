@@ -29,6 +29,7 @@ create table `posts`
     `archived`   tinyint(1) default 0 not null,
     stamp_created timestamp default current_timestamp,
     constraint posts_users_user_id_fk_2
+
         foreign key (created_by) references users (user_id)
 );
 
