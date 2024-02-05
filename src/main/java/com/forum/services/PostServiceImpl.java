@@ -133,10 +133,4 @@ public class PostServiceImpl implements PostService {
         if (!post.getTags().remove(tag)) throw new EntityNotFoundException("Post", "Tag", "Not Found");
         repository.update(post);
     }
-
-    @Override
-    public List<Post> filter() {
-        return null;
-        //TODO
-    }
 }

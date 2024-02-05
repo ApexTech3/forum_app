@@ -27,6 +27,5 @@ public interface PostService {
     void associateTagWithPost(int postId, int tagId);
     public void dissociateTagWithPost(int postId, int tagId);
 
-    List<Post> filter();
 
 }
