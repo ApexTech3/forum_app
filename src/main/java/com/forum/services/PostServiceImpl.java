@@ -65,8 +65,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getByTitle(String title) {
-        return repository.getByTitle(title);
+    public List<Post> getBySimilarTitle(String title) {
+        return repository.getBySimilarTitle(title);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post create(Post post) {
         try {
-            getByTitle(post.getTitle());
+            repository.getByTitle(post.getTitle());
             throw new EntityDuplicateException("Post", "title", post.getTitle());
         } catch (EntityNotFoundException e) {
             return repository.create(post);

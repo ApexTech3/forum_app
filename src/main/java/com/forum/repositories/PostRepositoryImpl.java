@@ -147,7 +147,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getByTitle(String sentence) {
+    public List<Post> getBySimilarTitle(String sentence) {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery("from Post where title LIKE concat('%',  :sentence, '%')", Post.class);
             query.setParameter("sentence", sentence);
@@ -156,6 +156,19 @@ public class PostRepositoryImpl implements PostRepository {
                 throw new EntityNotFoundException("Post", "title", sentence);//todo fix the message
             }
             return result;
+        }
+    }
+
+    @Override
+    public Post getByTitle(String title) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Post> query = session.createQuery("from Post where title = :title", Post.class);
+            query.setParameter("title", title);
+            List<Post> result = query.list();
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("Post", "title", title);//todo fix the message
+            }
+            return result.get(0);
         }
     }
 

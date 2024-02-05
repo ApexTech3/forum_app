@@ -16,7 +16,7 @@ public interface PostService {
     List<Post> getRecentlyCreated();
     List<Post> get(PostFilterOptions filterOptions);
     Post getById(int id);
-    List<Post> getByTitle(String title);
+    List<Post> getBySimilarTitle(String title);
     List<Post> getByContent(String content);
     List<Post> getByUserId(int userId);
     Post create(Post post);

@@ -83,9 +83,9 @@ public class PostServiceTests {
 
     @Test
     public void getByTitle_Should_CallRepository_When_MethodCalled() {
-        service.getByTitle("title");
+        service.getBySimilarTitle("title");
 
-        Mockito.verify(mockRepository, Mockito.times(1)).getByTitle("title");
+        Mockito.verify(mockRepository, Mockito.times(1)).getBySimilarTitle("title");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class PostServiceTests {
     public void create_Should_Throw_When_TitleNotUnique() {
         Post mockPost = createMockPost();
 
-        Mockito.when(mockRepository.getByTitle(mockPost.getTitle())).thenReturn(List.of(mockPost));
+        Mockito.when(mockRepository.getBySimilarTitle(mockPost.getTitle())).thenReturn(List.of(mockPost));
 
         Assertions.assertThrows(EntityDuplicateException.class, () -> service.create(mockPost));
     }
@@ -115,7 +115,7 @@ public class PostServiceTests {
     public void create_Should_CallRepository_When_TitleUnique() {
         Post mockPost = createMockPost();
 
-        Mockito.when(mockRepository.getByTitle(mockPost.getTitle())).thenThrow(EntityNotFoundException.class);
+        Mockito.when(mockRepository.getBySimilarTitle(mockPost.getTitle())).thenThrow(EntityNotFoundException.class);
 
         service.create(mockPost);
 

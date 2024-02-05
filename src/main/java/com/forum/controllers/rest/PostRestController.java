@@ -123,7 +123,7 @@ public class PostRestController {
                                                   @PathVariable String sentence) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            return mapper.fromPostListToResponseDto(service.getByTitle(sentence));
+            return mapper.fromPostListToResponseDto(service.getBySimilarTitle(sentence));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
