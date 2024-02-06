@@ -1,9 +1,11 @@
 package com.forum.services;
 
 import com.forum.exceptions.AuthorizationException;
+import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.Comment;
 import com.forum.models.User;
-import com.forum.repositories.CommentRepository;
+import com.forum.repositories.contracts.CommentRepository;
+import com.forum.services.contracts.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,16 +44,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void create(Comment comment) {
-        repository.create(comment);
-
-    }
+    public Comment create(Comment comment) {return repository.create(comment);}
 
     @Override
-    public void update(Comment comment, User user) {
+    public Comment update(Comment comment, User user) {
         checkModifyPermissions(comment.getCommentId(), user);
 
-        repository.update(comment);
+        return repository.update(comment);
+
     }
 
     @Override
@@ -63,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
 
     private void checkModifyPermissions(int id, User user) {
         Comment comment = repository.get(id);
-        if (!(user.isAdmin() || comment.getCreatedBy().equals(user))) {
+        if (!(AuthenticationHelper.isAdmin(user) || comment.getCreatedBy().equals(user))){
             throw new AuthorizationException(MODIFY_COMMENT_ERROR_MESSAGE);
         }
     }

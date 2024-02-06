@@ -1,4 +1,4 @@
-package com.forum.services;
+package com.forum.services.contracts;
 
 import com.forum.models.Tag;
 import com.forum.models.User;
@@ -13,7 +13,7 @@ public interface TagService {
 
     Tag getById(int id);
 
-    void create(Tag tag, User user);
+    Tag create(Tag tag);
 
     void delete(int id, User user);
 }

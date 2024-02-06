@@ -1,4 +1,4 @@
-package com.forum.repositories;
+package com.forum.repositories.contracts;
 
 import com.forum.models.Tag;
 
@@ -12,9 +12,9 @@ public interface TagRepository {
 
     Tag getById(int id);
 
-    void create(Tag tag);
+    Tag create(Tag tag);
 
-    void update(Tag tag);
+    Tag update(Tag tag);
 
     void delete(int id);
 }

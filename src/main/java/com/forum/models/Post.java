@@ -1,7 +1,10 @@
 package com.forum.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -13,8 +16,10 @@ public class Post {
     private int id;
     @Column(name = "title")
     private String title;
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
-    private Set<LikeDislike> likeDislikes;
+    @Column(name = "likes")
+    private int likes;
+    @Column(name = "dislikes")
+    private int dislikes;
     @Column(name = "content")
     private String content;
     @ManyToOne
@@ -22,18 +27,34 @@ public class Post {
     private User createdBy;
     @Column(name = "archived")
     private boolean isArchived;
-
     @OneToMany(mappedBy = "parentPost", fetch = FetchType.EAGER)
     private Set<Comment> replies;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "posts_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "stamp_created")
+    private Timestamp stampCreated;
 
     public Post() {
     }
 
-    public Post(String title, Set<LikeDislike> likeDislikes, String content, User createdBy) {
+    public Post(int id, String title, int likes, int dislikes, String content,
+                User createdBy, boolean isArchived, Set<Comment> replies, Set<Tag> tags, Timestamp localDate) {
+        this.id = id;
         this.title = title;
-        this.likeDislikes = likeDislikes;
+        this.likes = likes;
+        this.dislikes = dislikes;
         this.content = content;
         this.createdBy = createdBy;
+        this.isArchived = isArchived;
+        this.replies = replies;
+        this.tags = tags;
+        this.stampCreated = localDate;
     }
 
     public int getId() {
@@ -52,12 +73,21 @@ public class Post {
         this.title = title;
     }
 
-    public Set<LikeDislike> getLikeDislikes() {
-        return likeDislikes;
+
+    public int getLikes() {
+        return likes;
     }
 
-    public void setLikeDislikes(Set<LikeDislike> likeDislikes) {
-        this.likeDislikes = likeDislikes;
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 
     public String getContent() {
@@ -90,5 +120,30 @@ public class Post {
 
     public void setReplies(Set<Comment> replies) {
         this.replies = replies;
+    }
+
+    public Set<Tag> getTags() { return tags; }
+
+    public void setTags(Set<Tag> tags) { this.tags = tags; }
+
+    public Timestamp getStampCreated() {
+        return stampCreated;
+    }
+
+    public void setStampCreated(Timestamp stampCreated) {
+        this.stampCreated = stampCreated;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return id == post.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

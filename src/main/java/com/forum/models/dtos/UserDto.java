@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class UserDto {
+public class UserDto implements BaseUserDto {
     @NotNull(message = "Username can't be empty")
     private String username;
     @NotNull(message = "Password can't be empty")
@@ -18,16 +18,14 @@ public class UserDto {
     @Email
     @NotNull(message = "Email can't be empty")
     private String email;
-    private String phone;
     private String profilePicture;
 
-    public UserDto(String username, String password, String firstName, String lastName, String email, String phone, String profilePicture) {
+    public UserDto(String username, String password, String firstName, String lastName, String email, String profilePicture) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.phone = phone;
         this.profilePicture = profilePicture;
     }
 
@@ -39,6 +37,7 @@ public class UserDto {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -47,6 +46,7 @@ public class UserDto {
         this.password = password;
     }
 
+    @Override
     public String getFirstName() {
         return firstName;
     }
@@ -55,6 +55,7 @@ public class UserDto {
         this.firstName = firstName;
     }
 
+    @Override
     public String getLastName() {
         return lastName;
     }
@@ -63,6 +64,7 @@ public class UserDto {
         this.lastName = lastName;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
@@ -71,14 +73,7 @@ public class UserDto {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
+    @Override
     public String getProfilePicture() {
         return profilePicture;
     }

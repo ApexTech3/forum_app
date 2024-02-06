@@ -2,6 +2,7 @@ package com.forum.repositories;
 
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Comment;
+import com.forum.repositories.contracts.CommentRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -57,20 +58,23 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void create(Comment comment) {
+    public Comment create(Comment comment) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(comment);
             session.getTransaction().commit();
+            return comment;
         }
+
     }
 
     @Override
-    public void update(Comment comment) {
+    public Comment update(Comment comment) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(comment);
             session.getTransaction().commit();
+            return comment;
         }
     }
 
@@ -83,8 +87,6 @@ public class CommentRepositoryImpl implements CommentRepository {
             session.getTransaction().commit();
         }
     }
-
-
 
 
 }

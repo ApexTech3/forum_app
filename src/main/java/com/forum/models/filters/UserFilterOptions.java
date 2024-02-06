@@ -6,18 +6,18 @@ public class UserFilterOptions {
     private Optional<String> username;
     private Optional<String> email;
     private Optional<String> firstName;
+    private Optional<String> sortBy;
+    private Optional<String> sortOrder;
 
     public UserFilterOptions() {
     }
 
-    public UserFilterOptions(String username, String email) {
+    public UserFilterOptions(String username, String email, String firstName, String sortBy, String sortOrder) {
         this.username = Optional.ofNullable(username);
         this.email = Optional.ofNullable(email);
-    }
-
-    public UserFilterOptions(String username, String email, String firstName) {
-        this(username, email);
         this.firstName = Optional.ofNullable(firstName);
+        this.sortBy = Optional.ofNullable(sortBy);
+        this.sortOrder = Optional.ofNullable(sortOrder);
     }
 
     public Optional<String> getUsername() {
@@ -42,5 +42,21 @@ public class UserFilterOptions {
 
     public void setFirstName(Optional<String> firstName) {
         this.firstName = firstName;
+    }
+
+    public Optional<String> getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(Optional<String> sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public Optional<String> getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Optional<String> sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

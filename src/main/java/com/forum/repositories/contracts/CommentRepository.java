@@ -1,4 +1,4 @@
-package com.forum.repositories;
+package com.forum.repositories.contracts;
 
 import com.forum.models.Comment;
 
@@ -13,9 +13,9 @@ public interface CommentRepository {
 
     Comment get(int id);
 
-    void create(Comment comment);
+    Comment create(Comment comment);
 
-    void update(Comment comment);
+    Comment update(Comment comment);
 
     void delete(int id);
 }

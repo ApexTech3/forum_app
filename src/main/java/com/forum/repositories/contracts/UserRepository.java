@@ -1,0 +1,24 @@
+package com.forum.repositories.contracts;
+
+import com.forum.models.User;
+import com.forum.models.filters.UserFilterOptions;
+
+import java.util.List;
+
+public interface UserRepository {
+    User get(int id);
+
+    long getCount();
+
+    User get(String username);
+
+    User getByEmail(String email);
+
+    List<User> get(UserFilterOptions filterOptions);
+
+    User register(User user);
+
+    User update(User user);
+
+    User delete(int id);
+}

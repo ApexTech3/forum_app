@@ -3,9 +3,11 @@ package com.forum.services;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
+import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.Tag;
 import com.forum.models.User;
-import com.forum.repositories.TagRepository;
+import com.forum.repositories.contracts.TagRepository;
+import com.forum.services.contracts.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +43,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void create(Tag tag, User user) {
+    public Tag create(Tag tag) {
         boolean duplicateExists = true;
         try {
             repository.getByName(tag.getName());
@@ -53,7 +55,7 @@ public class TagServiceImpl implements TagService {
             throw new EntityDuplicateException("Tag", "name", tag.getName());
         }
 
-        repository.create(tag);
+        return repository.create(tag);
     }
 
 
@@ -65,7 +67,7 @@ public class TagServiceImpl implements TagService {
 
 
     private void checkModifyPermissions(User user) {
-        if (!(user.isAdmin())) {
+        if (!(AuthenticationHelper.isAdmin(user))) {
         throw new AuthorizationException(MODIFY_TAG_ERROR_MESSAGE);
         }
     }

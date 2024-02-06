@@ -3,7 +3,7 @@ package com.forum.helpers;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.User;
-import com.forum.services.UserService;
+import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -18,6 +18,10 @@ public class AuthenticationHelper {
     @Autowired
     public AuthenticationHelper(UserService userService) {
         this.userService = userService;
+    }
+
+    public static boolean isAdmin(User user) {
+        return user.getRoles().stream().anyMatch(r -> r.getRole().equals("ADMIN"));
     }
 
     public User tryGetUser(HttpHeaders headers) {
