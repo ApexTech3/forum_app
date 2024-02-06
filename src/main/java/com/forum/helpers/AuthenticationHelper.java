@@ -8,10 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import javax.naming.AuthenticationException;
+
 @Component
 public class AuthenticationHelper {
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication.";
+    private static final String INVALID_AUTHORIZATION_ERROR = "You are blocked.";
+
 
     private final UserService userService;
 
@@ -24,7 +28,7 @@ public class AuthenticationHelper {
         return user.getRoles().stream().anyMatch(r -> r.getRole().equals("ADMIN"));
     }
 
-    public User tryGetUser(HttpHeaders headers) {
+    public User tryGetUser(HttpHeaders headers) throws AuthenticationException {
         if (!headers.containsKey(AUTHORIZATION_HEADER_NAME)) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
         }
@@ -35,12 +39,14 @@ public class AuthenticationHelper {
             String password = getPassword(userInfo);
             User user = userService.get(username);
             if (!user.getPassword().equals(password)) {
-                throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+                throw new AuthenticationException(INVALID_AUTHENTICATION_ERROR);
             }
-
+            if (user.isBlocked()) {
+                throw new AuthorizationException(INVALID_AUTHORIZATION_ERROR);
+            }
             return user;
         } catch (EntityNotFoundException e) {
-            throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+            throw new AuthenticationException(INVALID_AUTHENTICATION_ERROR);
         }
     }
 

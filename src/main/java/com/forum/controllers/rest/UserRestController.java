@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,7 @@ public class UserRestController {
             User user = helper.tryGetUser(headers);
             UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName, sortBy, sortOrder);
             return service.get(filterOptions, user).stream().map(mapper::toDto).collect(Collectors.toList());
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -76,7 +77,7 @@ public class UserRestController {
             User requester = helper.tryGetUser(headers);
             User user = mapper.fromDto(userUpdateDto, id);
             return mapper.toDto(service.update(user, requester));
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -92,7 +93,7 @@ public class UserRestController {
             User requester = helper.tryGetUser(headers);
             User user = mapper.fromDto(userAdminDto, id);
             return mapper.toDto(service.updateAsAdmin(user, requester));
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -104,7 +105,7 @@ public class UserRestController {
         try {
             User user = helper.tryGetUser(headers);
             return service.delete(user, id);
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
