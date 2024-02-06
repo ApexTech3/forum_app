@@ -201,12 +201,12 @@ public class PostServiceTests {
 
     @Test
     public void associateTagWithPost_Should_Throw_When_PostNotExists() {
-//todo
+//todo #50
     }
 
     @Test
     public void associateTagWithPost_Should_Throw_When_TagNotExists() {
-//todo
+//todo #50
     }
 
     @Test
