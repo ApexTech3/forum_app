@@ -4,6 +4,7 @@ import com.forum.models.*;
 import com.forum.models.filters.PostFilterOptions;
 import com.forum.models.filters.UserFilterOptions;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class Helpers {
     }
 
     public static PostFilterOptions createMockPostFilterOptions() {
-        return new PostFilterOptions(1, "mockTitle", "mockContext", 1, "mockSort", "mockOrder");
+        return new PostFilterOptions(1, "mockTitle", "mockContext", 1, new ArrayList<>(createMockTag().getTagId()), "mockSort", "mockOrder");
     }
 
     public static Post createMockPost() {

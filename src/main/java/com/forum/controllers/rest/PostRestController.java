@@ -76,11 +76,12 @@ public class PostRestController {
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String content,
             @RequestParam(required = false) Integer creatorId,
+            @RequestParam(required = false) List<Integer> tags,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortOrder
     ) {
         try {
-            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creatorId, sortBy, sortOrder);
+            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creatorId, tags ,sortBy, sortOrder);
             return mapper.fromPostListToResponseDto(service.get(filterOptions));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());

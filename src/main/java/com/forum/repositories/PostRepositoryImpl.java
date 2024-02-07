@@ -34,17 +34,23 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> get(PostFilterOptions filterOptions) {
+
         try (Session session = sessionFactory.openSession()) {
-            String queryStr = "from Post where (:id is null or id = :id) and " +
-                    "(:title is null or title LIKE CONCAT('%', :title, '%')) and " +
-                    "(:content is null or content LIKE CONCAT('%', :content, '%')) and " +
-                    "(:createdBy is null or createdBy.id = :createdBy) and isArchived = false"
-                    + sortOrder(filterOptions);
+            String queryStr = "from Post p " +
+                    "where (:id is null or p.id = :id) and " +
+                    "(:title is null or p.title LIKE CONCAT('%', :title, '%')) and " +
+                    "(:content is null or p.content LIKE CONCAT('%', :content, '%')) and " +
+                    "(:createdBy is null or p.createdBy.id = :createdBy) and " +
+                    "(EXISTS (SELECT 1 FROM p.tags t WHERE t.tagId IN (:tagIds))) AND " +
+                    " p.isArchived = false "+
+                    sortOrder(filterOptions);
+
             Query<Post> query = session.createQuery(queryStr, Post.class);
             query.setParameter("id", filterOptions.getId().orElse(null));
             query.setParameter("title", filterOptions.getTitle().orElse(null));
             query.setParameter("content", filterOptions.getContent().orElse(null));
             query.setParameter("createdBy", filterOptions.getCreator().orElse(null));
+            query.setParameterList("tagIds", filterOptions.getTags().orElse(null));
             if (query.list().isEmpty()) {
                 throw new EntityNotFoundException("No posts were found within the criteria");
             }
