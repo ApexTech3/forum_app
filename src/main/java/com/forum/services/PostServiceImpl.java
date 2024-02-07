@@ -130,7 +130,10 @@ public class PostServiceImpl implements PostService {
         Post post = repository.get(postId);
         Tag tag = tagRepository.getById(tagId);
 
-        if (!post.getTags().remove(tag)) throw new EntityNotFoundException("Post", "Tag", "Not Found");
+        if (!post.getTags().contains(tag)) throw new EntityNotFoundException("Post", "Tag ID", String.valueOf(tagId));
+
+        post.getTags().remove(tag);
+
         repository.update(post);
     }
 }

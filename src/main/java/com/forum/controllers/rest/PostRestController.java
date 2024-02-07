@@ -1,6 +1,5 @@
 package com.forum.controllers.rest;
 
-import com.forum.exceptions.AlreadyLikedDislikedException;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
@@ -270,9 +269,9 @@ public class PostRestController {
             service.associateTagWithPost(postId, tagId);
         } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AlreadyLikedDislikedException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }//todo AlreadyLikedDislikedException why does it throw this? EntityNotFoundException not handled for either post or tag #50
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
         return HttpStatus.OK;
     }
 
@@ -283,8 +282,8 @@ public class PostRestController {
             service.dissociateTagWithPost(postId, tagId);
         } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AlreadyLikedDislikedException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return HttpStatus.OK;
     }
