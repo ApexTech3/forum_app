@@ -1,5 +1,6 @@
 package com.forum.helpers;
 
+import com.forum.exceptions.AuthenticationFailureException;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.User;
@@ -15,6 +16,7 @@ public class AuthenticationHelper {
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String INVALID_AUTHENTICATION_ERROR = "Invalid authentication.";
     private static final String INVALID_AUTHORIZATION_ERROR = "You are blocked.";
+    public static final String AUTHENTICATION_FAILURE_MESSAGE = "Wrong username or password";
 
 
     private final UserService userService;
@@ -66,6 +68,18 @@ public class AuthenticationHelper {
         }
 
         return userInfo.substring(firstSpace + 1);
+    }
+
+    public User verifyAuthentication(String username, String password) {
+        try {
+            User user = userService.get(username);
+            if (!user.getPassword().equals(password)) {
+                throw new AuthenticationFailureException(AUTHENTICATION_FAILURE_MESSAGE);
+            }
+            return user;
+        } catch (EntityNotFoundException e) {
+            throw new AuthenticationFailureException(AUTHENTICATION_FAILURE_MESSAGE);
+        }
     }
 
 }
