@@ -1,8 +1,8 @@
 package com.forum.controllers.mvc;
 
-import com.company.web.springdemo.models.LoginDto;
 import com.forum.exceptions.AuthenticationFailureException;
 import com.forum.helpers.AuthenticationHelper;
+import com.forum.models.dtos.LoginDto;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
