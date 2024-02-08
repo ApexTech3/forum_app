@@ -1,4 +1,4 @@
-package com.company.web.springdemo.models;
+package com.forum.models.dtos;
 
 import jakarta.validation.constraints.NotEmpty;
 
