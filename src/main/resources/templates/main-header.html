@@ -14,7 +14,7 @@
         <a  th:unless="${isAuthenticated}"  href="#" th:href="@{/auth/login}" th:text="#{auth.login}">Login</a>
         <a  th:if="${isAuthenticated}"  href="#" th:href="@{/auth/logout}" th:text="#{auth.logout}">Logout</a>
         <a th:unless="${isAuthenticated}"  href="#" th:href="@{/auth/register}" th:text="#{auth.register}">Register</a>
-        <a th:if="${isAuthenticated}"  href="#" th:href="@{/beers}" th:text="#{navigation.all-users}">Browse all Users</a>
+        <a th:if="${isAuthenticated && session.isAdmin}"  href="#" th:href="@{/beers}" th:text="#{navigation.all-users}">Browse all Users</a>
 
         <a href="#" th:href="@{/about}" th:text="#{navigation.about}">About</a>
     </h3>

@@ -1,5 +1,6 @@
 package com.forum.controllers.mvc;
 
+import com.forum.models.Post;
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -9,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
@@ -31,7 +34,7 @@ public class HomeMvcController {
     public String showHomePage(Model model) {
         model.addAttribute("usersCount", userService.getCount());
         model.addAttribute("postsCount", postService.getCount());
-        model.addAttribute("post1", postService.getAll().get(0));
+        model.addAttribute("posts", postService.getAll());
         return "mainView";
     }
 

@@ -2,6 +2,7 @@ package com.forum.controllers.mvc;
 
 import com.forum.exceptions.AuthenticationFailureException;
 import com.forum.helpers.AuthenticationHelper;
+import com.forum.models.User;
 import com.forum.models.dtos.LoginDto;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthenticationMvcController {
 
     private final AuthenticationHelper authenticationHelper;
 
-    public AuthenticationController(AuthenticationHelper authenticationHelper) {
+    public AuthenticationMvcController(AuthenticationHelper authenticationHelper) {
         this.authenticationHelper = authenticationHelper;
     }
 
@@ -31,16 +32,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    String handeLogin(@Valid @ModelAttribute("login") LoginDto dto,
-                      BindingResult bindingResult,
-                      HttpSession session) {
+    public String handeLogin(@Valid @ModelAttribute("login") LoginDto dto, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return "login";
         }
 
         try {
-            authenticationHelper.verifyAuthentication(dto.getUsername(), dto.getPassword());
+            User user = authenticationHelper.verifyAuthentication(dto.getUsername(), dto.getPassword());
             session.setAttribute("currentUser", dto.getUsername());
+            session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(user));
             return "redirect:/";
         } catch (AuthenticationFailureException e) {
             bindingResult.rejectValue("username", "auth_error", e.getMessage());
@@ -49,11 +49,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/logout")
-    String handleLogout(HttpSession session) {
-
+    public String handleLogout(HttpSession session) {
         session.invalidate();
-
-
         return "redirect:/";
     }
 }
