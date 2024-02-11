@@ -5,6 +5,7 @@ import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.User;
 import com.forum.services.contracts.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -50,6 +51,14 @@ public class AuthenticationHelper {
         } catch (EntityNotFoundException e) {
             throw new AuthenticationException(INVALID_AUTHENTICATION_ERROR);
         }
+    }
+
+    public User tryGetUser(HttpSession httpSession){
+        String currentUser = (String) httpSession.getAttribute("currentUser");
+
+        if(currentUser == null) throw new AuthenticationFailureException("no user logged in");
+
+        return userService.get(currentUser);
     }
 
     private String getUsername(String userInfo) {
