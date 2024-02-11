@@ -33,21 +33,6 @@
                                     <a th:if="${isAuthenticated}" href="#" class="nav-link nav-link-faded has-icon">Unsolved</a>
                                     <a th:if="${isAuthenticated}" href="#" class="nav-link nav-link-faded has-icon">No
                                         replies yet</a>
-                                    <a th:unless="${isAuthenticated}" href="#" th:href="@{/auth/login}"
-                                       th:text="#{auth.login}"
-                                       class="nav-link nav-link-faded has-icon">Login</a>
-                                    <a th:if="${isAuthenticated}" href="#" th:href="@{/auth/logout}"
-                                       th:text="#{auth.logout}"
-                                       class="nav-link nav-link-faded has-icon"
-                                    >Logout</a>
-                                    <a th:unless="${isAuthenticated}" href="#" th:href="@{/auth/register}"
-                                       th:text="#{auth.register}"
-                                       class="nav-link nav-link-faded has-icon">Register</a>
-                                    <a th:if="${isAuthenticated && session.isAdmin}" href="#" th:href="@{/users}"
-                                       th:text="#{navigation.all-users}"
-                                       class="nav-link nav-link-faded has-icon">Browse all Users</a>
-
-
                                 </nav>
                             </div>
                         </div>

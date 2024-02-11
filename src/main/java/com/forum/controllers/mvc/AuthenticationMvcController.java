@@ -4,8 +4,10 @@ import com.forum.exceptions.AuthenticationFailureException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.User;
 import com.forum.models.dtos.LoginDto;
+import com.forum.models.dtos.RegisterDto;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,5 +54,13 @@ public class AuthenticationMvcController {
     public String handleLogout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
+    }
+
+
+    @GetMapping("/register")
+    public String showRegisterPage(Model model) {
+        model.addAttribute("register", new RegisterDto());
+        throw new NotImplementedException("Not implemented");
+//        return "register";
     }
 }

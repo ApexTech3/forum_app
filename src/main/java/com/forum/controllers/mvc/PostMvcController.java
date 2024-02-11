@@ -28,6 +28,7 @@ public class PostMvcController {
     public boolean populateIsAuthenticated(HttpSession httpSession) {
         return httpSession.getAttribute("currentUser") != null;
     }
+
     @GetMapping("/{id}")
     public String showSinglePost(@PathVariable int id, Model model) {
         try {
