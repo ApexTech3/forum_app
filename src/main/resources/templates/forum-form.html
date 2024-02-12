@@ -13,11 +13,15 @@
 </head>
 
 <footer th:fragment="footer">
-    <p class="text-center"><small class="text-center"
-              th:text="'Total Users: ' + ${usersCount} + '.Total Posts: ' + ${postsCount} + ${'. © Copyright '
-              + #dates.year(#dates.createNow()) + ' Forum. Property of ApexTech3 Enterprises'}">BeerTag</small>
+    <p class="text-center">
+    <a class="text-center" href="#"  th:href="@{/about}">
+        <small class="text-center"  th:text="'Total Users: ' + ${usersCount} + '.Total Posts: ' + ${postsCount} + ${'. © Copyright ' + #dates.year(#dates.createNow()) + ' Forum. Property of ApexTech3 Enterprises'}">
+            Forum
+        </small>
+    </a>
     </p>
 </footer>
+
 
 <header th:fragment="header">
     <div>

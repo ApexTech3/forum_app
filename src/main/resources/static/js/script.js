@@ -6,7 +6,7 @@ function scrollToCommentForm() {
 //     document.forms[0].submit();
 // }
 
-//  function loadReply(content, username) {
+// function loadReply(comment, username) {
 //     // Populate the newComment section with the reply content and mention the username
 //     let commentForm = document.getElementById('newComment');
 //     let contentInput = commentForm.querySelector('input[type="text"]');
@@ -14,8 +14,9 @@ function scrollToCommentForm() {
 //
 //     // Scroll to the newComment section
 //     commentForm.scrollIntoView();
-// // }
-// <button className="btn btn-xs text-muted has-icon"
-//         onClick="loadReply('@{${reply.content}}','@{${reply.getCreatedBy().getUsername()}}')" title="Reply">
+// }
+//
+// <button type="button" onClick="loadReply('${reply}')" title="Reply">
 //     <i className="fa fa-reply fa-2x"></i>
 // </button>
+

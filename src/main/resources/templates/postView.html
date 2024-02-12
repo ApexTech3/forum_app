@@ -81,12 +81,11 @@
                                     <small class="d-block text-center text-muted">Pro</small>
                                 </a>
                                 <div class="media-body ml-3">
-                                    <a href="javascript:void(0)"  th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">drewdan</a>
+                                    <a href="#"  th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">drewdan</a>
                                     <small class="text-muted ml-2" th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
                                     <div class="mt-3 font-size-sm">
                                         <p th:text="${reply.content}">Content</p>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
