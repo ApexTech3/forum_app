@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<form th:replace="~{forum-form.html::head('Users')}"></form>
-<head>
-    <meta charset="UTF-8">
-    <title>Error</title>
-</head>
+<form th:replace="~{fragments/head.html::head('Error')}"></form>
 <body>
 <div class="body-content">
     <h2 class="label-error" th:text="${statusCode}">HTTP Status Code</h2>

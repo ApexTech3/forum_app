@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<form th:replace="~{forum-form.html::head('Home')}"></form>
+
+<form th:replace="~{fragments/head.html::head('Home')}"></form>
 <body>
-<form th:replace="~{forum-form.html::header}"></form>
+<form th:replace="~{fragments/header.html::inner-main-header}"></form>
 <div class="body-content">
     <h2 th:text="#{home.welcome}">Welcome (design)!</h2>
     <img src="../static/images/logo.png" th:src="@{/images/logo.png}" alt="Forum logo"/>
     <p th:text="'Total Users: ' + ${usersCount}">Total Users</p>
     <p th:text="'Total Posts: ' + ${postsCount}">Total Posts</p>
 </div>
-<form th:replace="~{forum-form.html::footer}"></form>
+<form th:replace="~{fragments/footer.html::footer}"></form>
 </body>
-</html>
