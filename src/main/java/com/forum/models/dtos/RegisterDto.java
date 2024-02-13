@@ -2,21 +2,39 @@ package com.forum.models.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class RegisterDto extends LoginDto {
+public class RegisterDto {
+
+    @Size(min = 4, max = 32, message = "Username should be between 4 and 32 symbols")
+    private String username;
+    @Size(min = 4, max = 32, message = "Password should be between 4 and 32 symbols")
+    private String password;
     @NotEmpty(message = "Password confirmation can't be empty")
     private String passwordConfirmation;
     @NotEmpty(message = "First Name can't be empty")
-    @Size(min = 4, max = 32, message = "First Name should be between 4 and 32 symbols")
     private String firstName;
-    @Size(min = 4, max = 32, message = "Last Name should be between 4 and 32 symbols")
     @NotEmpty(message = "Last Name can't be empty")
     private String lastName;
     @Email
     @NotEmpty(message = "Email can't be empty")
     private String email;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getPasswordConfirmation() {
         return passwordConfirmation;

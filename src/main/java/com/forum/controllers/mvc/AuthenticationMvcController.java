@@ -78,7 +78,7 @@ public class AuthenticationMvcController {
 
         try {
             User user = userService.register(userMapper.fromRegisterDto(dto));
-            return "redirect:/";
+            return "redirect:/auth/login";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("username", "auth_error", e.getMessage());
             //email error

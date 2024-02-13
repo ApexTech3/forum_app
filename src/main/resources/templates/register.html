@@ -20,7 +20,7 @@
     <label th:text="#{user.label.password}"></label>
     <br/>
     <label>
-        <input type="password" th:field="*{password}">
+        <input type="password" id="password" th:field="*{password}">
     </label>
     <label class="error" th:errors="*{password}">Password error placeholder</label>
     <br/><br/>
@@ -28,7 +28,8 @@
     <label th:text="#{user.label.password-confirmation}"></label>
     <br/>
     <label>
-        <input type="password" th:field="*{passwordConfirmation}">
+        <input type="password" id="passwordConfirmation" th:field="*{passwordConfirmation}">
+        <span id="passwordMatch"></span> <!-- Span to show password match status -->
     </label>
     <label class="error" th:errors="*{passwordConfirmation}">Password confirmation error placeholder</label>
     <br/><br/>
@@ -52,12 +53,28 @@
     <label th:text="#{user.label.email}"></label>
     <br/>
     <label>
-        <input type="text" th:field="*{email}">
+        <input type="email" th:field="*{email}">
     </label>
     <label class="error" th:errors="*{email}">Email error placeholder</label>
     <br/><br/>
 
     <button type="submit" class="btn btn-primary mt-2">Register</button>
 </form>
+
+<script>
+    document.getElementById('passwordConfirmation').addEventListener('input', function() {
+        var password = document.getElementById('password').value;
+        var passwordConfirmation = document.getElementById('passwordConfirmation').value;
+        var passwordMatchSpan = document.getElementById('passwordMatch');
+
+        if (password === passwordConfirmation) {
+            passwordMatchSpan.innerText = 'Passwords match';
+            passwordMatchSpan.style.color = 'green';
+        } else {
+            passwordMatchSpan.innerText = 'Passwords do not match';
+            passwordMatchSpan.style.color = 'red';
+        }
+    });
+</script>
 </body>
 </html>
