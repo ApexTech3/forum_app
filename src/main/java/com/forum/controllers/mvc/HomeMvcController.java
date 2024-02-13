@@ -29,8 +29,6 @@ public class HomeMvcController {
 
     @GetMapping
     public String showHomePage(Model model) {
-        model.addAttribute("usersCount", userService.getCount());
-        model.addAttribute("postsCount", postService.getCount());
         model.addAttribute("posts", postService.getAll());
         return "mainView";
     }
@@ -38,5 +36,14 @@ public class HomeMvcController {
     @GetMapping("/about")
     public String showAboutPage() {
         return "about";
+    }
+
+    @ModelAttribute("usersCount")
+    public long populateUsersCount() {
+        return userService.getCount();
+    }
+    @ModelAttribute("postsCount")
+    public long populatePostsCount() {
+        return postService.getCount();
     }
 }

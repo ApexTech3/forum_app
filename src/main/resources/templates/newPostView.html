@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+
+<form id="head" th:replace="~{fragments/head.html::head('Create New Post')}"></form>
+
+<body>
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">
+            <!-- Inner sidebar -->
+            <form th:replace="~{fragments/sidebar.html :: sidebar}"></form>
+
+            <!-- Inner main -->
+            <div class="inner-main">
+                <!-- Inner main header -->
+                <form th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></form>
+    <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+        <div class="content">
+
+                <div class="header d-flex align-items-center bg-primary text-white">
+                    <h6 class="title mb-0" id="threadTitleLabel" style="font-size: 20px; color: white; padding: 10px;">Create new post</h6>
+                </div>
+                <div class="card body">
+                    <form id="newPostForm" th:object="${postDto}" th:action="@{/posts/new}" method="post">
+                    <div class="form-group">
+                        <label for="threadTitle">Title</label>
+                        <input type="text" class="form-control" id="threadTitle" th:field="*{title}" placeholder="Enter title"
+                               autofocus=""/>
+                    </div>
+                    <div class="form-group">
+                        <label for="postContent">Content</label>
+                        <textarea class="form-control" id="postContent" rows="3" th:field="*{content}" placeholder="Enter content"></textarea>
+                    </div>
+                    <label class="form-error" th:errors="*{title}">Username error placeholder</label>
+                    <label class="form-error" th:errors="*{content}">Username error placeholder</label>
+<!--                    <div class="dropdown dropend">-->
+<!--                        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 10px;">-->
+<!--                            Add a Tag-->
+<!--                        </button>-->
+<!--                        <ul class="dropdown-menu">-->
+<!--                            <li><button class="dropdown-item" th:each="tag : ${tags}" th:text="${tag.name}" onclick=addTag(`${tag.name}`)></button></li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                    <input type="hidden" id="tagsField" th:field="*{tags}">-->
+<!--                    <div id="tagsTab" class="small-tab">-->
+<!--                        &lt;!&ndash; Tags will be visualized here &ndash;&gt;-->
+<!--                    </div>-->
+                    <div class="footer">
+                        <button type="reset" class="btn btn-light">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Post</button>
+                    </div>
+                    </form>
+                </div>
+        </div>
+    </div>
+
+
+
+</div>
+</div>
+</div>
+</div>
+<form th:replace="~{fragments/footer.html::footer}"></form>
+</body>
+</html>

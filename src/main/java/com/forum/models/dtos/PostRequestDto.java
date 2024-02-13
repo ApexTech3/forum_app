@@ -13,6 +13,9 @@ public class PostRequestDto {
     private String content;
 
 
+    public PostRequestDto() {
+    }
+
     public PostRequestDto(String title, String content) {
         this.title = title;
         this.content = content;
@@ -33,4 +36,6 @@ public class PostRequestDto {
     public void setContent(String content) {
         this.content = content;
     }
+
+
 }

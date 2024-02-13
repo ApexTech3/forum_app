@@ -46,6 +46,13 @@ public class PostMapper {
                 post.getContent(), post.getCreatedBy().getUsername(), post.getReplies(), post.getTags(), post.getStampCreated());
     }
 
+    public Post fromRequestDtoWithTags(PostRequestDto postRequestDto, User creator) {
+        Post post = new Post();
+        post.setTitle(postRequestDto.getTitle());
+        post.setContent(postRequestDto.getContent());
+        post.setCreatedBy(creator);
+        return post;
+    }
 
     public List<PostResponseDto> fromPostListToResponseDto(List<Post> list) {
         List<PostResponseDto> dtos = new ArrayList<>();
