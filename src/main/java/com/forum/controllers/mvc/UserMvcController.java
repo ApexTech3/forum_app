@@ -7,9 +7,11 @@ import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
 import com.forum.models.dtos.UserAdminDto;
+import com.forum.models.dtos.UserFilterDto;
 import com.forum.models.dtos.UserUpdateDto;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -37,16 +39,25 @@ public class UserMvcController {
         return httpSession.getAttribute("currentUser") != null;
     }
 
+    @ModelAttribute("requestURI")
+    public String requestURI(final HttpServletRequest request) {
+        return request.getRequestURI();
+    }
+
     @GetMapping
-    public String showAllUsers(Model model, HttpSession session) {
+    public String showAllUsers(@ModelAttribute("filterOptions") UserFilterDto filterDto, Model model, HttpSession session) {
         User user;
         try {
             user = authenticationHelper.tryGetCurrentUser(session);
+            model.addAttribute("filterOptions", filterDto);
             model.addAttribute("users", userService.get(
-                    new UserFilterOptions(null, null, null, null, null), user));
+            new UserFilterOptions(filterDto.getUsername(), filterDto.getEmail(), filterDto.getFirstName(),
+                    filterDto.getSortBy(), filterDto.getSortOrder()), user));
             return "usersView";
         } catch (AuthorizationException e) {
-            return "redirect:/auth/login";
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
         }
     }
 

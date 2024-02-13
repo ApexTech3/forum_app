@@ -6,10 +6,7 @@ import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
-import com.forum.models.dtos.UserAdminDto;
-import com.forum.models.dtos.UserDto;
-import com.forum.models.dtos.UserResponse;
-import com.forum.models.dtos.UserUpdateDto;
+import com.forum.models.dtos.*;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -41,9 +38,9 @@ public class UserRestController {
     }
 
     @PostMapping
-    public UserResponse register(@Valid @RequestBody UserDto userDto) {
+    public UserResponse register(@Valid @RequestBody RegisterDto registerDto) {
         try {
-            User user = mapper.fromDto(userDto);
+            User user = mapper.fromRegisterDto(registerDto);
             return mapper.toDto(service.register(user));
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
