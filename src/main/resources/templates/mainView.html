@@ -31,11 +31,14 @@
                                         <p class="text-muted"><a href="javascript:void(0)">drewdan</a> replied <span class="text-secondary font-weight-bold">13 minutes ago</span></p>
                                     </div>
                                 </div>
-                                <div class="text-muted small text-center align-self-center">
-                                    <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i> 19</span>
-                                    <span><i class="far fa-comment ml-2"></i> 3</span>
+                                <div class="d-flex justify-content-center">
+                                    <div class="d-flex align-items-center rounded bg-transparent p-0.2">
+                                        <span><i class="fa-solid fa-heart" style="color: cornflowerblue;"></i></span>
+                                        <a th:text="${post.getLikes()}" style="font-size: 16px;margin-right: 3px;color: cornflowerblue;">3</a>
+                                        <span><i class="far fa-comment ml-2"></i> 3</span>
+                                        <a th:text="${(//addCommentsCount!!!!)}" style="font-size: 16px;margin-right: 3px;">3</a>
+                                    </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
 
