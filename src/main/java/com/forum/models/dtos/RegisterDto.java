@@ -13,12 +13,15 @@ public class RegisterDto {
     @NotEmpty(message = "Password confirmation can't be empty")
     private String passwordConfirmation;
     @NotEmpty(message = "First Name can't be empty")
+    @Size(min = 4, max = 32, message = "First Name should be between 4 and 32 symbols")
     private String firstName;
+    @Size(min = 4, max = 32, message = "Last Name should be between 4 and 32 symbols")
     @NotEmpty(message = "Last Name can't be empty")
     private String lastName;
     @Email
     @NotEmpty(message = "Email can't be empty")
     private String email;
+    private String profilePicture;
 
     public String getUsername() {
         return username;
@@ -66,5 +69,13 @@ public class RegisterDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

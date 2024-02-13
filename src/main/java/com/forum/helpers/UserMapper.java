@@ -7,6 +7,8 @@ import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class UserMapper {
 
@@ -17,17 +19,6 @@ public class UserMapper {
     public UserMapper(UserService service, RoleService roleService) {
         this.service = service;
         this.roleService = roleService;
-    }
-
-    public User fromDto(UserDto userDto) {
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setProfilePicture(userDto.getProfilePicture());
-        return user;
     }
 
     public User fromDto(UserUpdateDto userUpdateDto, int id) {
@@ -62,7 +53,29 @@ public class UserMapper {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
+        user.setProfilePicture(userDto.getProfilePicture());
+        user.setRoles(Set.of(roleService.get("USER")));
         return user;
+    }
+
+    public UserUpdateDto toUpdateDto(User user) {
+        UserUpdateDto userUpdateDto = new UserUpdateDto();
+        userUpdateDto.setFirstName(user.getFirstName());
+        userUpdateDto.setLastName(user.getLastName());
+        userUpdateDto.setEmail(user.getEmail());
+        userUpdateDto.setProfilePicture(user.getProfilePicture());
+        return userUpdateDto;
+    }
+
+    public UserAdminDto toUpdateAdminDto(User user) {
+        UserAdminDto userAdminDto = new UserAdminDto();
+        userAdminDto.setFirstName(user.getFirstName());
+        userAdminDto.setLastName(user.getLastName());
+        userAdminDto.setEmail(user.getEmail());
+        userAdminDto.setPhone(user.getPhone());
+        userAdminDto.setRoles(user.getRoles());
+        userAdminDto.setProfilePicture(user.getProfilePicture());
+        return userAdminDto;
     }
 
     private <T extends BaseUserDto> User extractBaseInfo(T dto, int id) {

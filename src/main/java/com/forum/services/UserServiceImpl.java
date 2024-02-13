@@ -20,12 +20,9 @@ public class UserServiceImpl implements UserService {
     private static final String UNAUTHORIZED_USER_ERROR = "You are not authorized to perform this operation";
 
     private final UserRepository repository;
-    private final RoleService roleService;
-
     @Autowired
-    public UserServiceImpl(UserRepository repository, RoleService roleService) {
+    public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
-        this.roleService = roleService;
     }
 
     @Override
@@ -69,7 +66,6 @@ public class UserServiceImpl implements UserService {
         if (duplicateExists) {
             throw new EntityDuplicateException("User", "email", user.getEmail());
         }
-        user.setRoles(Set.of(roleService.get("USER")));
         return repository.register(user);
     }
 

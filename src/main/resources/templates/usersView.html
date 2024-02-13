@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<form th:replace="~{forum-form.html::head('Users')}"></form>
+<body>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Username</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Roles</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <th scope="row" th:text="${user.id}">1</th>
+        <td><a href="#" th:href="@{/users/{id}(id=${user.id})}" th:text="${user.username}">pesho"</a></td>
+        <td th:text="${user.firstName}">Pesho</td>
+        <td th:text="${user.lastName}">Peshov</td>
+        <td th:text="${user.email}">Email</td>
+        <td>
+            <div th:each="role : ${user.roles}">
+                <li><span th:text="${role.role}">USER</span></li>
+            </div>
+            </div>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+<form th:replace="~{forum-form.html::footer}"></form>
+</body>
+</html>

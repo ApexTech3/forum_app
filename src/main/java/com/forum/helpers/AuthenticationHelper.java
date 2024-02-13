@@ -53,10 +53,10 @@ public class AuthenticationHelper {
         }
     }
 
-    public User tryGetUser(HttpSession httpSession){
+    public User tryGetUser(HttpSession httpSession) {
         String currentUser = (String) httpSession.getAttribute("currentUser");
 
-        if(currentUser == null) throw new AuthenticationFailureException("no user logged in");
+        if (currentUser == null) throw new AuthenticationFailureException("no user logged in");
 
         return userService.get(currentUser);
     }
@@ -91,4 +91,13 @@ public class AuthenticationHelper {
         }
     }
 
+    public User tryGetCurrentUser(HttpSession session) {
+        String currentUsername = (String) session.getAttribute("currentUser");
+
+        if (currentUsername == null) {
+            throw new AuthenticationFailureException(INVALID_AUTHENTICATION_ERROR);
+        }
+
+        return userService.get(currentUsername);
+    }
 }

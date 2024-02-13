@@ -1,15 +1,23 @@
 package com.forum.models.dtos;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 public class UserUpdateDto implements BaseUserDto {
+
+    @NotEmpty(message = "Password can't be empty")
     private String password;
+    @NotEmpty(message = "Password confirmation can't be empty")
+    private String passwordConfirmation;
+    @NotEmpty(message = "First Name can't be empty")
     @Size(min = 4, max = 32, message = "First Name should be between 4 and 32 symbols")
     private String firstName;
     @Size(min = 4, max = 32, message = "Last Name should be between 4 and 32 symbols")
+    @NotEmpty(message = "Last Name can't be empty")
     private String lastName;
     @Email
+    @NotEmpty(message = "Email can't be empty")
     private String email;
     private String profilePicture;
 
@@ -31,6 +39,14 @@ public class UserUpdateDto implements BaseUserDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPasswordConfirmation() {
+        return passwordConfirmation;
+    }
+
+    public void setPasswordConfirmation(String passwordConfirmation) {
+        this.passwordConfirmation = passwordConfirmation;
     }
 
     @Override
