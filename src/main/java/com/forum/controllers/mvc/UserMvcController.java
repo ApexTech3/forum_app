@@ -8,28 +8,28 @@ import com.forum.helpers.UserMapper;
 import com.forum.models.User;
 import com.forum.models.dtos.UserAdminDto;
 import com.forum.models.dtos.UserFilterDto;
-import com.forum.models.dtos.UserUpdateDto;
 import com.forum.models.filters.UserFilterOptions;
+import com.forum.services.contracts.RoleService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
 public class UserMvcController {
     private final UserService userService;
+    private final RoleService roleService;
     private final AuthenticationHelper authenticationHelper;
     private final UserMapper mapper;
 
-    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper mapper) {
+    public UserMvcController(UserService userService, RoleService roleService, AuthenticationHelper authenticationHelper, UserMapper mapper) {
         this.userService = userService;
+        this.roleService = roleService;
         this.authenticationHelper = authenticationHelper;
         this.mapper = mapper;
     }
@@ -51,8 +51,8 @@ public class UserMvcController {
             user = authenticationHelper.tryGetCurrentUser(session);
             model.addAttribute("filterOptions", filterDto);
             model.addAttribute("users", userService.get(
-            new UserFilterOptions(filterDto.getUsername(), filterDto.getEmail(), filterDto.getFirstName(),
-                    filterDto.getSortBy(), filterDto.getSortOrder()), user));
+                    new UserFilterOptions(filterDto.getUsername(), filterDto.getEmail(), filterDto.getFirstName(),
+                            filterDto.getSortBy(), filterDto.getSortOrder()), user));
             return "usersView";
         } catch (AuthorizationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
@@ -66,7 +66,7 @@ public class UserMvcController {
         try {
             User user = authenticationHelper.tryGetCurrentUser(session);
             tryAuthenticateUser(id, user);
-            model.addAttribute("user", user);
+            model.addAttribute("user", userService.get(id));
             return "userView";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
@@ -93,16 +93,35 @@ public class UserMvcController {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "errorView";
+        }//todo add try catch blocks below
+        UserAdminDto dto = mapper.toUpdateAdminDto(userService.get(id));
+        model.addAttribute("user", dto);
+        model.addAttribute("roles", roleService.get());
+        return "userUpdateView";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editUser(@PathVariable int id, @ModelAttribute("user") UserAdminDto userDto, BindingResult bindingResult, Model model, HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetCurrentUser(session);
+            tryAuthenticateUser(id, user);
+        } catch (AuthenticationFailureException e) {
+            return "redirect:/auth/login";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
         }
+
+        if (bindingResult.hasErrors()) {
+            return "userUpdateView";
+        }
+
         if (AuthenticationHelper.isAdmin(user)) {
-            UserAdminDto dto = mapper.toUpdateAdminDto(userService.get(id));
-            model.addAttribute("user", dto);
-            return "userAdminView";
-        } else {
-            UserUpdateDto dto = mapper.toUpdateDto(user);
-            model.addAttribute("user", dto);
-            return "userView";
+            userService.update(mapper.fromDto(userDto, id), user);
         }
+        return "redirect:/users";
     }
 
     private void tryAuthenticateUser(int id, User user) {

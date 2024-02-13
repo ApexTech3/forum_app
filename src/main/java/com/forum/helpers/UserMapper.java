@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -26,9 +27,14 @@ public class UserMapper {
     }
 
     public User fromDto(UserAdminDto userAdminDto, int id) {
-        User user = extractBaseInfo(userAdminDto, id);
+        User user = service.get(id);
+        user.setPassword(userAdminDto.getPassword().isEmpty() ? user.getPassword() : userAdminDto.getPassword());
+        user.setFirstName(userAdminDto.getFirstName());
+        user.setLastName(userAdminDto.getLastName());
+        user.setEmail(userAdminDto.getEmail());
+        user.setProfilePicture(userAdminDto.getProfilePicture());
         user.setPhone(userAdminDto.getPhone());
-        user.setRoles(userAdminDto.getRoles());
+        user.setRoles(userAdminDto.getRoles().stream().map(r -> roleService.get(r.getRole())).collect(Collectors.toSet()));
         user.setBlocked(userAdminDto.isBlocked());
         return user;
     }
@@ -60,6 +66,7 @@ public class UserMapper {
 
     public UserUpdateDto toUpdateDto(User user) {
         UserUpdateDto userUpdateDto = new UserUpdateDto();
+        userUpdateDto.setUsername(user.getUsername());
         userUpdateDto.setFirstName(user.getFirstName());
         userUpdateDto.setLastName(user.getLastName());
         userUpdateDto.setEmail(user.getEmail());
@@ -69,6 +76,7 @@ public class UserMapper {
 
     public UserAdminDto toUpdateAdminDto(User user) {
         UserAdminDto userAdminDto = new UserAdminDto();
+        userAdminDto.setUsername(user.getUsername());
         userAdminDto.setFirstName(user.getFirstName());
         userAdminDto.setLastName(user.getLastName());
         userAdminDto.setEmail(user.getEmail());

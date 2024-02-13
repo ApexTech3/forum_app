@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 public class UserUpdateDto implements BaseUserDto {
-
+    private String username;
     @NotEmpty(message = "Password can't be empty")
     private String password;
     @NotEmpty(message = "Password confirmation can't be empty")
@@ -30,6 +30,14 @@ public class UserUpdateDto implements BaseUserDto {
         this.lastName = lastName;
         this.email = email;
         this.profilePicture = profilePicture;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override

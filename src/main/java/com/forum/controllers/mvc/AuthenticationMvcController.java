@@ -10,7 +10,6 @@ import com.forum.models.dtos.RegisterDto;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,6 +49,7 @@ public class AuthenticationMvcController {
             User user = authenticationHelper.verifyAuthentication(dto.getUsername(), dto.getPassword());
             session.setAttribute("currentUser", dto.getUsername());
             session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(user));
+            session.setAttribute("userId", user.getId());
             return "redirect:/";
         } catch (AuthenticationFailureException e) {
             bindingResult.rejectValue("username", "auth_error", e.getMessage());

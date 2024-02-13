@@ -22,6 +22,8 @@
 
             <a th:if="${isAuthenticated && session.isAdmin}" href="#" th:href="@{/users}" class="btn btn-primary mr-2" th:text="#{navigation.all-users}">Browse all Users</a>
 
+            <a th:if="${isAuthenticated}" href="#" th:href="@{/users/{id}(id=${session.userId})}" class="btn btn-primary mr-2" th:text="#{navigation.profile}">Profile</a>
+
             <a th:if="${isAuthenticated}" href="#" th:href="@{/auth/logout}" class="btn btn-primary mr-2" th:text="#{auth.logout}">Logout</a>
 
             <a th:unless="${isAuthenticated}" href="#" th:href="@{/auth/register}" class="btn btn-primary" th:text="#{auth.register}">Register</a>
