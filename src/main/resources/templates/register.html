@@ -36,7 +36,7 @@
     <label th:text="#{user.label.first-name}"></label>
     <br/>
     <label>
-        <input type="First name" th:field="*{firstName}">
+        <input type="text" th:field="*{firstName}">
     </label>
     <label class="error" th:errors="*{firstName}">First name error placeholder</label>
     <br/><br/>
@@ -44,7 +44,7 @@
     <label th:text="#{user.label.last-name}"></label>
     <br/>
     <label>
-        <input type="Last name" th:field="*{lastName}">
+        <input type="text" th:field="*{lastName}">
     </label>
     <label class="error" th:errors="*{lastName}">Last name error placeholder</label>
     <br/><br/>
@@ -52,12 +52,12 @@
     <label th:text="#{user.label.email}"></label>
     <br/>
     <label>
-        <input type="Email" th:field="*{email}">
+        <input type="text" th:field="*{email}">
     </label>
     <label class="error" th:errors="*{email}">Email error placeholder</label>
     <br/><br/>
 
-    <input type="submit" value="Register">
+    <button type="submit" class="btn btn-primary mt-2">Register</button>
 </form>
 </body>
 </html>

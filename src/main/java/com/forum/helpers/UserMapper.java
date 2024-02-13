@@ -55,6 +55,15 @@ public class UserMapper {
         return userResponse;
     }
 
+    public User fromRegisterDto(RegisterDto userDto) {
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        return user;
+    }
 
     private <T extends BaseUserDto> User extractBaseInfo(T dto, int id) {
         User user = service.get(id);

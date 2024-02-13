@@ -1,10 +1,13 @@
 package com.forum.controllers.mvc;
 
 import com.forum.exceptions.AuthenticationFailureException;
+import com.forum.exceptions.EntityDuplicateException;
 import com.forum.helpers.AuthenticationHelper;
+import com.forum.helpers.UserMapper;
 import com.forum.models.User;
 import com.forum.models.dtos.LoginDto;
 import com.forum.models.dtos.RegisterDto;
+import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.NotImplementedException;
@@ -21,9 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthenticationMvcController {
 
     private final AuthenticationHelper authenticationHelper;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
-    public AuthenticationMvcController(AuthenticationHelper authenticationHelper) {
+    public AuthenticationMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper) {
         this.authenticationHelper = authenticationHelper;
+        this.userService = userService;
+        this.userMapper = userMapper;
     }
 
 
@@ -34,7 +41,7 @@ public class AuthenticationMvcController {
     }
 
     @PostMapping("/login")
-    public String handeLogin(@Valid @ModelAttribute("login") LoginDto dto, BindingResult bindingResult, HttpSession session) {
+    public String handleLogin(@Valid @ModelAttribute("login") LoginDto dto, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return "login";
         }
@@ -60,7 +67,22 @@ public class AuthenticationMvcController {
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
         model.addAttribute("register", new RegisterDto());
-        throw new NotImplementedException("Not implemented");
-//        return "register";
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String handleRegister(@Valid @ModelAttribute("register") RegisterDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "register";
+        }
+
+        try {
+            User user = userService.register(userMapper.fromRegisterDto(dto));
+            return "redirect:/";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("username", "auth_error", e.getMessage());
+            //email error
+            return "register";
+        }
     }
 }
