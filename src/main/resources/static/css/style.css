@@ -1,3 +1,4 @@
+
 body{
     margin-top:20px;
     color: #1a202c;
@@ -45,7 +46,6 @@ body{
     padding: 0 1rem;
     flex-shrink: 0;
 }
-
 .inner-main-body,
 .inner-sidebar-body {
     padding: 1rem;
@@ -125,4 +125,14 @@ body{
     flex: 1 1 auto;
     min-height: 1px;
     padding: 1rem;
+}
+
+.forum-item {
+    display: flex;
+    align-items: start;
+}
+
+.media-body{
+    flex: 1;
+    padding-left: 10px;
 }

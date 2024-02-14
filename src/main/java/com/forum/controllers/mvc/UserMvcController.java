@@ -8,7 +8,9 @@ import com.forum.helpers.UserMapper;
 import com.forum.models.User;
 import com.forum.models.dtos.UserAdminDto;
 import com.forum.models.dtos.UserFilterDto;
+import com.forum.models.dtos.UserUpdateDto;
 import com.forum.models.filters.UserFilterOptions;
+import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.RoleService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,12 +28,14 @@ public class UserMvcController {
     private final RoleService roleService;
     private final AuthenticationHelper authenticationHelper;
     private final UserMapper mapper;
+    private final PostService postService;
 
-    public UserMvcController(UserService userService, RoleService roleService, AuthenticationHelper authenticationHelper, UserMapper mapper) {
+    public UserMvcController(UserService userService, RoleService roleService, AuthenticationHelper authenticationHelper, UserMapper mapper, PostService postService) {
         this.userService = userService;
         this.roleService = roleService;
         this.authenticationHelper = authenticationHelper;
         this.mapper = mapper;
+        this.postService = postService;
     }
 
     @ModelAttribute("isAuthenticated")
@@ -128,5 +132,14 @@ public class UserMvcController {
         if (!AuthenticationHelper.isAdmin(user) && user.getId() != id) {
             throw new AuthorizationException("You are not allowed to perform this operation");
         }
+    }
+
+    @ModelAttribute("usersCount")
+    public long populateUsersCount() {
+        return userService.getCount();
+    }
+    @ModelAttribute("postsCount")
+    public long populatePostsCount() {
+        return postService.getCount();
     }
 }
