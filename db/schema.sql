@@ -92,16 +92,18 @@ CREATE TABLE `roles`
 
 create table comments
 (
-    comment_id int auto_increment
+    comment_id    int auto_increment
         primary key,
-    content    text not null,
-    user_id    int  null,
-    post_id    int  null,
+    content       text                                  not null,
+    user_id       int                                   null,
+    post_id       int                                   null,
+    stamp_created timestamp default current_timestamp() not null,
     constraint FK_Comment_Post
         foreign key (post_id) references posts (post_id),
     constraint FK_Comment_User
         foreign key (user_id) references users (user_id)
-);
+)
+    collate = utf8mb4_unicode_ci;
 
 CREATE TABLE `users_roles`
 (

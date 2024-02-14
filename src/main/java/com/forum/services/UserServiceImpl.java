@@ -7,25 +7,21 @@ import com.forum.helpers.AuthenticationHelper;
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.repositories.contracts.UserRepository;
-import com.forum.services.contracts.RoleService;
 import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
     private static final String UNAUTHORIZED_USER_ERROR = "You are not authorized to perform this operation";
 
     private final UserRepository repository;
-    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository repository, RoleService roleService) {
+    public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
-        this.roleService = roleService;
     }
 
     @Override
@@ -69,7 +65,6 @@ public class UserServiceImpl implements UserService {
         if (duplicateExists) {
             throw new EntityDuplicateException("User", "email", user.getEmail());
         }
-        user.setRoles(Set.of(roleService.get("USER")));
         return repository.register(user);
     }
 
@@ -116,7 +111,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User tryAuthorizeUser(User user, User requester) {
-        if (!user.getUsername().equals(requester.getUsername())) {
+        if (!user.getUsername().equals(requester.getUsername()) && !AuthenticationHelper.isAdmin(requester)) {
             throw new AuthorizationException(UNAUTHORIZED_USER_ERROR);
         }
         return user;

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<form th:replace="~{fragments/head.html::head('Posts')}"></form>
+
+<body>
+    <div class="container">
+        <div class="main-body p-0">
+            <div class="inner-wrapper">
+                <!-- Inner sidebar -->
+                <div th:replace="~{fragments/sidebar.html :: sidebar}"></div>
+
+                <!-- Inner main -->
+                <div class="inner-main">
+                    <!-- Inner main header -->
+                    <div th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></div>
+
+                    <!-- Forum List -->
+                    <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                        <div class="card mb-2" th:each="post : ${posts}">
+                            <div class="card-body p-2 p-sm-3">
+                                <div class="media forum-item">
+                                    <a href="#" data-toggle="collapse" data-target=".forum-content"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-circle" width="50" alt="User" /></a>
+                                    <div class="media-body">
+                                        <h6><a th:href="@{/posts/{id}(id=${post.id})}" href="#" data-toggle="collapse"
+                                               data-target=".forum-content"
+                                               class="text-body" th:text="${post.title}">Title</a></h6>
+                                        <p class="text-secondary" th:text="${post.content}">
+                                            Content
+                                        </p>
+                                        <p class="text-muted"><a href="javascript:void(0)">drewdan</a> replied <span class="text-secondary font-weight-bold">13 minutes ago</span></p>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <div class="d-flex align-items-center rounded bg-transparent p-0.2">
+                                        <span><i class="fa-solid fa-heart" style="color: cornflowerblue;"></i></span>
+                                        <a th:text="${post.getLikes()}" style="font-size: 16px;margin-right: 3px;color: cornflowerblue;">3</a>
+                                        <span><i class="far fa-comment ml-2"></i> 3</span>
+                                        <a th:text="${(post.getReplies().size())}" style="font-size: 16px;margin-right: 3px;">3</a>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+
+
+
+
+                        <ul class="pagination pagination-sm pagination-circle justify-content-center mb-0">
+                            <li class="page-item disabled">
+                                <span class="page-link has-icon"><i class="material-icons">Prev page</i></span>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0)">1</a></li>
+                            <li class="page-item active"><span class="page-link">2</span></li>
+                            <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link has-icon" href="javascript:void(0)"><i class="material-icons">Next
+                                    Page</i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <form th:replace="~{fragments/footer.html::footer}"></form>
+</body>
+</html>

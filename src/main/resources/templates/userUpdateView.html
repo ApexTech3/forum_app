@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${user.username}"></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+          th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css}"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link href="../static/css/style.css" rel="stylesheet" th:href="@{../static/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css}"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css"
+          integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous">
+</head>
+<body>
+<h2 th:text="${user.username}">Username</h2>
+
+<form action="#" th:action="@{__${requestURI}__}" th:object="${user}" method="post">
+
+    <label th:text="#{user.label.password}"></label>
+    <br/>
+    <label>
+        <input type="password" id="password" th:field="*{password}">
+    </label>
+    <label class="error" th:errors="*{password}">Password error placeholder</label>
+    <br/><br/>
+
+    <label th:text="#{user.label.password-confirmation}"></label>
+    <br/>
+    <label>
+        <input type="password" id="passwordConfirmation" th:field="*{passwordConfirmation}">
+        <span id="passwordMatch"></span> <!-- Span to show password match status -->
+    </label>
+    <label class="error" th:errors="*{passwordConfirmation}">Password confirmation error placeholder</label>
+    <br/><br/>
+
+    <label th:text="#{user.label.first-name}">First Name</label>
+    <br/>
+    <input type="text" th:field="*{firstName}"/>
+    <label class="error" th:errors="*{firstName}">First Name error placeholder</label>
+    <br/><br/>
+
+    <label th:text="#{user.label.last-name}">Last Name</label>
+    <br/>
+    <input type="text" th:field="*{lastName}"/>
+    <label class="error" th:errors="*{lastName}">Last Name error placeholder</label>
+    <br/><br/>
+
+    <label th:text="#{user.label.email}">Email</label>
+    <br/>
+    <input type="text" th:field="*{email}"/>
+    <label class="error" th:errors="*{email}">Email error placeholder</label>
+    <br/><br/>
+
+    <div th:if="${isAuthenticated && session.isAdmin}"><label th:text="#{user.label.phone}">Phone</label>
+        <br/>
+        <input type="text" th:field="*{phone}"/>
+        <label class="error" th:errors="*{phone}">Phone error placeholder</label>
+        <br/><br/>
+    </div>
+
+    <div th:if="${isAuthenticated && session.isAdmin}">
+        <input type="checkbox" th:field="*{roles}" th:value="ADMIN" th:checked="${user.roles.contains('ADMIN')}"/> ADMIN
+    </div>
+
+
+    <input type="submit" value="Save"/>
+</form>
+
+<script>
+    document.getElementById('passwordConfirmation').addEventListener('input', function () {
+        var password = document.getElementById('password').value;
+        var passwordConfirmation = document.getElementById('passwordConfirmation').value;
+        var passwordMatchSpan = document.getElementById('passwordMatch');
+
+        if (password === passwordConfirmation) {
+            passwordMatchSpan.innerText = 'Passwords match';
+            passwordMatchSpan.style.color = 'green';
+        } else {
+            passwordMatchSpan.innerText = 'Passwords do not match';
+            passwordMatchSpan.style.color = 'red';
+        }
+    });
+</script>
+</body>
+</html>

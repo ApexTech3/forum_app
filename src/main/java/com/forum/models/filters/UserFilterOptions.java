@@ -1,6 +1,7 @@
 package com.forum.models.filters;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class UserFilterOptions {
     private Optional<String> username;
@@ -13,11 +14,11 @@ public class UserFilterOptions {
     }
 
     public UserFilterOptions(String username, String email, String firstName, String sortBy, String sortOrder) {
-        this.username = Optional.ofNullable(username);
-        this.email = Optional.ofNullable(email);
-        this.firstName = Optional.ofNullable(firstName);
-        this.sortBy = Optional.ofNullable(sortBy);
-        this.sortOrder = Optional.ofNullable(sortOrder);
+        this.username = Optional.ofNullable(username).filter(Predicate.not(String::isEmpty));
+        this.email = Optional.ofNullable(email).filter(Predicate.not(String::isEmpty));
+        this.firstName = Optional.ofNullable(firstName).filter(Predicate.not(String::isEmpty));
+        this.sortBy = Optional.ofNullable(sortBy).filter(Predicate.not(String::isEmpty));
+        this.sortOrder = Optional.ofNullable(sortOrder).filter(Predicate.not(String::isEmpty));
     }
 
     public Optional<String> getUsername() {

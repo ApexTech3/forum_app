@@ -17,8 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
 import static com.forum.Helpers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,9 +81,9 @@ public class PostServiceTests {
 
     @Test
     public void getByTitle_Should_CallRepository_When_MethodCalled() {
-        service.getByTitle("title");
+        service.getBySimilarTitle("title");
 
-        Mockito.verify(mockRepository, Mockito.times(1)).getByTitle("title");
+        Mockito.verify(mockRepository, Mockito.times(1)).getBySimilarTitle("title");
     }
 
     @Test
@@ -106,7 +104,7 @@ public class PostServiceTests {
     public void create_Should_Throw_When_TitleNotUnique() {
         Post mockPost = createMockPost();
 
-        Mockito.when(mockRepository.getByTitle(mockPost.getTitle())).thenReturn(List.of(mockPost));
+        Mockito.when(mockRepository.getByTitle(mockPost.getTitle())).thenReturn(mockPost);
 
         Assertions.assertThrows(EntityDuplicateException.class, () -> service.create(mockPost));
     }
@@ -115,7 +113,8 @@ public class PostServiceTests {
     public void create_Should_CallRepository_When_TitleUnique() {
         Post mockPost = createMockPost();
 
-        Mockito.when(mockRepository.getByTitle(mockPost.getTitle())).thenThrow(EntityNotFoundException.class);
+        Mockito.when(mockRepository.getByTitle(mockPost.getTitle()))
+                .thenThrow(EntityNotFoundException.class);
 
         service.create(mockPost);
 
@@ -200,23 +199,66 @@ public class PostServiceTests {
     }
 
     @Test
-    public void associateTagWithPost_Should_Throw_When_PostNotExists() {
-//todo
+    public void associateTagWithPost_ShouldIncreaseTagSetSize_WhenArgumentsAreValid() {
+        Tag tag = createMockTag();
+        tag.setTagId(2);
+        Post post = createMockPost();
+
+        Mockito.when(mockRepository.get(Mockito.anyInt())).thenReturn(post);
+        Mockito.when(mockTagRepository.getById(Mockito.anyInt())).thenReturn(tag);
+
+        service.associateTagWithPost(post.getId(), tag.getTagId());
+
+        Assertions.assertEquals(2, post.getTags().size());
+
+        Mockito.verify(mockRepository, Mockito.times(1)).update(post);
     }
 
     @Test
-    public void associateTagWithPost_Should_Throw_When_TagNotExists() {
-//todo
+    public void associateTagWithPost_Should_Throw_When_PostDoesNotExist() {
+        Tag tag = createMockTag();
+
+        Mockito.when(mockRepository.get(Mockito.anyInt()))
+                .thenThrow(EntityNotFoundException.class);
+
+        Assertions.assertThrows(EntityNotFoundException.class, ()-> service.associateTagWithPost(1,1));
+
+    }
+
+    @Test
+    public void associateTagWithPost_Should_Throw_When_TagDoesNotExist() {
+        Post post = createMockPost();
+
+        Mockito.when(mockTagRepository.getById(Mockito.anyInt()))
+                .thenThrow(EntityNotFoundException.class);
+
+        Assertions.assertThrows(EntityNotFoundException.class, ()-> service.associateTagWithPost(1, 1));
+
+    }
+
+    @Test
+    public void disassociateTagWithPost_ShouldDecreaseTagSetSize_WhenArgumentsAreValid() {
+        Post post = createMockPost();
+        Tag tag = post.getTags().stream().findFirst().get();
+        Mockito.when(mockRepository.get(Mockito.anyInt())).thenReturn(post);
+        Mockito.when(mockTagRepository.getById(Mockito.anyInt())).thenReturn(tag);
+
+        service.dissociateTagWithPost(post.getId(), tag.getTagId());
+
+        Assertions.assertEquals(0, post.getTags().size());
+
+        Mockito.verify(mockRepository, Mockito.times(1)).update(post);
     }
 
     @Test
     public void dissociateTagWithPost_Should_Throw_When_TagNotInPost() {
-        Tag mockTag = new Tag();
-        mockTag.setTagId(2);
-        mockTag.setName("mockTag2");
-        Mockito.when(mockRepository.get(1)).thenReturn(createMockPost());
-        Mockito.when(mockTagRepository.getById(2)).thenReturn(mockTag);
-        Assertions.assertThrows(EntityNotFoundException.class, () -> service.dissociateTagWithPost(1, 2));
+        Post post = createMockPost();
+        Tag tag = createMockTag();
+        tag.setTagId(2);
+        tag.setName("MockTag2");
+        Mockito.when(mockRepository.get(Mockito.anyInt())).thenReturn(post);
+        Mockito.when(mockTagRepository.getById(Mockito.anyInt())).thenReturn(tag);
+        Assertions.assertThrows(EntityNotFoundException.class, () -> service.dissociateTagWithPost(post.getId(), tag.getTagId()));
 
     }
 }

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<footer th:fragment="footer">
+    <p class="text-center">
+        <a class="text-center" href="#"  th:href="@{/about}">
+            <small class="text-center"  th:text="'Total Users: ' + ${usersCount} + '.Total Posts: ' + ${postsCount} + ${'. © Copyright ' + #dates.year(#dates.createNow()) + ' Forum. Property of ApexTech3 Enterprises'}">
+                Forum
+            </small>
+        </a>
+</footer>

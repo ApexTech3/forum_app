@@ -1,6 +1,5 @@
 package com.forum.controllers.rest;
 
-import com.forum.exceptions.AlreadyLikedDislikedException;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
@@ -25,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,11 +76,12 @@ public class PostRestController {
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String content,
             @RequestParam(required = false) Integer creatorId,
+            @RequestParam(required = false) List<Integer> tags,
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String sortOrder
     ) {
         try {
-            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creatorId, sortBy, sortOrder);
+            PostFilterOptions filterOptions = new PostFilterOptions(id, title, content, creatorId, tags ,sortBy, sortOrder);
             return mapper.fromPostListToResponseDto(service.get(filterOptions));
         } catch (AuthorizationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -98,7 +99,7 @@ public class PostRestController {
             List<Post> postListOfOne = new ArrayList<>();
             postListOfOne.add(service.getById(id));
             return mapper.fromPostListToResponseDto(postListOfOne).get(0);
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -111,7 +112,7 @@ public class PostRestController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             return mapper.fromPostListToResponseDto(service.getByUserId(userId));
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -123,8 +124,8 @@ public class PostRestController {
                                                   @PathVariable String sentence) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            return mapper.fromPostListToResponseDto(service.getByTitle(sentence));
-        } catch (AuthorizationException e) {
+            return mapper.fromPostListToResponseDto(service.getBySimilarTitle(sentence));
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -137,7 +138,7 @@ public class PostRestController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             return mapper.fromPostListToResponseDto(service.getByContent(sentence));
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -152,7 +153,7 @@ public class PostRestController {
             Post post = mapper.fromRequestDto(requestDto, user);
             service.create(post);
             return post;
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -168,7 +169,7 @@ public class PostRestController {
             Post post = mapper.fromRequestDto(id, requestDto, user);
             service.update(post, user);
             return post;
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -180,7 +181,7 @@ public class PostRestController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             service.archive(id, user);
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
@@ -202,12 +203,12 @@ public class PostRestController {
             Comment comment = commentMapper.fromRequestDto(requestDto, user, service.getById(postId));
             commentService.create(comment);
             return new CommentResponseDto(comment);
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
 
-    @PutMapping("/comments/{commentId}") //todo is postId needed?
+    @PutMapping("/comments/{commentId}")
     public CommentResponseDto editComment(@RequestHeader HttpHeaders headers,
                                           @PathVariable int commentId,
                                           @RequestBody CommentRequestDto requestDto) {
@@ -219,7 +220,7 @@ public class PostRestController {
             return new CommentResponseDto(comment);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
 
@@ -232,7 +233,7 @@ public class PostRestController {
             commentService.delete(commentId, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
@@ -245,7 +246,7 @@ public class PostRestController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             return mapper.toPostResponseDto(service.like(user, postId));
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
@@ -255,7 +256,7 @@ public class PostRestController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             return mapper.toPostResponseDto(service.dislike(user, postId));
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
     }
@@ -267,11 +268,11 @@ public class PostRestController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             service.associateTagWithPost(postId, tagId);
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AlreadyLikedDislikedException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }//todo AlreadyLikedDislikedException why does it throw this? EntityNotFoundException not handled for either post or tag
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
         return HttpStatus.OK;
     }
 
@@ -280,10 +281,10 @@ public class PostRestController {
         try {
             User user = authenticationHelper.tryGetUser(headers);
             service.dissociateTagWithPost(postId, tagId);
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (AlreadyLikedDislikedException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
         return HttpStatus.OK;
     }

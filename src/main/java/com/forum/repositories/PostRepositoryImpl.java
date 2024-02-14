@@ -34,19 +34,25 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> get(PostFilterOptions filterOptions) {
+
         try (Session session = sessionFactory.openSession()) {
-            String queryStr = "from Post where (:id is null or id = :id) and " +
-                    "(:title is null or title LIKE CONCAT('%', :title, '%')) and " +
-                    "(:content is null or content LIKE CONCAT('%', :content, '%')) and " +
-                    "(:createdBy is null or createdBy.id = :createdBy) and isArchived = false"
-                    + sortOrder(filterOptions);
+            String queryStr = "from Post p " +
+                    "where (:id is null or p.id = :id) and " +
+                    "(:title is null or p.title LIKE CONCAT('%', :title, '%')) and " +
+                    "(:content is null or p.content LIKE CONCAT('%', :content, '%')) and " +
+                    "(:createdBy is null or p.createdBy.id = :createdBy) and " +
+                    "(EXISTS (SELECT 1 FROM p.tags t WHERE t.tagId IN (:tagIds))) AND " +
+                    " p.isArchived = false "+
+                    sortOrder(filterOptions);
+
             Query<Post> query = session.createQuery(queryStr, Post.class);
             query.setParameter("id", filterOptions.getId().orElse(null));
             query.setParameter("title", filterOptions.getTitle().orElse(null));
             query.setParameter("content", filterOptions.getContent().orElse(null));
             query.setParameter("createdBy", filterOptions.getCreator().orElse(null));
+            query.setParameterList("tagIds", filterOptions.getTags().orElse(null));
             if (query.list().isEmpty()) {
-                throw new EntityNotFoundException("Not found", "not found", "not found");//todo
+                throw new EntityNotFoundException("No posts were found within the criteria");
             }
             return query.list();
         }
@@ -114,7 +120,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("id", id);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("id", id);
+                throw new EntityNotFoundException("Post","id", String.valueOf(id));
             }
             return result.get(0);
         }
@@ -127,7 +133,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("title", title);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("title", "title", title);//todo
+                throw new EntityNotFoundException("Post", "title", title);
             }
             return result.get(0);
         }
@@ -140,22 +146,35 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("userId", userId);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Post", userId);//todo fix the message
+                throw new EntityNotFoundException("Post","creator ID" ,String.valueOf(userId));
             }
             return result;
         }
     }
 
     @Override
-    public List<Post> getByTitle(String sentence) {
+    public List<Post> getBySimilarTitle(String sentence) {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery("from Post where title LIKE concat('%',  :sentence, '%')", Post.class);
             query.setParameter("sentence", sentence);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Post", "title", sentence);//todo fix the message
+                throw new EntityNotFoundException("Post", "title which contains", sentence);
             }
             return result;
+        }
+    }
+
+    @Override
+    public Post getByTitle(String title) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Post> query = session.createQuery("from Post where title = :title", Post.class);
+            query.setParameter("title", title);
+            List<Post> result = query.list();
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("Post", "title", title);
+            }
+            return result.get(0);
         }
     }
 
@@ -166,7 +185,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("sentence", sentence);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Post", "content", sentence);//todo fix the message
+                throw new EntityNotFoundException("Post", "content which contains", sentence);
             }
             return result;
         }

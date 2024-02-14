@@ -4,9 +4,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
-public class UserUpdateDto implements BaseUserDto {
+public class RegisterDto {
+
+    @Size(min = 4, max = 32, message = "Username should be between 4 and 32 symbols")
     private String username;
-    @NotEmpty(message = "Password can't be empty")
+    @Size(min = 4, max = 32, message = "Password should be between 4 and 32 symbols")
     private String password;
     @NotEmpty(message = "Password confirmation can't be empty")
     private String passwordConfirmation;
@@ -21,17 +23,6 @@ public class UserUpdateDto implements BaseUserDto {
     private String email;
     private String profilePicture;
 
-    public UserUpdateDto() {
-    }
-
-    public UserUpdateDto(String password, String firstName, String lastName, String email, String profilePicture) {
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.profilePicture = profilePicture;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -40,7 +31,6 @@ public class UserUpdateDto implements BaseUserDto {
         this.username = username;
     }
 
-    @Override
     public String getPassword() {
         return password;
     }
@@ -57,7 +47,6 @@ public class UserUpdateDto implements BaseUserDto {
         this.passwordConfirmation = passwordConfirmation;
     }
 
-    @Override
     public String getFirstName() {
         return firstName;
     }
@@ -66,7 +55,6 @@ public class UserUpdateDto implements BaseUserDto {
         this.firstName = firstName;
     }
 
-    @Override
     public String getLastName() {
         return lastName;
     }
@@ -75,7 +63,6 @@ public class UserUpdateDto implements BaseUserDto {
         this.lastName = lastName;
     }
 
-    @Override
     public String getEmail() {
         return email;
     }
@@ -84,7 +71,6 @@ public class UserUpdateDto implements BaseUserDto {
         this.email = email;
     }
 
-    @Override
     public String getProfilePicture() {
         return profilePicture;
     }

@@ -6,6 +6,8 @@ import com.forum.services.contracts.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
@@ -18,5 +20,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role get(String role) {
         return roleRepository.get(role);
+    }
+
+    @Override
+    public List<Role> get() {
+        return roleRepository.get();
     }
 }

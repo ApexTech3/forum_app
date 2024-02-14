@@ -2,7 +2,9 @@ package com.forum.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +27,11 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post parentPost;
+
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "stamp_created")
+    private Timestamp stampCreated;
 
 
 
@@ -61,6 +68,14 @@ public class Comment {
 
     public void setPostId(Post parentPost) {
         this.parentPost = parentPost;
+    }
+
+    public Timestamp getStampCreated() {
+        return stampCreated;
+    }
+
+    public void setStampCreated(Timestamp stampCreated) {
+        this.stampCreated = stampCreated;
     }
 
     @Override

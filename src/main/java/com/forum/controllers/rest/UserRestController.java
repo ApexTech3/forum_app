@@ -6,10 +6,7 @@ import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
-import com.forum.models.dtos.UserAdminDto;
-import com.forum.models.dtos.UserDto;
-import com.forum.models.dtos.UserResponse;
-import com.forum.models.dtos.UserUpdateDto;
+import com.forum.models.dtos.*;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,9 +38,9 @@ public class UserRestController {
     }
 
     @PostMapping
-    public UserResponse register(@Valid @RequestBody UserDto userDto) {
+    public UserResponse register(@Valid @RequestBody RegisterDto registerDto) {
         try {
-            User user = mapper.fromDto(userDto);
+            User user = mapper.fromRegisterDto(registerDto);
             return mapper.toDto(service.register(user));
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
@@ -57,7 +55,7 @@ public class UserRestController {
             User user = helper.tryGetUser(headers);
             UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName, sortBy, sortOrder);
             return service.get(filterOptions, user).stream().map(mapper::toDto).collect(Collectors.toList());
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -76,7 +74,7 @@ public class UserRestController {
             User requester = helper.tryGetUser(headers);
             User user = mapper.fromDto(userUpdateDto, id);
             return mapper.toDto(service.update(user, requester));
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -92,7 +90,7 @@ public class UserRestController {
             User requester = helper.tryGetUser(headers);
             User user = mapper.fromDto(userAdminDto, id);
             return mapper.toDto(service.updateAsAdmin(user, requester));
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -104,7 +102,7 @@ public class UserRestController {
         try {
             User user = helper.tryGetUser(headers);
             return service.delete(user, id);
-        } catch (AuthorizationException e) {
+        } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

@@ -103,7 +103,6 @@ public class UserServiceTests {
         User mockUser = createMockUser();
         Mockito.when(mockRepository.get(mockUser.getUsername())).thenThrow(EntityNotFoundException.class);
         Mockito.when(mockRepository.getByEmail(mockUser.getEmail())).thenThrow(EntityNotFoundException.class);
-        Mockito.when(mockRoleService.get("USER")).thenReturn(createMockUserRole());
 
         service.register(mockUser);
 

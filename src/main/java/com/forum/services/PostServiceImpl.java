@@ -65,8 +65,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getByTitle(String title) {
-        return repository.getByTitle(title);
+    public List<Post> getBySimilarTitle(String title) {
+        return repository.getBySimilarTitle(title);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post create(Post post) {
         try {
-            getByTitle(post.getTitle());
+            repository.getByTitle(post.getTitle());
             throw new EntityDuplicateException("Post", "title", post.getTitle());
         } catch (EntityNotFoundException e) {
             return repository.create(post);
@@ -93,7 +93,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post update(Post post, User user) {
-        if (!AuthenticationHelper.isAdmin(user) && user.getId() != post.getCreatedBy().getId()) {//todo check if user is blocked
+        if (!AuthenticationHelper.isAdmin(user) && user.getId() != post.getCreatedBy().getId()) {
             throw new AuthorizationException("Only admins or creators can edit a post.");
         }
         return repository.update(post);
@@ -130,13 +130,10 @@ public class PostServiceImpl implements PostService {
         Post post = repository.get(postId);
         Tag tag = tagRepository.getById(tagId);
 
-        if (!post.getTags().remove(tag)) throw new EntityNotFoundException("Post", "Tag", "Not Found");
-        repository.update(post);
-    }
+        if (!post.getTags().contains(tag)) throw new EntityNotFoundException("Post", "Tag ID", String.valueOf(tagId));
 
-    @Override
-    public List<Post> filter() {
-        return null;
-        //TODO
+        post.getTags().remove(tag);
+
+        repository.update(post);
     }
 }
