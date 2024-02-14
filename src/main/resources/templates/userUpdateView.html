@@ -58,17 +58,11 @@
         <br/><br/>
     </div>
 
-    <div th:if="${isAuthenticated && session.isAdmin}"><label th:text="#{user.label.roles}">Roles</label>
-        <br/>
-        <select th:field="*{roles}" multiple="multiple">
-            <option th:each="role : ${roles}"
-                    th:value="${role.role}"
-                    th:text="${role.role}">
-                USER
-            </option>
-        </select>
-        <br/><br/>
+    <div th:if="${isAuthenticated && session.isAdmin}">
+        <input type="checkbox" th:field="*{roles}" th:value="ADMIN" th:checked="${user.roles.contains('ADMIN')}"/> ADMIN
     </div>
+
+
     <input type="submit" value="Save"/>
 </form>
 

@@ -8,13 +8,13 @@ import com.forum.helpers.UserMapper;
 import com.forum.models.User;
 import com.forum.models.dtos.UserAdminDto;
 import com.forum.models.dtos.UserFilterDto;
-import com.forum.models.dtos.UserUpdateDto;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.RoleService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,6 +62,10 @@ public class UserMvcController {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "errorView";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
         }
     }
 
@@ -97,7 +101,7 @@ public class UserMvcController {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "errorView";
-        }//todo add try catch blocks below
+        }
         UserAdminDto dto = mapper.toUpdateAdminDto(userService.get(id));
         model.addAttribute("user", dto);
         model.addAttribute("roles", roleService.get());
@@ -105,7 +109,8 @@ public class UserMvcController {
     }
 
     @PostMapping("/{id}/edit")
-    public String editUser(@PathVariable int id, @ModelAttribute("user") UserAdminDto userDto, BindingResult bindingResult, Model model, HttpSession session) {
+    public String editUser(@PathVariable int id, @Valid @ModelAttribute("user") UserAdminDto userDto,
+                           BindingResult bindingResult, Model model, HttpSession session) {
         User user;
         try {
             user = authenticationHelper.tryGetCurrentUser(session);
@@ -121,11 +126,39 @@ public class UserMvcController {
         if (bindingResult.hasErrors()) {
             return "userUpdateView";
         }
-
-        if (AuthenticationHelper.isAdmin(user)) {
-            userService.update(mapper.fromDto(userDto, id), user);
+        try {
+            if (AuthenticationHelper.isAdmin(user)) {
+                userService.update(mapper.fromDto(userDto, id), user);
+            }
+            return "redirect:/users";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
         }
-        return "redirect:/users";
+    }
+
+    @GetMapping("/{id}/delete")
+    public String deleteUser(@PathVariable int id, Model model, HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetCurrentUser(session);
+            tryAuthenticateUser(id, user);
+        } catch (AuthenticationFailureException e) {
+            return "redirect:/auth/login";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        }
+        try {
+            userService.delete(user, id);
+            return "redirect:/users";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        }
     }
 
     private void tryAuthenticateUser(int id, User user) {
@@ -138,6 +171,7 @@ public class UserMvcController {
     public long populateUsersCount() {
         return userService.getCount();
     }
+
     @ModelAttribute("postsCount")
     public long populatePostsCount() {
         return postService.getCount();

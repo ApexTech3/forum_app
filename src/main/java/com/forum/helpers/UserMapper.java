@@ -34,6 +34,7 @@ public class UserMapper {
         user.setEmail(userAdminDto.getEmail());
         user.setProfilePicture(userAdminDto.getProfilePicture());
         user.setPhone(userAdminDto.getPhone());
+        userAdminDto.getRoles().add(roleService.get("USER"));
         user.setRoles(userAdminDto.getRoles().stream().map(r -> roleService.get(r.getRole())).collect(Collectors.toSet()));
         user.setBlocked(userAdminDto.isBlocked());
         return user;
