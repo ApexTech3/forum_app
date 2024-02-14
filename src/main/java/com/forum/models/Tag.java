@@ -1,6 +1,5 @@
 package com.forum.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -43,7 +42,7 @@ public class Tag {
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
         Tag tag = (Tag) o;
-        return getTagId() == tag.getTagId() && Objects.equals(getName(), tag.getName());
+        return Objects.equals(getName(), tag.getName());
     }
 
     @Override

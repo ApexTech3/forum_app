@@ -8,6 +8,7 @@ import com.forum.services.contracts.PostService;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -51,6 +52,7 @@ public class PostMapper {
         post.setTitle(postRequestDto.getTitle());
         post.setContent(postRequestDto.getContent());
         post.setCreatedBy(creator);
+        post.setTags(new HashSet<>(postRequestDto.getTags()));
         return post;
     }
 

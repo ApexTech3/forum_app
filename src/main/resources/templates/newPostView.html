@@ -20,7 +20,18 @@
                 <div class="header d-flex align-items-center bg-primary text-white">
                     <h6 class="title mb-0" id="threadTitleLabel" style="font-size: 20px; color: white; padding: 10px;">Create new post</h6>
                 </div>
-                <div class="card body">
+                <div class="card body p-2">
+                    <div class="dropdown dropend">
+                        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 10px;">
+                            Add a Tag
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" th:each="tag : ${tags}" th:text="${tag.name}" th:onclick="addTag([[${tag.name}]])"></button></li>
+                        </ul>
+                    </div>
+                    <a>Tags: </a>
+                    <div id="tagsTab" class="small-tab">
+                    </div>
                     <form id="newPostForm" th:object="${postDto}" th:action="@{/posts/new}" method="post">
                     <div class="form-group">
                         <label for="threadTitle">Title</label>
@@ -33,23 +44,13 @@
                     </div>
                     <label class="form-error" th:errors="*{title}">Username error placeholder</label>
                     <label class="form-error" th:errors="*{content}">Username error placeholder</label>
-<!--                    <div class="dropdown dropend">-->
-<!--                        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 10px;">-->
-<!--                            Add a Tag-->
-<!--                        </button>-->
-<!--                        <ul class="dropdown-menu">-->
-<!--                            <li><button class="dropdown-item" th:each="tag : ${tags}" th:text="${tag.name}" onclick=addTag(`${tag.name}`)></button></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <input type="hidden" id="tagsField" th:field="*{tags}">-->
-<!--                    <div id="tagsTab" class="small-tab">-->
-<!--                        &lt;!&ndash; Tags will be visualized here &ndash;&gt;-->
-<!--                    </div>-->
+                        <input type="hidden" id="tagsList" name="tagsList" th:value="${postDto.tags}">
                     <div class="footer">
                         <button type="reset" class="btn btn-light">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Post</button>
+                        <button type="submit" class="btn btn-primary" onclick="gatherTags(); document.getElementById('newPostForm').submit();">Post</button>
                     </div>
                     </form>
+
                 </div>
         </div>
     </div>

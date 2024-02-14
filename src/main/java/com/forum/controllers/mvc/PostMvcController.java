@@ -120,6 +120,7 @@ public class PostMvcController {
     @PostMapping("/new")
     public String createPost(@Valid @ModelAttribute("postDto") PostRequestDto postRequestDto,
                              BindingResult bindingResult,
+                             @RequestParam("tagsList") List<String> tagsList,
                              Model model,
                              HttpSession httpSession) {
         User user;
@@ -137,7 +138,12 @@ public class PostMvcController {
             return "newPostView";
         }
         try {
-            Post post = postMapper.fromRequestDto(postRequestDto, user);
+
+            if(tagsList != null) {
+                List<Tag> tags = tagsList.stream().map(tagService::getByName).toList();
+                postRequestDto.setTags(tags);
+            }
+            Post post = postMapper.fromRequestDtoWithTags(postRequestDto, user);
             postService.create(post);
         } catch(Exception e) {
             // Log any other exceptions
