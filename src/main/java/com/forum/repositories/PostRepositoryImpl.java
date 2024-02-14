@@ -159,7 +159,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("sentence", sentence);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Post", "title", sentence);//todo fix the message #49
+                throw new EntityNotFoundException("Post", "title which contains", sentence);
             }
             return result;
         }
@@ -172,7 +172,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("title", title);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Post", "title", title);//todo fix the message #49
+                throw new EntityNotFoundException("Post", "title", title);
             }
             return result.get(0);
         }
@@ -185,7 +185,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("sentence", sentence);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Post", "content", sentence);//todo fix the message #49
+                throw new EntityNotFoundException("Post", "content which contains", sentence);
             }
             return result;
         }
