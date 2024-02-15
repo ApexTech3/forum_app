@@ -13,6 +13,7 @@ import com.forum.models.User;
 import com.forum.models.dtos.CommentRequestDto;
 import com.forum.models.dtos.PostRequestDto;
 import com.forum.models.dtos.TagDto;
+import com.forum.models.filters.PostFilterOptions;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.TagService;
@@ -66,6 +67,33 @@ public class PostMvcController {
         return tagService.get();
     }
 
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam("searchQuery") String searchQuery, Model model) {
+        PostFilterOptions filterOptions = new PostFilterOptions(null, searchQuery, searchQuery, null, null, null, null);
+
+        List<Post> searchResults = postService.get(filterOptions);
+
+        // Add the search results to the model
+        model.addAttribute("posts", searchResults);
+
+        // Return the name of the view that should display the search results
+        return "mainView";
+    }
+
+    @GetMapping("/mostLiked")
+    public String showMostLikedPosts(Model model) {
+        List<Post> mostLikedPosts = postService.getMostLiked();
+        model.addAttribute("posts", mostLikedPosts);
+        return "mainView";
+    }
+
+    @GetMapping("/mostCommented")
+    public String showMostCommentedPosts(Model model) {
+        List<Post> mostCommentedPosts = postService.getMostCommented();
+        model.addAttribute("posts", mostCommentedPosts);
+        return "mainView";
+    }
+
     @GetMapping("/{id}")
     public String showSinglePost(@PathVariable int id, Model model) {
         try {
@@ -115,7 +143,6 @@ public class PostMvcController {
             return "redirect:/auth/login";
         }
         model.addAttribute("postDto", new PostRequestDto());
-        model.addAttribute("tagDto", new TagDto());
         return "newPostView";
     }
 
@@ -140,7 +167,6 @@ public class PostMvcController {
             return "newPostView";
         }
         try {
-
             if(tagsList != null) {
                 List<Tag> tags = tagsList.stream().map(tagService::getByName).toList();
                 postRequestDto.setTags(tags);
@@ -155,7 +181,8 @@ public class PostMvcController {
     }
 
     @PostMapping("/newTag")
-    public String createTag(@Valid @ModelAttribute("tagDto") TagDto tagDto, BindingResult bindingResult, Model model) {
+    public String createTag(@Valid @ModelAttribute("tagDto") TagDto tagDto, BindingResult bindingResult, Model model,
+                            HttpSession httpSession) {
         if(bindingResult.hasErrors()) {
             // Log the validation errors
             System.out.println("Validation errors: " + bindingResult.getAllErrors());
@@ -171,6 +198,10 @@ public class PostMvcController {
         return "redirect:/posts/new";
     }
 
+    @ModelAttribute("tagDto")
+    public TagDto tagDto() {
+        return new TagDto();
+    }
     @ModelAttribute("usersCount")
     public long populateUsersCount() {
         return userService.getCount();
