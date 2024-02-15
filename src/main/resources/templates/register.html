@@ -13,7 +13,7 @@
             <div class="inner-main">
                 <!-- Inner main header -->
                 <form th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></form>
-                <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                <div class="inner-main-body p-2 p-sm-3">
                     <div class="content">
 
                         <form action="#" th:action="@{/auth/register}" th:object="${register}" method="post">
