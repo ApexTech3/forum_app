@@ -6,9 +6,6 @@ public class TagDto {
     public TagDto() {
     }
 
-    public TagDto(String name) {
-        this.name = name;
-    }
 
     public String getName() {
         return name;
