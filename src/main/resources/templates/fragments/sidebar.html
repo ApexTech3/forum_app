@@ -1,12 +1,10 @@
 <div class="inner-sidebar" th:fragment="sidebar">
     <!-- Inner sidebar header -->
     <div class="inner-sidebar-header justify-content-center">
-        <a th:unless="${isAuthenticated}" th:href="@{/auth/login}" class="btn btn-primary has-icon btn-block"
-           data-toggle="modal" data-target="#threadModal">
+        <a th:unless="${isAuthenticated}" th:href="@{/auth/login}" class="btn btn-primary has-icon btn-block">
             LOGIN TO POST
         </a>
-        <a th:if="${isAuthenticated}" th:href="@{/posts/new}" class="btn btn-primary has-icon btn-block" data-toggle="modal"
-           data-target="#threadModal">
+        <a th:if="${isAuthenticated}" th:href="@{/posts/new}" class="btn btn-primary has-icon btn-block">
             NEW POST
         </a>
     </div>
@@ -14,7 +12,7 @@
 
     <!-- Inner sidebar body -->
     <div class="inner-sidebar-body p-0">
-        <div class="p-3 h-100" data-simplebar="init">
+        <div class="p-3 h-100">
             <div class="simplebar-wrapper" style="margin: -16px;">
                 <div class="simplebar-height-auto-observer-wrapper">
                     <div class="simplebar-height-auto-observer"></div>
