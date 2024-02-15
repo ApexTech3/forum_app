@@ -32,6 +32,10 @@ public class AuthenticationMvcController {
         this.userMapper = userMapper;
     }
 
+    @ModelAttribute("isAuthenticated")
+    public boolean populateIsAuthenticated(HttpSession httpSession) {
+        return httpSession.getAttribute("currentUser") != null;
+    }
 
     @GetMapping("/login")
     public String showLoginPage(Model model) {

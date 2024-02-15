@@ -2,73 +2,95 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <form id="head" th:replace="~{fragments/head.html::head('Register')}"></form>
 <body>
-<form action="#" th:action="@{/auth/register}" th:object="${register}" method="post">
-    <label th:text="#{user.label.username}"></label>
-    <br/>
-    <label>
-        <input type="text" th:field="*{username}">
-    </label>
-    <label class="error" th:errors="*{username}">Username error placeholder.</label>
-    <br/><br/>
 
-    <label th:text="#{user.label.password}"></label>
-    <br/>
-    <label>
-        <input type="password" id="password" th:field="*{password}">
-    </label>
-    <label class="error" th:errors="*{password}">Password error placeholder</label>
-    <br/><br/>
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">
+            <!-- Inner sidebar -->
+            <form th:replace="~{fragments/sidebar.html :: sidebar}"></form>
 
-    <label th:text="#{user.label.password-confirmation}"></label>
-    <br/>
-    <label>
-        <input type="password" id="passwordConfirmation" th:field="*{passwordConfirmation}">
-        <span id="passwordMatch"></span> <!-- Span to show password match status -->
-    </label>
-    <label class="error" th:errors="*{passwordConfirmation}">Password confirmation error placeholder</label>
-    <br/><br/>
+            <!-- Inner main -->
+            <div class="inner-main">
+                <!-- Inner main header -->
+                <form th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></form>
+                <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                    <div class="content">
 
-    <label th:text="#{user.label.first-name}"></label>
-    <br/>
-    <label>
-        <input type="text" th:field="*{firstName}">
-    </label>
-    <label class="error" th:errors="*{firstName}">First name error placeholder</label>
-    <br/><br/>
+                        <form action="#" th:action="@{/auth/register}" th:object="${register}" method="post">
+                            <label th:text="#{user.label.username}"></label>
+                            <br/>
+                            <label>
+                                <input type="text" th:field="*{username}">
+                            </label>
+                            <label class="error" th:errors="*{username}">Username error placeholder.</label>
+                            <br/><br/>
 
-    <label th:text="#{user.label.last-name}"></label>
-    <br/>
-    <label>
-        <input type="text" th:field="*{lastName}">
-    </label>
-    <label class="error" th:errors="*{lastName}">Last name error placeholder</label>
-    <br/><br/>
+                            <label th:text="#{user.label.password}"></label>
+                            <br/>
+                            <label>
+                                <input type="password" id="password" th:field="*{password}">
+                            </label>
+                            <label class="error" th:errors="*{password}">Password error placeholder</label>
+                            <br/><br/>
 
-    <label th:text="#{user.label.email}"></label>
-    <br/>
-    <label>
-        <input type="email" th:field="*{email}">
-    </label>
-    <label class="error" th:errors="*{email}">Email error placeholder</label>
-    <br/><br/>
+                            <label th:text="#{user.label.password-confirmation}"></label>
+                            <br/>
+                            <label>
+                                <input type="password" id="passwordConfirmation" th:field="*{passwordConfirmation}">
+                                <span id="passwordMatch"></span> <!-- Span to show password match status -->
+                            </label>
+                            <label class="error" th:errors="*{passwordConfirmation}">Password confirmation error
+                                placeholder</label>
+                            <br/><br/>
 
-    <button type="submit" class="btn btn-primary mt-2">Register</button>
-</form>
+                            <label th:text="#{user.label.first-name}"></label>
+                            <br/>
+                            <label>
+                                <input type="text" th:field="*{firstName}">
+                            </label>
+                            <label class="error" th:errors="*{firstName}">First name error placeholder</label>
+                            <br/><br/>
 
-<script>
-    document.getElementById('passwordConfirmation').addEventListener('input', function() {
-        var password = document.getElementById('password').value;
-        var passwordConfirmation = document.getElementById('passwordConfirmation').value;
-        var passwordMatchSpan = document.getElementById('passwordMatch');
+                            <label th:text="#{user.label.last-name}"></label>
+                            <br/>
+                            <label>
+                                <input type="text" th:field="*{lastName}">
+                            </label>
+                            <label class="error" th:errors="*{lastName}">Last name error placeholder</label>
+                            <br/><br/>
 
-        if (password === passwordConfirmation) {
-            passwordMatchSpan.innerText = 'Passwords match';
-            passwordMatchSpan.style.color = 'green';
-        } else {
-            passwordMatchSpan.innerText = 'Passwords do not match';
-            passwordMatchSpan.style.color = 'red';
-        }
-    });
-</script>
+                            <label th:text="#{user.label.email}"></label>
+                            <br/>
+                            <label>
+                                <input type="email" th:field="*{email}">
+                            </label>
+                            <label class="error" th:errors="*{email}">Email error placeholder</label>
+                            <br/><br/>
+
+                            <button type="submit" class="btn btn-primary mt-2">Register</button>
+                        </form>
+
+                        <script>
+                            document.getElementById('passwordConfirmation').addEventListener('input', function () {
+                                var password = document.getElementById('password').value;
+                                var passwordConfirmation = document.getElementById('passwordConfirmation').value;
+                                var passwordMatchSpan = document.getElementById('passwordMatch');
+
+                                if (password === passwordConfirmation) {
+                                    passwordMatchSpan.innerText = 'Passwords match';
+                                    passwordMatchSpan.style.color = 'green';
+                                } else {
+                                    passwordMatchSpan.innerText = 'Passwords do not match';
+                                    passwordMatchSpan.style.color = 'red';
+                                }
+                            });
+                        </script>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

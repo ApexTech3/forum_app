@@ -3,20 +3,41 @@
 <form id="head" th:replace="~{fragments/head.html::head(${user.username})}"></form>
 
 <body>
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">
+            <!-- Inner sidebar -->
+            <form th:replace="~{fragments/sidebar.html :: sidebar}"></form>
 
+            <!-- Inner main -->
+            <div class="inner-main">
+                <!-- Inner main header -->
+                <form th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></form>
+                <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                    <div class="content">
 
-<div class="body-content" th:align="center">
-    <h2 th:text="${user.username}">Username</h2>
-    <div th:style="text-align">
-        <p class="margin12" th:text="#{user.label.first-name}  + ': ' +       ${user.firstName}">Pesho</p>
-        <p class="margin12" th:text="#{user.label.last-name} + ': ' +      ${user.lastName}">Peshov</p>
-        <p class="margin12" th:text="#{user.label.email}  + ': ' + ${user.email}">pesho@peshomail.com</p>
-        <p th:if="${session.isAdmin}" class="margin12" th:text="#{user.label.roles}  + ': ' + ${user.roles}">USER</p>
+                        <div class="body-content" th:align="center">
+                            <h2 th:text="${user.username}">Username</h2>
+                            <div th:style="text-align">
+                                <p class="margin12"
+                                   th:text="#{user.label.first-name}  + ': ' +       ${user.firstName}">Pesho</p>
+                                <p class="margin12" th:text="#{user.label.last-name} + ': ' +      ${user.lastName}">
+                                    Peshov</p>
+                                <p class="margin12" th:text="#{user.label.email}  + ': ' + ${user.email}">
+                                    pesho@peshomail.com</p>
+                                <p th:if="${session.isAdmin}" class="margin12"
+                                   th:text="#{user.label.roles}  + ': ' + ${user.roles}">USER</p>
+                            </div>
+                            <h3>
+                                <a href="#" th:href="@{__${requestURI}__/edit}">Edit</a>
+                                <a href="#" th:href="@{__${requestURI}__/delete}">Delete</a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <h3>
-        <a href="#" th:href="@{__${requestURI}__/edit}">Edit</a>
-        <a href="#" th:href="@{__${requestURI}__/delete}">Delete</a>
-    </h3>
 </div>
 </body>
 </html>

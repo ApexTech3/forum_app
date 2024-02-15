@@ -6,9 +6,8 @@ import jakarta.validation.constraints.Size;
 
 public class UserUpdateDto implements BaseUserDto {
     private String username;
-    @NotEmpty(message = "Password can't be empty")
+    private String currentPassword;
     private String password;
-    @NotEmpty(message = "Password confirmation can't be empty")
     private String passwordConfirmation;
     @NotEmpty(message = "First Name can't be empty")
     @Size(min = 4, max = 32, message = "First Name should be between 4 and 32 symbols")
@@ -38,6 +37,14 @@ public class UserUpdateDto implements BaseUserDto {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
     }
 
     @Override

@@ -127,10 +127,8 @@ public class UserMvcController {
             return "userUpdateView";
         }
         try {
-            if (AuthenticationHelper.isAdmin(user)) {
-                userService.update(mapper.fromDto(userDto, id), user);
-            }
-            return "redirect:/users";
+            userService.update(mapper.fromDto(userDto, id), user);
+            return "redirect:/users/{id}";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
