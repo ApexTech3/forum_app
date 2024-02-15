@@ -45,7 +45,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User get(String username) {
         try (Session session = sessionFactory.openSession()) {
-            Query<User> query = session.createQuery("from User where username = :username and isDeleted = false", User.class);
+            Query<User> query = session.createQuery("from User where username like :username and isDeleted = false", User.class);
             query.setParameter("username", username);
             List<User> result = query.list();
             if (result.isEmpty()) {
