@@ -1,6 +1,7 @@
 package com.forum.helpers;
 
 import com.forum.models.Post;
+import com.forum.models.Tag;
 import com.forum.models.User;
 import com.forum.models.dtos.PostRequestDto;
 import com.forum.models.dtos.PostResponseDto;
@@ -62,5 +63,11 @@ public class PostMapper {
             dtos.add(toPostResponseDto(post));
         }
         return dtos;
+    }
+
+    public Tag fromTagDto(String name) {
+        Tag tag = new Tag();
+        tag.setName(name);
+        return tag;
     }
 }

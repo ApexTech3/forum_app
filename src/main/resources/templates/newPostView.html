@@ -3,6 +3,8 @@
 
 <form id="head" th:replace="~{fragments/head.html::head('Create New Post')}"></form>
 
+
+
 <body>
 <div class="container">
     <div class="main-body p-0">
@@ -21,6 +23,7 @@
                     <h6 class="title mb-0" id="threadTitleLabel" style="font-size: 20px; color: white; padding: 10px;">Create new post</h6>
                 </div>
                 <div class="card body p-2">
+                    <div class="d-flex">
                     <div class="dropdown dropend">
                         <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 10px;">
                             Add a Tag
@@ -28,6 +31,8 @@
                         <ul class="dropdown-menu">
                             <li><button class="dropdown-item" th:each="tag : ${tags}" th:text="${tag.name}" th:onclick="addTag([[${tag.name}]])"></button></li>
                         </ul>
+                    </div>
+                    <button type="button" id="openModalButton" class="btn btn-primary" style="margin-left: 10px;">New Tag</button>
                     </div>
                     <a>Tags: </a>
                     <div id="tagsTab" class="small-tab">
@@ -51,6 +56,27 @@
                     </div>
                     </form>
 
+                    <div class="modal fade" id="threadModal" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <form th:object="${tagDto}" th:action="@{/posts/newTag}" method="post">
+                                    <div class="modal-header d-flex align-items-center bg-primary text-white">
+                                        <h6 class="modal-title mb-0" id="threadModalLabel">Create a New Tag</h6>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="newTagThread">Name</label>
+                                            <input type="text" class="form-control" id="newTagThread" placeholder="Enter tag name" th:field="*{name}" autofocus="" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Post</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
                 </div>
         </div>
     </div>
@@ -61,6 +87,43 @@
 </div>
 </div>
 </div>
+
+
+
+
+
+</div>
+
+
+
+
+<!--<div id="myModal" class="modal fade" tabindex="-1" role="dialog">-->
+<!--    <div class="modal-dialog" role="document">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title">Modal Title</h5>-->
+<!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                    <span aria-hidden="true">&times;</span>-->
+<!--                </button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <p th:text="${tags.get(0)}"></p>-->
+<!--            </div>-->
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
 <form th:replace="~{fragments/footer.html::footer}"></form>
+
+<script>
+    $(document).ready(function(){
+        $("#openModalButton").click(function(){
+            $("#threadModal").modal('show');
+        });
+    });
+</script>
 </body>
 </html>

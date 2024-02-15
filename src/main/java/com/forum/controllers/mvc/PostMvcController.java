@@ -12,6 +12,7 @@ import com.forum.models.Tag;
 import com.forum.models.User;
 import com.forum.models.dtos.CommentRequestDto;
 import com.forum.models.dtos.PostRequestDto;
+import com.forum.models.dtos.TagDto;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.TagService;
@@ -114,6 +115,7 @@ public class PostMvcController {
             return "redirect:/auth/login";
         }
         model.addAttribute("postDto", new PostRequestDto());
+        model.addAttribute("tagDto", new TagDto());
         return "newPostView";
     }
 
@@ -150,6 +152,23 @@ public class PostMvcController {
             System.out.println("Error creating post: " + e.getMessage());
         }
         return "redirect:/";
+    }
+
+    @PostMapping("/newTag")
+    public String createTag(@Valid @ModelAttribute("tagDto") TagDto tagDto, BindingResult bindingResult, Model model) {
+        if(bindingResult.hasErrors()) {
+            // Log the validation errors
+            System.out.println("Validation errors: " + bindingResult.getAllErrors());
+            return "newPostView";
+        }
+        try {
+            Tag tag = postMapper.fromTagDto(tagDto.getName());
+            tagService.create(tag);
+        } catch(Exception e) {
+            // Log any other exceptions
+            System.out.println("Error creating tag: " + e.getMessage());
+        }
+        return "redirect:/posts/new";
     }
 
     @ModelAttribute("usersCount")
