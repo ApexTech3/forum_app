@@ -38,3 +38,9 @@ function gatherTags() {
 
     document.getElementById('tagsList').value = tagsList.join(',');
 }
+function submitPost() {
+    gatherTags();
+    const form = document.getElementById('newPostForm');
+    form.action = "/posts/new";
+    form.submit();
+}
