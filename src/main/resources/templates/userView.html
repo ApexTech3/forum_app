@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-<form id="head" th:replace="~{fragments/head.html::head(${user.username})}"></form>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<form th:replace="~{fragments/head.html::head(${user.username})}"></form>
 
 <body>
 <div class="container">
@@ -12,7 +12,7 @@
             <!-- Inner main -->
             <div class="inner-main">
                 <!-- Inner main header -->
-                <form th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></form>
+                <div th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></div>
                 <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
                     <div class="content">
 
@@ -39,5 +39,8 @@
         </div>
     </div>
 </div>
+
+<form th:replace="~{fragments/footer.html::footer}"></form>
+
 </body>
 </html>

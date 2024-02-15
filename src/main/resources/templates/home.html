@@ -4,7 +4,7 @@
 <form th:replace="~{fragments/header.html::inner-main-header}"></form>
 <div class="body-content">
     <h2 th:text="#{home.welcome}">Welcome (design)!</h2>
-    <img src="../static/images/logo.png" th:src="@{/images/logo.png}" alt="Forum logo"/>
+    <img src="../static/images/logo.png" th:src="@{../static/images/logo.png}" alt="Forum logo"/>
     <p th:text="'Total Users: ' + ${usersCount}">Total Users</p>
     <p th:text="'Total Posts: ' + ${postsCount}">Total Posts</p>
 </div>
