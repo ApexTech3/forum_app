@@ -17,6 +17,7 @@ public interface PostService {
     public List<Post> getMostLiked();
     List<Post> getRecentlyCreated();
     List<Post> get(PostFilterOptions filterOptions);
+    List<Post> getByContentOrTitle(String sentence);
     Post getById(int id);
     List<Post> getBySimilarTitle(String title);
     List<Post> getByContent(String content);

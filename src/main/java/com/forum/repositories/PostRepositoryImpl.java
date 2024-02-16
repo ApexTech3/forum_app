@@ -77,6 +77,23 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public List<Post> getByContentOrTitle(String sentence) {
+    try (Session session = sessionFactory.openSession()) {
+        String queryStr = "from Post p " +
+                "where (:title is null or p.title LIKE CONCAT('%', :content, '%')) or " +
+                "(:content is null or p.content LIKE CONCAT('%', :content, '%'))";
+
+        Query<Post> query = session.createQuery(queryStr, Post.class);
+        query.setParameter("title", sentence);
+        query.setParameter("content", sentence);
+        if (query.list().isEmpty()) {
+            throw new EntityNotFoundException("No posts were found within the criteria");
+        }
+        return query.list();
+    }
+}
+
+    @Override
     public long getCount() {
         try (Session session = sessionFactory.openSession()) {
             Query<Long> query = session.createQuery("select count(*)from Post where isArchived = false", Long.class);

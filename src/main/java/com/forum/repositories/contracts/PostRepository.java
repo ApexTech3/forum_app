@@ -11,6 +11,7 @@ public interface PostRepository {
     List<Post> getAll();
     public Page<Post> findAll(int page, int size);
     List<Post> get(PostFilterOptions filterOptions);
+    public List<Post> getByContent(String query);
     long getCount();
     List<Post> getMostCommented();
     List<Post> getMostLiked();
@@ -20,7 +21,7 @@ public interface PostRepository {
     List<Post> getByUserId(int userId);
     List<Post> getBySimilarTitle(String sentence);
     Post getByTitle(String title);
-    List<Post> getByContent(String sentence);
+    List<Post> getByContentOrTitle(String sentence);
     Post create(Post post);
     Post update(Post post);
     void archive(int id);

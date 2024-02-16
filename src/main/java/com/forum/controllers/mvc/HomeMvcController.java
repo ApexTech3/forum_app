@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/")
 public class HomeMvcController {
@@ -41,6 +43,18 @@ public class HomeMvcController {
         model.addAttribute("totalPages", postPage.getTotalPages());
         model.addAttribute("showPagination", true);
 
+        return "mainView";
+    }
+
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam("query") String query, Model model) {
+
+        List<Post> searchResults = postService.getByContentOrTitle(query);
+
+        // Add the search results to the model
+        model.addAttribute("posts", searchResults);
+
+        // Return the name of the view that should display the search results
         return "mainView";
     }
 
