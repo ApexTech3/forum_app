@@ -29,6 +29,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -69,28 +70,32 @@ public class PostMvcController {
 
     @GetMapping("/search")
     public String searchPosts(@RequestParam("searchQuery") String searchQuery, Model model) {
-        PostFilterOptions filterOptions = new PostFilterOptions(null, searchQuery, searchQuery, null, null, null, null);
+        PostFilterOptions filterOptions = new PostFilterOptions(null, null, searchQuery, null, new ArrayList<>(), null, null);
 
         List<Post> searchResults = postService.get(filterOptions);
 
-        // Add the search results to the model
         model.addAttribute("posts", searchResults);
 
-        // Return the name of the view that should display the search results
         return "mainView";
     }
 
     @GetMapping("/mostLiked")
-    public String showMostLikedPosts(Model model) {
+    public String showMostLikedPosts( Model model) {
         List<Post> mostLikedPosts = postService.getMostLiked();
+
         model.addAttribute("posts", mostLikedPosts);
+        model.addAttribute("showPagination", false);
+
         return "mainView";
     }
 
     @GetMapping("/mostCommented")
     public String showMostCommentedPosts(Model model) {
         List<Post> mostCommentedPosts = postService.getMostCommented();
+
         model.addAttribute("posts", mostCommentedPosts);
+        model.addAttribute("showPagination", false);
+
         return "mainView";
     }
 

@@ -66,7 +66,7 @@
 
 
 
-                        <ul class="pagination pagination-sm pagination-circle justify-content-center mb-0">
+                        <ul class="pagination pagination-sm pagination-circle justify-content-center mb-0" th:if="${showPagination}">
                             <!-- Previous Page -->
                             <li class="page-item" th:class="${currentPage == 1 ? 'disabled' : ''}">
                                 <a class="page-link" th:href="@{/?page=__${currentPage - 1}__}">Previous</a>
