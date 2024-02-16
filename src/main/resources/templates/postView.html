@@ -23,14 +23,14 @@
 
 
                             <div class="media forum-item">
-                                <a href="javascript:void(0)" class="card-link">
+                                <a href="#" class="card-link">
                                     <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle"
                                          width="50"
                                          alt="User"/>
                                     <small class="d-block text-center text-muted">Newbie</small>
                                 </a>
                                 <div class="media-body ml-3">
-                                    <a href="javascript:void(0)" th:text="${post.getCreatedBy().getUsername()}"
+                                    <a href="#" th:text="${post.getCreatedBy().getUsername()}"
                                        class="text-secondary">Mokrani</a>
                                     <small class="text-muted ml-2"
                                            th:text="${#dates.format(post.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour
@@ -128,6 +128,7 @@
 
                     <div class="card mb-2">
                         <div class="card-body">
+
                             <div class="w-auto">
                             <a th:unless="${isAuthenticated}" th:href="@{/auth/login}" class="btn btn-primary has-icon btn-block" style="width: 100%;">
                                 LOGIN TO REPLY
@@ -135,14 +136,13 @@
                             </div>
                             <div id="quotedContent" style="font-style: italic;" th:id="quotedContent"></div>
                             <div id="newComment" th:if="${isAuthenticated}">
-                                <div class="card card-body">
-                                    <form id="commentForm" th:object="${newComment}" th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
-                                        <textarea id="commentInput" name="content" class="form-control" placeholder="Write your reply..." rows="3"></textarea>
-                                        <input id="input" type="hidden" th:field="*{content}"/>
+                                <div style="font-style: italic; color: #4a5568">Reply must not be empty.</div>
+
+                                    <form id="commentForm" th:object="${comment}" th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
+                                        <textarea id="commentInput" name="content" class="form-control" placeholder="Write your reply..." rows="3" th:field="*{content}"></textarea>
                                         <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
                                     </form>
 
-                                </div>
                             </div>
                         </div>
                     </div>

@@ -20,14 +20,12 @@ import com.forum.services.contracts.TagService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +102,7 @@ public class PostMvcController {
         try {
             Post post = postService.getById(id);
             model.addAttribute("post", post);
-            model.addAttribute("newComment", new CommentRequestDto());
+            model.addAttribute("comment", new CommentRequestDto());
             return "postView";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
@@ -115,16 +113,32 @@ public class PostMvcController {
 
 
     @PostMapping("/{id}/comments")
-    public String addComment(@PathVariable int id,@NotNull @ModelAttribute("newComment") CommentRequestDto comment, HttpSession httpSession) {
+    public String addComment(@Valid @ModelAttribute("comment") CommentRequestDto commentRequestDto,
+                             BindingResult bindingResult,
+                             @PathVariable int id,
+                             HttpSession httpSession, Model model) {
         try {
-            User user = authenticationHelper.tryGetUser(httpSession);
-            Comment newComment = commentMapper.fromRequestDto(comment, user, postService.getById(id));
+           User user = authenticationHelper.tryGetUser(httpSession);
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("errors", bindingResult.getAllErrors());
+                return "redirect:/posts/" + id;
+            }
+            Comment newComment = commentMapper.fromRequestDto(commentRequestDto, user, postService.getById(id));
             commentService.create(newComment);
             return "redirect:/posts/" + id;
-        } catch (AuthorizationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch(AuthenticationFailureException e) {
+            return "redirect:/auth/login";
+        } catch(AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        } catch(EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
         }
     }
+
 
     @GetMapping("/{id}/like")
     public String likePost(@PathVariable int id, HttpSession httpSession) {
