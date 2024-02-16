@@ -9,6 +9,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,6 +33,21 @@ public class PostRepositoryImpl implements PostRepository {
         try (Session session = sessionFactory.openSession()) {
             Query<Post> query = session.createQuery("from Post where isArchived = false", Post.class);
             return query.list();
+        }
+    }
+
+    @Override
+    public Page<Post> findAll(int page, int size) {
+        try (Session session = sessionFactory.openSession()) {
+            List<Post> resultList = session.createQuery("FROM Post", Post.class)
+                    .setFirstResult((page - 1) * size)
+                    .setMaxResults(size)
+                    .list();
+
+            long totalCount = (Long) session.createQuery("SELECT COUNT(*) FROM Post")
+                    .uniqueResult();
+
+            return new PageImpl<>(resultList, PageRequest.of(page - 1, size), totalCount);
         }
     }
 
@@ -120,7 +139,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("id", id);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Post","id", String.valueOf(id));
+                throw new EntityNotFoundException("Post", "id", String.valueOf(id));
             }
             return result.get(0);
         }
@@ -146,7 +165,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("userId", userId);
             List<Post> result = query.list();
             if (result.isEmpty()) {
-                throw new EntityNotFoundException("Post","creator ID" ,String.valueOf(userId));
+                throw new EntityNotFoundException("Post", "creator ID", String.valueOf(userId));
             }
             return result;
         }
@@ -238,6 +257,8 @@ public class PostRepositoryImpl implements PostRepository {
             return get(postId);
         }
     }
+
+
 
 
 }

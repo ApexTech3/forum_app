@@ -3,7 +3,10 @@ package com.forum.services.contracts;
 import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.filters.PostFilterOptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface PostService {
@@ -11,6 +14,7 @@ public interface PostService {
     List<Post> getAll();
 
     long getCount();
+    public Page<Post> getAllPosts(int page, int size);
     public List<Post> getMostCommented();
     public List<Post> getMostLiked();
     List<Post> getRecentlyCreated();

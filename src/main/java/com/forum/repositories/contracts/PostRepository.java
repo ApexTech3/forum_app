@@ -2,12 +2,15 @@ package com.forum.repositories.contracts;
 
 import com.forum.models.Post;
 import com.forum.models.filters.PostFilterOptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 public interface PostRepository {
 
     List<Post> getAll();
+    public Page<Post> findAll(int page, int size);
     List<Post> get(PostFilterOptions filterOptions);
     long getCount();
     List<Post> getMostCommented();
@@ -23,6 +26,7 @@ public interface PostRepository {
     Post update(Post post);
     void archive(int id);
     Post likeDislike(int userId, int postId, String likeDislike);
+
 
 
 }

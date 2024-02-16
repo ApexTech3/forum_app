@@ -12,6 +12,7 @@ import com.forum.repositories.contracts.PostRepository;
 import com.forum.repositories.contracts.TagRepository;
 import com.forum.services.contracts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getAll() {
         return repository.getAll();
+    }
+
+    public Page<Post> getAllPosts(int page, int size) {
+        return repository.findAll(page, size);
     }
 
     @Override
