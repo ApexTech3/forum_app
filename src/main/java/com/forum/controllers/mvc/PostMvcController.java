@@ -42,9 +42,8 @@ public class PostMvcController {
     private final TagService tagService;
     private final UserService userService;
 
-
     @Autowired
-    public PostMvcController(PostService postService, PostMapper postMapper ,
+    public PostMvcController(PostService postService, PostMapper postMapper,
                              CommentService commentService, CommentMapper commentMapper,
                              AuthenticationHelper authenticationHelper, TagService tagService, UserService userService) {
         this.postService = postService;
@@ -66,6 +65,21 @@ public class PostMvcController {
         return tagService.get();
     }
 
+    @ModelAttribute("tagDto")
+    public TagDto tagDto() {
+        return new TagDto();
+    }
+
+    @ModelAttribute("usersCount")
+    public long populateUsersCount() {
+        return userService.getCount();
+    }
+
+    @ModelAttribute("postsCount")
+    public long populatePostsCount() {
+        return postService.getCount();
+    }
+
     @GetMapping("/search")
     public String searchPosts(@RequestParam("searchQuery") String searchQuery, Model model) {
         PostFilterOptions filterOptions = new PostFilterOptions(null, null, searchQuery, null, new ArrayList<>(), null, null);
@@ -78,7 +92,7 @@ public class PostMvcController {
     }
 
     @GetMapping("/mostLiked")
-    public String showMostLikedPosts( Model model) {
+    public String showMostLikedPosts(Model model) {
         List<Post> mostLikedPosts = postService.getMostLiked();
 
         model.addAttribute("posts", mostLikedPosts);
@@ -104,34 +118,6 @@ public class PostMvcController {
             model.addAttribute("post", post);
             model.addAttribute("comment", new CommentRequestDto());
             return "postView";
-        } catch (EntityNotFoundException e) {
-            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
-            model.addAttribute("error", e.getMessage());
-            return "errorView";
-        }
-    }
-
-
-    @PostMapping("/{id}/comments")
-    public String addComment(@Valid @ModelAttribute("comment") CommentRequestDto commentRequestDto,
-                             BindingResult bindingResult,
-                             @PathVariable int id,
-                             HttpSession httpSession, Model model) {
-        try {
-           User user = authenticationHelper.tryGetUser(httpSession);
-            if (bindingResult.hasErrors()) {
-                model.addAttribute("errors", bindingResult.getAllErrors());
-                return "redirect:/posts/" + id;
-            }
-            Comment newComment = commentMapper.fromRequestDto(commentRequestDto, user, postService.getById(id));
-            commentService.create(newComment);
-            return "redirect:/posts/" + id;
-        } catch(AuthenticationFailureException e) {
-            return "redirect:/auth/login";
-        } catch(AuthorizationException e) {
-            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
-            model.addAttribute("error", e.getMessage());
-            return "errorView";
         } catch(EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
@@ -139,6 +125,29 @@ public class PostMvcController {
         }
     }
 
+    @GetMapping("/new")
+    public String showNewPostPage(Model model, HttpSession httpSession) {
+        try {
+            authenticationHelper.tryGetUser(httpSession);
+        } catch(AuthenticationFailureException e) {
+            return "redirect:/auth/login";
+        }
+        model.addAttribute("postDto", new PostRequestDto());
+        return "newPostView";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String showEditPost(@PathVariable int id, Model model, HttpSession httpSession) {
+        try {
+            authenticationHelper.tryGetUser(httpSession);
+        } catch(AuthenticationFailureException e) {
+            return "redirect:/auth/login";
+        }
+        Post post = postService.getById(id);
+        model.addAttribute("post", postService.getById(id));
+        model.addAttribute("postDto", new PostRequestDto(post.getTitle(), post.getContent()));
+        return "postEditView";
+    }
 
     @GetMapping("/{id}/like")
     public String likePost(@PathVariable int id, HttpSession httpSession) {
@@ -152,17 +161,6 @@ public class PostMvcController {
         User user = authenticationHelper.tryGetUser(httpSession);
         postService.dislike(user, id);
         return "redirect:/posts/" + id;
-    }
-
-    @GetMapping("/new")
-    public String showNewPostPage(Model model, HttpSession httpSession) {
-        try{
-            authenticationHelper.tryGetUser(httpSession);
-        } catch(AuthenticationFailureException e){
-            return "redirect:/auth/login";
-        }
-        model.addAttribute("postDto", new PostRequestDto());
-        return "newPostView";
     }
 
     @PostMapping("/new")
@@ -199,6 +197,63 @@ public class PostMvcController {
         return "redirect:/";
     }
 
+    @PostMapping("/{id}/edit")
+    public String editPost(@Valid @ModelAttribute("postDto") PostRequestDto postRequestDto,
+                           BindingResult bindingResult,
+                           @PathVariable int id,
+                           Model model,
+                           HttpSession httpSession) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetUser(httpSession);
+        } catch(AuthenticationFailureException e) {
+            // Log the exception
+            System.out.println("Authentication failed: " + e.getMessage());
+            return "redirect:/auth/login";
+        }
+
+        if(bindingResult.hasErrors()) {
+            // Log the validation errors
+            System.out.println("Validation errors: " + bindingResult.getAllErrors());
+            return "postEditView";
+        }
+        try {
+            Post post = postMapper.fromRequestDto(id, postRequestDto, user);
+            postService.update(post, user);
+        } catch(Exception e) {
+            // Log any other exceptions
+            System.out.println("Error creating post: " + e.getMessage());//TODO clear all console logs
+        }
+        return "redirect:/posts/{id}";
+    }
+
+    @PostMapping("/{id}/comments")
+    public String addComment(@Valid @ModelAttribute("comment") CommentRequestDto commentRequestDto,
+                             BindingResult bindingResult,
+                             @PathVariable int id,
+                             HttpSession httpSession, Model model) {
+        try {
+            User user = authenticationHelper.tryGetUser(httpSession);
+            if(bindingResult.hasErrors()) {
+                model.addAttribute("errors", bindingResult.getAllErrors());
+                return "redirect:/posts/" + id;
+            }
+            Comment newComment = commentMapper.fromRequestDto(commentRequestDto, user, postService.getById(id));
+            commentService.create(newComment);
+            return "redirect:/posts/" + id;
+        } catch(AuthenticationFailureException e) {
+            return "redirect:/auth/login";
+        } catch(AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        } catch(EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        }
+    }
+
     @PostMapping("/newTag")
     public String createTag(@Valid @ModelAttribute("tagDto") TagDto tagDto, BindingResult bindingResult, Model model,
                             HttpSession httpSession) {
@@ -215,19 +270,6 @@ public class PostMvcController {
             System.out.println("Error creating tag: " + e.getMessage());
         }
         return "redirect:/posts/new";
-    }
-
-    @ModelAttribute("tagDto")
-    public TagDto tagDto() {
-        return new TagDto();
-    }
-    @ModelAttribute("usersCount")
-    public long populateUsersCount() {
-        return userService.getCount();
-    }
-    @ModelAttribute("postsCount")
-    public long populatePostsCount() {
-        return postService.getCount();
     }
 
 }
