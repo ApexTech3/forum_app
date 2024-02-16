@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-<form id="head" th:replace="~{fragments/head.html::head('Edit Profile')}"></form>
+<form id="head" th:replace="~{fragments/head.html::head('Edit Profile Admin')}"></form>
 <body>
 
 
@@ -41,12 +41,10 @@
                                 <label class="error" th:errors="*{email}">Email error placeholder</label>
                                 <br/><br/>
 
-                                <label th:text="'Current ' + #{user.label.password}"></label>
+                                <label th:text="#{user.label.phone}">Phone</label>
                                 <br/>
-                                <label>
-                                    <input type="password" id="oldPassword" th:field="*{currentPassword}">
-                                </label>
-                                <label class="error" th:errors="*{currentPassword}">Password error placeholder</label>
+                                <input type="text" th:field="*{phone}"/>
+                                <label class="error" th:errors="*{phone}">Phone error placeholder</label>
                                 <br/><br/>
 
                                 <label th:text="'New ' + #{user.label.password}"></label>
@@ -66,7 +64,15 @@
                                 <label class="error" th:errors="*{passwordConfirmation}">Password confirmation error
                                     placeholder</label>
                                 <br/>
+                                <input type="checkbox" th:field="*{roles}" th:value="Admin"
+                                       th:checked="${user.roles.contains('ADMIN')}"/> Admin
 
+                                <input type="checkbox" th:field="*{blocked}"
+                                       th:checked="${user.blocked}"/> Blocked
+
+                                <input type="checkbox" th:field="*{deleted}"
+                                       th:checked="${user.deleted}"/> Deleted
+                                <br/><br/>
                                 <input type="submit" value="Save"/>
                             </form>
 

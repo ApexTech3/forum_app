@@ -40,6 +40,46 @@ public class UserMapper {
         return user;
     }
 
+    public User fromDto(NUDto userDto) {
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setProfilePicture(userDto.getProfilePicture());
+        user.setPhone(userDto.getPhone());
+        if (userDto.getRoles() == null) {
+            userDto.setRoles(Set.of(roleService.get("USER")));
+        } else {
+            userDto.getRoles().add(roleService.get("USER"));
+        }
+        user.setRoles(userDto.getRoles().stream().map(r -> roleService.get(r.getRole())).collect(Collectors.toSet()));
+        user.setBlocked(userDto.isBlocked());
+        return user;
+    }
+
+    public User fromDto(NUDto userDto, int id) {
+        User user = service.get(id);
+        if (!userDto.getPassword().isEmpty() && !userDto.getPasswordConfirmation().isEmpty()
+                && userDto.getPassword().equals(userDto.getPasswordConfirmation()))
+            user.setPassword(userDto.getPassword());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setProfilePicture(userDto.getProfilePicture());
+        user.setPhone(userDto.getPhone());
+        if (userDto.getRoles() == null) {
+            userDto.setRoles(Set.of(roleService.get("USER")));
+        } else {
+            userDto.getRoles().add(roleService.get("USER"));
+        }
+        user.setRoles(userDto.getRoles().stream().map(r -> roleService.get(r.getRole())).collect(Collectors.toSet()));
+        user.setBlocked(userDto.isBlocked());
+        user.setDeleted(userDto.isDeleted());
+        return user;
+    }
+
     public UserResponse toDto(User user) {
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
@@ -84,7 +124,22 @@ public class UserMapper {
         userAdminDto.setPhone(user.getPhone());
         userAdminDto.setRoles(user.getRoles());
         userAdminDto.setProfilePicture(user.getProfilePicture());
+        userAdminDto.setBlocked(user.isBlocked());
         return userAdminDto;
+    }
+
+    public NUDto toNUDto(User user) {
+        NUDto nuDto = new NUDto();
+        nuDto.setUsername(user.getUsername());
+        nuDto.setFirstName(user.getFirstName());
+        nuDto.setLastName(user.getLastName());
+        nuDto.setEmail(user.getEmail());
+        nuDto.setPhone(user.getPhone());
+        nuDto.setRoles(user.getRoles());
+        nuDto.setProfilePicture(user.getProfilePicture());
+        nuDto.setBlocked(user.isBlocked());
+        nuDto.setDeleted(user.isDeleted());
+        return nuDto;
     }
 
     private <T extends BaseUserDto> User extractBaseInfo(T dto, int id) {
