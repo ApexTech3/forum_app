@@ -49,7 +49,12 @@
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <div class="d-flex align-items-center rounded bg-transparent p-0.2">
-                                            <form th:object="${post}" th:action="@{/posts/{id}/like(id=${post.id})}"
+                                            <a th:if="${!isAuthenticated}" th:href="@{/auth/login}" class="btn btn-xs text-muted has-icon"
+                                               title="Like">
+                                                    <span><i class="fa-solid fa-heart"
+                                                             style="color: #63E6BE;"></i></span>
+                                            </a>
+                                            <form th:if="${isAuthenticated}" th:object="${post}" th:action="@{/posts/{id}/like(id=${post.id})}"
                                                   method="get">
                                                 <button type="submit" class="btn btn-xs text-muted has-icon"
                                                         title="Like">
@@ -62,18 +67,25 @@
                                         </div>
                                         <div class="d-flex align-items-center bg-transparent rounded p-0.2"
                                              style="margin-left: 10px;">
-                                            <form th:object="${post}" th:action="@{/posts/{id}/dislike(id=${post.id})}"
-                                                  method="get">
-                                                <button type="submit" class="btn btn-xs text-muted has-icon"
-                                                        title="Dislike">
+                                            <div>
+                                                <a th:if="${!isAuthenticated}" th:href="@{/auth/login}" class="btn btn-xs text-muted has-icon" title="Like">
                                                     <span><i class="fa-solid fa-heart-crack"
                                                              style="color: #8a2828;"></i></span>
-                                                </button>
-                                            </form>
+                                                </a>
+                                                <form th:object="${post}"
+                                                      th:action="@{/posts/{id}/dislike(id=${post.id})}"
+                                                      method="get" th:if="${isAuthenticated}">
+                                                    <button type="submit" class="btn btn-xs text-muted has-icon"
+                                                            title="Dislike">
+                                                    <span><i class="fa-solid fa-heart-crack"
+                                                             style="color: #8a2828;"></i></span>
+                                                    </button>
+                                                </form>
+                                            </div>
                                             <a th:text="${post.getDislikes()}"
                                                style="font-size: 22px;margin-right: 3px;color: #8a2828;">3</a>
                                         </div>
-                                        <button class="btn btn-xs text-muted has-icon"
+                                        <button th:if="${isAuthenticated}" class="btn btn-xs text-muted has-icon"
                                                 th:attr="content=${post.getContent()}, username=${post.getCreatedBy().getUsername()}"
                                                 onclick="loadReply(this.getAttribute('content'), this.getAttribute('username'))"
                                                 title="Reply">
@@ -88,7 +100,7 @@
                     <div th:each="reply : ${post.replies}" class="card mb-2">
                         <div class="card-body">
                             <div class="media forum-item">
-                                <a href="javascript:void(0)" class="card-link">
+                                <a href="#" class="card-link">
                                     <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="rounded-circle"
                                          width="50"
                                          alt="User"/>
@@ -102,7 +114,7 @@
                                     <div class="mt-3 font-size-sm">
                                         <p th:utext="${reply.content}">Content</p>
                                     </div>
-                                    <button class="btn btn-xs text-muted has-icon"
+                                    <button th:if="${isAuthenticated}" class="btn btn-xs text-muted has-icon"
                                             th:attr="content=${reply.getContent()}, username=${reply.getCreatedBy().getUsername()}"
                                             onclick="loadReply(this.getAttribute('content'), this.getAttribute('username'))"
                                             title="Reply">
@@ -116,6 +128,11 @@
 
                     <div class="card mb-2">
                         <div class="card-body">
+                            <div class="w-auto">
+                            <a th:unless="${isAuthenticated}" th:href="@{/auth/login}" class="btn btn-primary has-icon btn-block" style="width: 100%;">
+                                LOGIN TO REPLY
+                            </a>
+                            </div>
                             <div id="quotedContent" style="font-style: italic;" th:id="quotedContent"></div>
                             <div id="newComment" th:if="${isAuthenticated}">
                                 <div class="card card-body">
