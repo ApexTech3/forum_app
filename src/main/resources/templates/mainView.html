@@ -67,15 +67,19 @@
 
 
                         <ul class="pagination pagination-sm pagination-circle justify-content-center mb-0">
-                            <li class="page-item disabled">
-                                <span class="page-link has-icon"><i class="material-icons">Prev page</i></span>
+                            <!-- Previous Page -->
+                            <li class="page-item" th:class="${currentPage == 1 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/?page=__${currentPage - 1}__}">Previous</a>
                             </li>
-                            <li class="page-item"><a class="page-link" href="javascript:void(0)">1</a></li>
-                            <li class="page-item active"><span class="page-link">2</span></li>
-                            <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link has-icon" href="javascript:void(0)"><i class="material-icons">Next
-                                    Page</i></a>
+
+                            <!-- Page Numbers -->
+                            <li class="page-item" th:each="page, iterStat : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage == page ? 'active' : ''}">
+                                <a class="page-link" th:href="@{/?page=__${page}__}">[[${page}]]</a>
+                            </li>
+
+                            <!-- Next Page -->
+                            <li class="page-item" th:class="${currentPage == totalPages ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/?page=__${currentPage + 1}__}">Next</a>
                             </li>
                         </ul>
                     </div>

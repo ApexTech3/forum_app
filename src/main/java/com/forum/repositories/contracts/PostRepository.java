@@ -2,12 +2,14 @@ package com.forum.repositories.contracts;
 
 import com.forum.models.Post;
 import com.forum.models.filters.PostFilterOptions;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface PostRepository {
 
     List<Post> getAll();
+    public Page<Post> findAll(int page, int size);
     List<Post> get(PostFilterOptions filterOptions);
     long getCount();
     List<Post> getMostCommented();
