@@ -152,3 +152,8 @@ body{
     vertical-align: baseline;
     border-radius: .25rem;
 }
+
+.search-form {
+    display: flex;
+    align-items: center;
+}
