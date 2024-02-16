@@ -32,7 +32,7 @@ public class HomeMvcController {
 
     @GetMapping
     public String getAllPosts(@RequestParam(name = "page", defaultValue = "1") int page,
-                              @RequestParam(name = "size", defaultValue = "5") int size,
+                              @RequestParam(name = "size", defaultValue = "10") int size,
                               Model model) {
         Page<Post> postPage = postService.getAllPosts(page, size);
 

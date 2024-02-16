@@ -14,7 +14,9 @@
                 <!-- Inner main header -->
                 <form th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></form>
                 <div class="inner-main-body p-2 p-sm-3">
-                    <div class="content">
+
+                    <div class="d-flex justify-content-center">
+                        <div class="card mb-2 content text-center d-inline-block  p-5">
 
 
                         <form action="#" th:action="@{/users}" method="get" th:object="${filterOptions}">
@@ -66,6 +68,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </div>
 

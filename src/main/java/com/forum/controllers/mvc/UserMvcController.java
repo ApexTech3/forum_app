@@ -2,23 +2,26 @@ package com.forum.controllers.mvc;
 
 import com.forum.exceptions.AuthenticationFailureException;
 import com.forum.exceptions.AuthorizationException;
+import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
-import com.forum.models.dtos.UserAdminDto;
+import com.forum.models.dtos.NUDto;
 import com.forum.models.dtos.UserFilterDto;
+import com.forum.models.dtos.interfaces.AdminUpdate;
+import com.forum.models.dtos.interfaces.UserUpdate;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.RoleService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -102,14 +105,15 @@ public class UserMvcController {
             model.addAttribute("error", e.getMessage());
             return "errorView";
         }
-        UserAdminDto dto = mapper.toUpdateAdminDto(userService.get(id));
+        NUDto dto = mapper.toNUDto(userService.get(id));
         model.addAttribute("user", dto);
         model.addAttribute("roles", roleService.get());
         return "userUpdateView";
     }
 
+
     @PostMapping("/{id}/edit")
-    public String editUser(@PathVariable int id, @Valid @ModelAttribute("user") UserAdminDto userDto,
+    public String editUser(@PathVariable int id, @Validated(UserUpdate.class) @ModelAttribute("user") NUDto userDto,
                            BindingResult bindingResult, Model model, HttpSession session) {
         User user;
         try {
@@ -126,13 +130,85 @@ public class UserMvcController {
         if (bindingResult.hasErrors()) {
             return "userUpdateView";
         }
+        if (!userDto.getCurrentPassword().equals(user.getPassword())) {
+            bindingResult.rejectValue("currentPassword", "error", "Invalid password");
+            return "userUpdateView";
+        }
+
+        if (!userDto.getPassword().isEmpty() && userDto.getPassword().equals(userDto.getPasswordConfirmation())) {
+            userDto.setCurrentPassword(userDto.getPassword());
+        } else if (!userDto.getPassword().isEmpty()) {
+            bindingResult.rejectValue("password", "error", "Passwords do not match");
+            return "userUpdateView";
+        }
         try {
             userService.update(mapper.fromDto(userDto, id), user);
+            session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(userService.get(user.getId())));
             return "redirect:/users/{id}";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "errorView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("email", "error", e.getMessage());
+            return "userUpdateView";
+        }
+    }
+
+    @GetMapping("/{id}/admin-edit")
+    public String showAdminEditUserPage(@PathVariable int id, Model model, HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetCurrentUser(session);
+            tryAuthenticateUser(id, user);
+        } catch (AuthenticationFailureException e) {
+            return "redirect:/auth/login";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        }
+        NUDto dto = mapper.toNUDto(userService.get(id));
+        model.addAttribute("user", dto);
+        model.addAttribute("roles", roleService.get());
+        return "UserAdminUpdateView";
+    }
+
+    @PostMapping("/{id}/admin-edit")
+    public String adminEditUser(@PathVariable int id, @Validated(AdminUpdate.class) @ModelAttribute("user") NUDto userDto,
+                                BindingResult bindingResult, Model model, HttpSession session) {
+        User user;
+        try {
+            user = authenticationHelper.tryGetCurrentUser(session);
+            tryAuthenticateUser(id, user);
+        } catch (AuthenticationFailureException e) {
+            return "redirect:/auth/login";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "UserAdminUpdateView";
+        }
+        if (!userDto.getPassword().isEmpty() && userDto.getPassword().equals(userDto.getPasswordConfirmation())) {
+            userDto.setCurrentPassword(userDto.getPassword());
+        } else if (!userDto.getPassword().isEmpty()) {
+            bindingResult.rejectValue("password", "error", "Passwords do not match");
+            return "UserAdminUpdateView";
+        }
+        try {
+            userService.update(mapper.fromDto(userDto, id), user);
+            session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(userService.get(user.getId())));
+            return "redirect:/users";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        } catch (EntityDuplicateException e) {
+            bindingResult.rejectValue("email", "error", e.getMessage());
+            return "UserAdminUpdateView";
         }
     }
 
@@ -151,7 +227,7 @@ public class UserMvcController {
         }
         try {
             userService.delete(user, id);
-            return "redirect:/users";
+            return "redirect:/";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
