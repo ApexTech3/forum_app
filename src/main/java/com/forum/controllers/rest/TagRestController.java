@@ -53,6 +53,7 @@ public class TagRestController {
     }
 
 
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/{tagId}")
     public void deleteTag(@RequestHeader HttpHeaders headers, @PathVariable int tagId) {
         try {

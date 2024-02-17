@@ -105,7 +105,7 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/byUserId/{userId}")
     public List<PostResponseDto> getPostByUserId(@RequestHeader HttpHeaders headers,
                                                  @PathVariable int userId) {
@@ -118,7 +118,7 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/byTitle/{sentence}")
     public List<PostResponseDto> getByWordInTitle(@RequestHeader HttpHeaders headers,
                                                   @PathVariable String sentence) {
@@ -132,6 +132,7 @@ public class PostRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/byContent/{sentence}")
     public List<PostResponseDto> getByWordInTitle(@PathVariable String sentence,
                                                   @RequestHeader HttpHeaders headers) {
@@ -145,6 +146,7 @@ public class PostRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PostMapping
     public Post createPost(@RequestHeader HttpHeaders header,
                            @Valid @RequestBody PostRequestDto requestDto) {
@@ -160,6 +162,7 @@ public class PostRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PutMapping("/update/{id}")
     public Post updatePost(@RequestHeader HttpHeaders headers,
                            @PathVariable int id, @Valid
@@ -176,6 +179,7 @@ public class PostRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PutMapping("/{id}")
     public void archivePost(@PathVariable int id, @RequestHeader HttpHeaders headers) {
         try {
@@ -194,6 +198,7 @@ public class PostRestController {
                 .map(CommentResponseDto::new).toList();
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/{postId}/comments")
     public CommentResponseDto createComment(@RequestHeader HttpHeaders header,
                                             @PathVariable int postId,
@@ -208,6 +213,7 @@ public class PostRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PutMapping("/comments/{commentId}")
     public CommentResponseDto editComment(@RequestHeader HttpHeaders headers,
                                           @PathVariable int commentId,
@@ -226,6 +232,7 @@ public class PostRestController {
 
     }
 
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/comments/{commentId}")
     public void deleteComment(@RequestHeader HttpHeaders headers, @PathVariable int commentId) {
         try {
@@ -241,6 +248,7 @@ public class PostRestController {
 
     //Like/Dislike
 
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/like/{postId}")
     public PostResponseDto likePost(@RequestHeader HttpHeaders headers, @PathVariable int postId) {
         try {
@@ -251,6 +259,7 @@ public class PostRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/dislike/{postId}")
     public PostResponseDto dislikePost(@RequestHeader HttpHeaders headers, @PathVariable int postId) {
         try {
@@ -263,6 +272,7 @@ public class PostRestController {
 
     //TagHandling
 
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/{postId}/tags/{tagId}")
     public HttpStatus addTagToPost(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int tagId) {
         try {
@@ -276,6 +286,7 @@ public class PostRestController {
         return HttpStatus.OK;
     }
 
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/{postId}/tags/{tagId}")
     public HttpStatus removeTagFromPost(@RequestHeader HttpHeaders headers, @PathVariable int postId, @PathVariable int tagId) {
         try {

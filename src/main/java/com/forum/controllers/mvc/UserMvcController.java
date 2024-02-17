@@ -6,6 +6,7 @@ import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
+import com.forum.models.Comment;
 import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.dtos.UserDto;
@@ -13,8 +14,8 @@ import com.forum.models.dtos.UserFilterDto;
 import com.forum.models.dtos.interfaces.AdminUpdate;
 import com.forum.models.dtos.interfaces.UserUpdate;
 import com.forum.models.filters.UserFilterOptions;
+import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
-import com.forum.services.contracts.RoleService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -34,17 +35,17 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserMvcController {
     private final UserService userService;
-    private final RoleService roleService;
     private final AuthenticationHelper authenticationHelper;
     private final UserMapper mapper;
     private final PostService postService;
+    private final CommentService commentService;
 
-    public UserMvcController(UserService userService, RoleService roleService, AuthenticationHelper authenticationHelper, UserMapper mapper, PostService postService) {
+    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper mapper, PostService postService, CommentService commentService) {
         this.userService = userService;
-        this.roleService = roleService;
         this.authenticationHelper = authenticationHelper;
         this.mapper = mapper;
         this.postService = postService;
+        this.commentService = commentService;
     }
 
     @ModelAttribute("isAuthenticated")
@@ -86,7 +87,9 @@ public class UserMvcController {
             model.addAttribute("adminOrCurrentUser", user.getId() == id || AuthenticationHelper.isAdmin(userService.get(user.getId())));
             try {
                 List<Post> userPosts = postService.getByUserId(id);
+                List<Comment> userComments = commentService.getByUserId(id);
                 model.addAttribute("userPosts", userPosts);
+                model.addAttribute("userComments", userComments);
             } catch (EntityNotFoundException e) {
                 model.addAttribute("userPosts", null);
             }
@@ -119,7 +122,6 @@ public class UserMvcController {
         }
         UserDto dto = mapper.toUserDto(userService.get(id));
         model.addAttribute("user", dto);
-        model.addAttribute("roles", roleService.get());
         return "userUpdateView";
     }
 
@@ -194,7 +196,6 @@ public class UserMvcController {
         }
         UserDto dto = mapper.toUserDto(userService.get(id));
         model.addAttribute("user", dto);
-        model.addAttribute("roles", roleService.get());
         return "UserAdminUpdateView";
     }
 
@@ -240,7 +241,7 @@ public class UserMvcController {
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("email", "error", e.getMessage());
             return "UserAdminUpdateView";
-        }catch (IOException e) {
+        } catch (IOException e) {
             bindingResult.rejectValue("profilePicture", "auth_error", e.getMessage());
             return "UserAdminUpdateView";
         }
