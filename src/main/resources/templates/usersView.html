@@ -19,56 +19,77 @@
                         <div class="card mb-2 content text-center d-inline-block  p-5">
 
 
-                        <form action="#" th:action="@{/users}" method="get" th:object="${filterOptions}">
-                            <input type="text" placeholder="Username" th:field="*{username}"/>
-                            <input type="text" placeholder="First Name" th:field="*{firstName}"/>
-                            <input type="text" placeholder="Email" th:field="*{email}"/>
-                            <select th:field="*{sortBy}">
-                                <option value="">Sort By</option>
-                                <option value="username">Username</option>
-                                <option value="firstName">First Name</option>
-                                <option value="email">Email</option>
-                            </select>
-                            <select th:field="*{sortOrder}">
-                                <option value="">Sort Order</option>
-                                <option value="asc">Ascending</option>
-                                <option value="desc">Descending</option>
-                            </select>
-                            <input type="submit" value="Search"/>
-                        </form>
-                        <br/>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Username</th>
-                                <th scope="col">First Name</th>
-                                <th scope="col">Last Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Roles</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="user : ${users}">
-                                <th scope="row" th:text="${user.id}">1</th>
-                                <td><a href="#" th:href="@{/users/{id}(id=${user.id})}" th:text="${user.username}">pesho"</a>
-                                </td>
-                                <td th:text="${user.firstName}">Pesho</td>
-                                <td th:text="${user.lastName}">Peshov</td>
-                                <td th:text="${user.email}">Email</td>
-                                <td th:text="${user.roles}">USER</td>
-                            </tr>
+                            <form action="#" th:action="@{/users}" method="get" th:object="${filterOptions}">
+                                <div class="input-group input-icon input-icon-sm">
+                                    <div class="input-group-append">
+                                        <input type="text" placeholder="Username" th:field="*{username}"
+                                               class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none"/>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <input type="text" placeholder="First Name" th:field="*{firstName}"
+                                               class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none"/>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <input type="text" placeholder="Email" th:field="*{email}"
+                                               class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none"/>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <select th:field="*{sortBy}"
+                                                class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none">
+                                            <option value="">Sort By</option>
+                                            <option value="username">Username</option>
+                                            <option value="firstName">First Name</option>
+                                            <option value="email">Email</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <select th:field="*{sortOrder}"
+                                                class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none">
+                                            <option value="">Sort Order</option>
+                                            <option value="asc">Ascending</option>
+                                            <option value="desc">Descending</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <br/>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Roles</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="user : ${users}">
+                                    <th scope="row" th:text="${user.id}">1</th>
+                                    <td><a href="#" th:href="@{/users/{id}(id=${user.id})}" th:text="${user.username}">pesho"</a>
+                                    </td>
+                                    <td th:text="${user.firstName}">Pesho</td>
+                                    <td th:text="${user.lastName}">Peshov</td>
+                                    <td th:text="${user.email}">Email</td>
+                                    <td th:text="${user.roles}">USER</td>
+                                </tr>
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
 
-                        <form th:replace="~{fragments/footer.html::footer}"></form>
+                            <form th:replace="~{fragments/footer.html::footer}"></form>
 
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </div>
 
