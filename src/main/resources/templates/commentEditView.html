@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<form th:replace="~{fragments/head.html::head('Post')}"></form>
+<form th:replace="~{fragments/head.html::head('Edit Comment')}"></form>
 <body>
 
 <div class="container">
@@ -32,15 +32,15 @@
                                 <div class="media-body ml-3" >
                                     <div class="d-flex justify-content-between">
                                         <div>
-                                            <a href="#" th:href="@{/users/{id}(id=${post.createdBy.id})}" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">Mokrani</a>
+                                            <a href="#" th:href="@{/users/{id}(id=${post.getCreatedBy().getId()})}" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">Mokrani</a>
                                             <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
-                                            <h5 th:text="${post.title}" class="mt-1">Title</h5>
+                                            <h5 th:text="${post.getTitle()}" class="mt-1">Title</h5>
                                         </div>
                                         <div>
-                                            <a th:if="${session.currentUser} == ${post.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/edit(id = ${post.id})}" class="btn btn-warning" style="height: 36px">Edit</a>
-                                            <a th:if="${session.currentUser} == ${post.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/archive(id = ${post.id})}" class="btn btn-danger mr-5" style="height: 36px">Delete</a>
+                                            <a th:if="${session.currentUser} == ${post.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/edit(id = ${post.getId()})}" class="btn btn-warning" style="height: 36px">Edit</a>
+                                            <a th:if="${session.currentUser} == ${post.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/archive(id = ${post.getId()})}" class="btn btn-danger mr-5" style="height: 36px">Delete</a>
                                         </div>
-                                        </div>
+                                    </div>
                                     <div class="mt-3 font-size-sm">
                                         <p th:text="${post.content}">
                                             I'm newbie with laravel and i want to fetch data from database in realtime
@@ -103,7 +103,7 @@
                     </div>
 
                     <div th:each="reply : ${post.replies}" class="card mb-2">
-                        <div class="card-body">
+                        <div class="card-body" th:unless="${commentId} == ${reply.getCommentId()}">
                             <div class="media forum-item">
                                 <a href="#" class="card-link">
                                     <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="rounded-circle"
@@ -116,45 +116,49 @@
                                         <div>
                                             <a href="#" th:href="@{/users/{id}(id=${reply.getCreatedBy().getUsername()})}" th:text="${reply.getCreatedBy().getUsername()}" class="text-secondary">drewdan</a>
                                             <small class="text-muted ml-2"
-                                           th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
+                                                   th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
                                         </div>
                                         <div>
-                                            <a th:if="${session.currentUser} == ${reply.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/comments/{commentId}/edit(id = ${post.getId()}, commentId = ${reply.getCommentId()})}" class="btn btn-outline-warning" style="height: 36px">Edit</a>
                                             <a th:if="${session.currentUser} == ${reply.getCreatedBy().getUsername()}" th:href="@{/posts/comments/{commentId}(commentId = ${reply.getCommentId()})}" class="btn btn-outline-danger mr-5" style="height: 36px">Delete</a>
                                         </div>
                                     </div>
                                     <div class="mt-3 font-size-sm">
                                         <p th:utext="${reply.getContent()}">Content</p>
                                     </div>
-                                    <button th:if="${isAuthenticated}" class="btn btn-xs text-muted has-icon"
-                                            th:attr="content=${reply.getContent()}, username=${reply.getCreatedBy().getUsername()}"
-                                            onclick="loadReply(this.getAttribute('content'), this.getAttribute('username'))"
-                                            title="Reply">
-                                        <i class="fa fa-reply fa-2x"></i>
-                                    </button>
 
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card mb-2">
-                        <div class="card-body">
+                        <div class="card-body" th:if="${commentId} == ${reply.getCommentId()}">
+                            <div class="media forum-item">
+                                <a href="#" class="card-link">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="rounded-circle"
+                                         width="50"
+                                         alt="User"/>
+                                    <small class="d-block text-center text-muted">Pro</small>
+                                </a>
+                                <div class="media-body ml-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <a href="#" th:href="@{/users/{id}(id=${reply.getCreatedBy().getUsername()})}" th:text="${reply.getCreatedBy().getUsername()}" class="text-secondary">drewdan</a>
+                                            <small class="text-muted ml-2"
+                                                   th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
+                                        </div>
+                                        <div>
+                                            <a th:if="${session.currentUser} == ${reply.getCreatedBy().getUsername()}" th:href="@{/posts/comments/{commentId}(commentId = ${reply.getCommentId()})}" class="btn btn-outline-danger mr-5" style="height: 36px">Delete</a>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 font-size-sm">
+                                        <form th:object="${commentDto}" th:action="@{/posts/{postId}/comments/{commentId}/edit(postId = ${post.getId()}, commentId = ${reply.getCommentId()})}" method="post">
+                                            <div class="form-group">
+                                                <textarea id="content" class="form-control" rows="3" th:field="*{content}" style="font-style: italic; color: black;"></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </form>
+                                    </div>
 
-                            <div class="w-auto">
-                            <a th:unless="${isAuthenticated}" th:href="@{/auth/login}" class="btn btn-primary has-icon btn-block" style="width: 100%;">
-                                LOGIN TO REPLY
-                            </a>
-                            </div>
-                            <div id="quotedContent" style="font-style: italic;" th:id="quotedContent"></div>
-                            <div id="newComment" th:if="${isAuthenticated}">
-                                <div style="font-style: italic; color: #4a5568">Reply must not be empty.</div>
-
-                                    <form id="commentForm" th:object="${comment}" th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
-                                        <textarea id="commentInput" name="content" class="form-control" placeholder="Write your reply..." rows="3" th:field="*{content}"></textarea>
-                                        <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
-                                    </form>
-
+                                </div>
                             </div>
                         </div>
                     </div>
