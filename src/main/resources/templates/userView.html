@@ -31,11 +31,9 @@
                                        th:text="#{user.label.roles}  + ': ' + ${user.roles}">USER</p>
                                 </div>
                                 <h3 th:if="${adminOrCurrentUser}">
-                                    <a href="#" th:if="${session.isAdmin}" th:href="@{__${requestURI}__/admin-edit}">Edit</a>
-                                    <!--                                  -->
-                                    <a href="#" th:unless="${session.isAdmin}"
-                                       th:href="@{__${requestURI}__/edit}">Edit</a>
-                                    <a href="#" th:href="@{__${requestURI}__/delete}">Delete</a>
+                                    <a href="#" th:if="${session.isAdmin}" th:href="@{__${requestURI}__/admin-edit}" class="btn btn-warning" style="height: 36px">Edit</a>
+                                    <a href="#" th:unless="${session.isAdmin}" th:href="@{__${requestURI}__/edit}" class="btn btn-warning" style="height: 36px">Edit</a>
+                                    <a href="#" th:href="@{__${requestURI}__/delete}"  class="btn btn-danger mr-5" style="height: 36px">Delete</a>
                                 </h3>
                             </div>
                         </div>

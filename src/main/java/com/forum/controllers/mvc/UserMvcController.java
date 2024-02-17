@@ -84,7 +84,7 @@ public class UserMvcController {
             try {
                 List<Post> userPosts = postService.getByUserId(id);
                 model.addAttribute("userPosts", userPosts);
-            }catch (EntityNotFoundException e){
+            } catch (EntityNotFoundException e) {
                 model.addAttribute("userPosts", null);
             }
             return "userView";
@@ -169,7 +169,9 @@ public class UserMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetCurrentUser(session);
-            tryAuthenticateUser(id, user);
+          if (!AuthenticationHelper.isAdmin(userService.get(user.getId()))) {
+                throw new AuthorizationException("You are not allowed to perform this operation");
+            }
         } catch (AuthenticationFailureException e) {
             return "redirect:/auth/login";
         } catch (AuthorizationException e) {
@@ -236,6 +238,9 @@ public class UserMvcController {
         }
         try {
             userService.delete(user, id);
+            if (user.getId() == id) {
+                session.invalidate();
+            }
             return "redirect:/";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
