@@ -38,7 +38,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Page<Post> findAll(int page, int size) {
         try (Session session = sessionFactory.openSession()) {
-            List<Post> resultList = session.createQuery("FROM Post", Post.class)
+            List<Post> resultList = session.createQuery("FROM Post WHERE isArchived = false", Post.class)
                     .setFirstResult((page - 1) * size)
                     .setMaxResults(size)
                     .list();

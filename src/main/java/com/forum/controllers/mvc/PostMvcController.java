@@ -272,4 +272,28 @@ public class PostMvcController {
         return "redirect:/posts/new";
     }
 
+    @GetMapping("/{id}/archive")
+    public String archivePost(@PathVariable int id, HttpSession httpSession) {
+
+        User user;
+        try {
+            user = authenticationHelper.tryGetUser(httpSession);
+            Post post = postService.getById(id);
+            post.setArchived(true);
+            postService.update(post, user);
+        } catch(AuthenticationFailureException e) {
+            // Log the exception
+            System.out.println("Authentication failed: " + e.getMessage());
+            return "redirect:/auth/login";
+        } catch(Exception e) {
+            // Log any other exceptions
+            System.out.println("Error archiving post: " + e.getMessage());//TODO clear all console logs
+        }
+        return "redirect:/";
+    }
+
+
+
+
+
 }
