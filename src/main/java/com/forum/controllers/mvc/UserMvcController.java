@@ -6,8 +6,9 @@ import com.forum.exceptions.EntityDuplicateException;
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
+import com.forum.models.Post;
 import com.forum.models.User;
-import com.forum.models.dtos.NUDto;
+import com.forum.models.dtos.UserDto;
 import com.forum.models.dtos.UserFilterDto;
 import com.forum.models.dtos.interfaces.AdminUpdate;
 import com.forum.models.dtos.interfaces.UserUpdate;
@@ -23,6 +24,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/users")
@@ -76,8 +79,14 @@ public class UserMvcController {
     public String showSingleUser(@PathVariable int id, Model model, HttpSession session) {
         try {
             User user = authenticationHelper.tryGetCurrentUser(session);
-            tryAuthenticateUser(id, user);
             model.addAttribute("user", userService.get(id));
+            model.addAttribute("adminOrCurrentUser", user.getId() == id || AuthenticationHelper.isAdmin(userService.get(user.getId())));
+            try {
+                List<Post> userPosts = postService.getByUserId(id);
+                model.addAttribute("userPosts", userPosts);
+            }catch (EntityNotFoundException e){
+                model.addAttribute("userPosts", null);
+            }
             return "userView";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
@@ -105,7 +114,7 @@ public class UserMvcController {
             model.addAttribute("error", e.getMessage());
             return "errorView";
         }
-        NUDto dto = mapper.toNUDto(userService.get(id));
+        UserDto dto = mapper.toUserDto(userService.get(id));
         model.addAttribute("user", dto);
         model.addAttribute("roles", roleService.get());
         return "userUpdateView";
@@ -113,7 +122,7 @@ public class UserMvcController {
 
 
     @PostMapping("/{id}/edit")
-    public String editUser(@PathVariable int id, @Validated(UserUpdate.class) @ModelAttribute("user") NUDto userDto,
+    public String editUser(@PathVariable int id, @Validated(UserUpdate.class) @ModelAttribute("user") UserDto userDto,
                            BindingResult bindingResult, Model model, HttpSession session) {
         User user;
         try {
@@ -168,14 +177,14 @@ public class UserMvcController {
             model.addAttribute("error", e.getMessage());
             return "errorView";
         }
-        NUDto dto = mapper.toNUDto(userService.get(id));
+        UserDto dto = mapper.toUserDto(userService.get(id));
         model.addAttribute("user", dto);
         model.addAttribute("roles", roleService.get());
         return "UserAdminUpdateView";
     }
 
     @PostMapping("/{id}/admin-edit")
-    public String adminEditUser(@PathVariable int id, @Validated(AdminUpdate.class) @ModelAttribute("user") NUDto userDto,
+    public String adminEditUser(@PathVariable int id, @Validated(AdminUpdate.class) @ModelAttribute("user") UserDto userDto,
                                 BindingResult bindingResult, Model model, HttpSession session) {
         User user;
         try {

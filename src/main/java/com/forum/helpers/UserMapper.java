@@ -40,7 +40,7 @@ public class UserMapper {
         return user;
     }
 
-    public User fromDto(NUDto userDto) {
+    public User fromDto(UserDto userDto) {
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
@@ -59,7 +59,7 @@ public class UserMapper {
         return user;
     }
 
-    public User fromDto(NUDto userDto, int id) {
+    public User fromDto(UserDto userDto, int id) {
         User user = service.get(id);
         if (!userDto.getPassword().isEmpty() && !userDto.getPasswordConfirmation().isEmpty()
                 && userDto.getPassword().equals(userDto.getPasswordConfirmation()))
@@ -93,53 +93,18 @@ public class UserMapper {
         return userResponse;
     }
 
-    public User fromRegisterDto(RegisterDto userDto) {
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setProfilePicture(userDto.getProfilePicture());
-        user.setRoles(Set.of(roleService.get("USER")));
-        return user;
-    }
-
-    public UserUpdateDto toUpdateDto(User user) {
-        UserUpdateDto userUpdateDto = new UserUpdateDto();
-        userUpdateDto.setUsername(user.getUsername());
-        userUpdateDto.setFirstName(user.getFirstName());
-        userUpdateDto.setLastName(user.getLastName());
-        userUpdateDto.setEmail(user.getEmail());
-        userUpdateDto.setProfilePicture(user.getProfilePicture());
-        return userUpdateDto;
-    }
-
-    public UserAdminDto toUpdateAdminDto(User user) {
-        UserAdminDto userAdminDto = new UserAdminDto();
-        userAdminDto.setUsername(user.getUsername());
-        userAdminDto.setFirstName(user.getFirstName());
-        userAdminDto.setLastName(user.getLastName());
-        userAdminDto.setEmail(user.getEmail());
-        userAdminDto.setPhone(user.getPhone());
-        userAdminDto.setRoles(user.getRoles());
-        userAdminDto.setProfilePicture(user.getProfilePicture());
-        userAdminDto.setBlocked(user.isBlocked());
-        return userAdminDto;
-    }
-
-    public NUDto toNUDto(User user) {
-        NUDto nuDto = new NUDto();
-        nuDto.setUsername(user.getUsername());
-        nuDto.setFirstName(user.getFirstName());
-        nuDto.setLastName(user.getLastName());
-        nuDto.setEmail(user.getEmail());
-        nuDto.setPhone(user.getPhone());
-        nuDto.setRoles(user.getRoles());
-        nuDto.setProfilePicture(user.getProfilePicture());
-        nuDto.setBlocked(user.isBlocked());
-        nuDto.setDeleted(user.isDeleted());
-        return nuDto;
+    public UserDto toUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(user.getUsername());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setEmail(user.getEmail());
+        userDto.setPhone(user.getPhone());
+        userDto.setRoles(user.getRoles());
+        userDto.setProfilePicture(user.getProfilePicture());
+        userDto.setBlocked(user.isBlocked());
+        userDto.setDeleted(user.isDeleted());
+        return userDto;
     }
 
     private <T extends BaseUserDto> User extractBaseInfo(T dto, int id) {

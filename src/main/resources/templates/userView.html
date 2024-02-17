@@ -30,7 +30,7 @@
                                     <p th:if="${session.isAdmin}" class="margin12"
                                        th:text="#{user.label.roles}  + ': ' + ${user.roles}">USER</p>
                                 </div>
-                                <h3>
+                                <h3 th:if="${adminOrCurrentUser}">
                                     <a href="#" th:if="${session.isAdmin}" th:href="@{__${requestURI}__/admin-edit}">Edit</a>
                                     <!--                                  -->
                                     <a href="#" th:unless="${session.isAdmin}"
@@ -40,7 +40,28 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <div class="card mb-2" th:each="post : ${userPosts}">
+                        <div class="card-body p-2 p-sm-3">
+                            <div class="media forum-item">
+                                <a href="#"><img src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                 class="mr-3 rounded-circle" width="50" alt="User"/></a>
+                                <div class="media-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6><a th:href="@{/posts/{id}(id=${post.id})}" href="#" class="text-body"
+                                                   th:text="${post.title}">Title</a></h6>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>

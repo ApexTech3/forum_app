@@ -5,7 +5,7 @@ import com.forum.exceptions.EntityDuplicateException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
-import com.forum.models.dtos.NUDto;
+import com.forum.models.dtos.UserDto;
 import com.forum.models.dtos.interfaces.Login;
 import com.forum.models.dtos.interfaces.Register;
 import com.forum.services.contracts.UserService;
@@ -40,12 +40,12 @@ public class AuthenticationMvcController {
 
     @GetMapping("/login")
     public String showLoginPage(Model model) {
-        model.addAttribute("login", new NUDto());
+        model.addAttribute("login", new UserDto());
         return "login";
     }
 
     @PostMapping("/login")
-    public String handleLogin(@Validated(Login.class) @ModelAttribute("login") NUDto dto, BindingResult bindingResult, HttpSession session) {
+    public String handleLogin(@Validated(Login.class) @ModelAttribute("login") UserDto dto, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return "login";
         }
@@ -71,12 +71,12 @@ public class AuthenticationMvcController {
 
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
-        model.addAttribute("register", new NUDto());
+        model.addAttribute("register", new UserDto());
         return "register";
     }
 
     @PostMapping("/register")
-    public String handleRegister(@Validated(Register.class) @ModelAttribute("register") NUDto dto, BindingResult bindingResult) {
+    public String handleRegister(@Validated(Register.class) @ModelAttribute("register") UserDto dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "register";
         }

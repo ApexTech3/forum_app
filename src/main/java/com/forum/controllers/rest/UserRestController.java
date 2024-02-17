@@ -6,7 +6,11 @@ import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
-import com.forum.models.dtos.*;
+import com.forum.models.dtos.UserDto;
+import com.forum.models.dtos.UserAdminDto;
+import com.forum.models.dtos.UserResponse;
+import com.forum.models.dtos.UserUpdateDto;
+import com.forum.models.dtos.interfaces.Register;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -14,6 +18,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,9 +43,9 @@ public class UserRestController {
     }
 
     @PostMapping
-    public UserResponse register(@Valid @RequestBody RegisterDto registerDto) {
+    public UserResponse register(@Validated(Register.class) @RequestBody UserDto registerDto) {
         try {
-            User user = mapper.fromRegisterDto(registerDto);
+            User user = mapper.fromDto(registerDto);
             return mapper.toDto(service.register(user));
         } catch (EntityDuplicateException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
