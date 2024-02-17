@@ -52,6 +52,7 @@ public class UserRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @GetMapping
     public List<UserResponse> get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username,
                                   @RequestParam(required = false) String email, @RequestParam(required = false) String firstName,
@@ -72,6 +73,7 @@ public class UserRestController {
         return service.getCount();
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PutMapping("/{id}")
     public UserResponse updateInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserUpdateDto userUpdateDto,
                                    @PathVariable int id) {
@@ -88,6 +90,7 @@ public class UserRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PutMapping("/admins/{id}")
     public UserResponse updateAdminInfo(@RequestHeader HttpHeaders headers, @Valid @RequestBody UserAdminDto userAdminDto,
                                         @PathVariable int id) {
@@ -102,6 +105,7 @@ public class UserRestController {
         }
     }
 
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/{id}")
     public User delete(@RequestHeader HttpHeaders headers, @PathVariable int id) {
         try {

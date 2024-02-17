@@ -20,7 +20,7 @@
                         <div class="card mb-2" th:each="post : ${posts}">
                             <div class="card-body p-2 p-sm-3">
                                 <div class="media forum-item">
-                                    <a href="#"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-circle" width="50" alt="User" /></a>
+                                    <a href="#"><img th:src="@{${post.createdBy.profilePicture != null ? post.createdBy.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-circle" width="50" alt="User" /></a>
                                     <div class="media-body">
                                         <div class="d-flex justify-content-between">
                                             <div>
