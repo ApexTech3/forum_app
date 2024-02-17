@@ -1,5 +1,8 @@
 function scrollToCommentForm() {
-    document.getElementById('newComment').scrollIntoView();
+    let element = document.getElementById('commentInput');
+    element.focus();
+    element.scrollIntoView({block: 'center', behavior: 'smooth'});
+
 }
 
 

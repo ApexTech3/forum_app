@@ -170,5 +170,13 @@
 
 <form th:replace="~{fragments/footer.html::footer}"></form>
 
+<script>
+    window.onload = function() {
+        let element = document.getElementById('content');
+        element.focus();
+        element.scrollIntoView({block: 'center', behavior: 'smooth'});
+    };
+</script>
 </body>
 </html>
+
