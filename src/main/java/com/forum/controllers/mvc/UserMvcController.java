@@ -119,7 +119,6 @@ public class UserMvcController {
         }
         UserDto dto = mapper.toUserDto(userService.get(id));
         model.addAttribute("user", dto);
-        model.addAttribute("roles", roleService.get());
         return "userUpdateView";
     }
 
@@ -194,7 +193,6 @@ public class UserMvcController {
         }
         UserDto dto = mapper.toUserDto(userService.get(id));
         model.addAttribute("user", dto);
-        model.addAttribute("roles", roleService.get());
         return "UserAdminUpdateView";
     }
 
@@ -240,7 +238,7 @@ public class UserMvcController {
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("email", "error", e.getMessage());
             return "UserAdminUpdateView";
-        }catch (IOException e) {
+        } catch (IOException e) {
             bindingResult.rejectValue("profilePicture", "auth_error", e.getMessage());
             return "UserAdminUpdateView";
         }
