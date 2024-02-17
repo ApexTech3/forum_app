@@ -32,7 +32,7 @@
                                 <div class="media-body ml-3" >
                                     <div class="d-flex justify-content-between">
                                         <div>
-                                            <a href="#" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">Mokrani</a>
+                                            <a href="#" th:href="@{/users/{id}(id=${post.createdBy.id})}" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">Mokrani</a>
                                             <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
                                             <h5 th:text="${post.title}" class="mt-1">Title</h5>
                                         </div>
@@ -112,7 +112,7 @@
                                     <small class="d-block text-center text-muted">Pro</small>
                                 </a>
                                 <div class="media-body ml-3">
-                                    <a href="#" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">drewdan</a>
+                                    <a href="#" th:href="@{/users/{id}(id=${post.createdBy.id})}" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">drewdan</a>
                                     <small class="text-muted ml-2"
                                            th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour
                                         ago</small>
