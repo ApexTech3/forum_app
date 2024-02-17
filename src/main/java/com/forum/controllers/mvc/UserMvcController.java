@@ -24,7 +24,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -151,6 +154,13 @@ public class UserMvcController {
             return "userUpdateView";
         }
         try {
+            MultipartFile profilePicture = userDto.getProfilePicture();
+            if (!profilePicture.isEmpty()) {
+                String originalFilename = profilePicture.getOriginalFilename();
+                String directory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main"
+                        + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
+                profilePicture.transferTo(new File(directory + originalFilename));
+            }
             userService.update(mapper.fromDto(userDto, id), user);
             session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(userService.get(user.getId())));
             return "redirect:/users/{id}";
@@ -161,6 +171,9 @@ public class UserMvcController {
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("email", "error", e.getMessage());
             return "userUpdateView";
+        } catch (IOException e) {
+            bindingResult.rejectValue("profilePicture", "auth_error", e.getMessage());
+            return "userUpdateView";
         }
     }
 
@@ -169,7 +182,7 @@ public class UserMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetCurrentUser(session);
-          if (!AuthenticationHelper.isAdmin(userService.get(user.getId()))) {
+            if (!AuthenticationHelper.isAdmin(userService.get(user.getId()))) {
                 throw new AuthorizationException("You are not allowed to perform this operation");
             }
         } catch (AuthenticationFailureException e) {
@@ -210,6 +223,13 @@ public class UserMvcController {
             return "UserAdminUpdateView";
         }
         try {
+            MultipartFile profilePicture = userDto.getProfilePicture();
+            if (!profilePicture.isEmpty()) {
+                String originalFilename = profilePicture.getOriginalFilename();
+                String directory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main"
+                        + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
+                profilePicture.transferTo(new File(directory + originalFilename));
+            }
             userService.update(mapper.fromDto(userDto, id), user);
             session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(userService.get(user.getId())));
             return "redirect:/users";
@@ -219,6 +239,9 @@ public class UserMvcController {
             return "errorView";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("email", "error", e.getMessage());
+            return "UserAdminUpdateView";
+        }catch (IOException e) {
+            bindingResult.rejectValue("profilePicture", "auth_error", e.getMessage());
             return "UserAdminUpdateView";
         }
     }

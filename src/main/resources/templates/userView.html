@@ -19,6 +19,8 @@
 
                             <div class="body-content" th:align="center">
                                 <h2 th:text="${user.username}">Username</h2>
+                                <img th:src="@{${user.profilePicture != null ? user.profilePicture : '/uploads/chichkotrevichko.png'}}" alt="Profile Picture">
+                                <br/>
                                 <div th:style="text-align">
                                     <p class="margin12"
                                        th:text="#{user.label.first-name}  + ': ' +       ${user.firstName}">Pesho</p>

@@ -36,7 +36,7 @@ public class PostServiceImpl implements PostService {
     }
     @Override
     public Page<Post> getAllPosts(int page, int size) {
-        return repository.findAll(page, size);
+        return repository.findAll(page, size,new PostFilterOptions());//todo
     }
 
     @Override
@@ -65,8 +65,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getByContentOrTitle(String sentence) {
-        return repository.getByContentOrTitle(sentence);
+    public List<Post> getByContentOrTitle(PostFilterOptions filterOptions) {
+        return repository.getByContentOrTitle(filterOptions);
     }
 
     @Override

@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/auth")
@@ -36,6 +40,11 @@ public class AuthenticationMvcController {
     @ModelAttribute("isAuthenticated")
     public boolean populateIsAuthenticated(HttpSession httpSession) {
         return httpSession.getAttribute("currentUser") != null;
+    }
+
+    @ModelAttribute("profilePicturePath")
+    public String getProfilePicturePath() {
+        return "/uploads/";
     }
 
     @GetMapping("/login")
@@ -75,18 +84,29 @@ public class AuthenticationMvcController {
         return "register";
     }
 
+    //@RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture,
     @PostMapping("/register")
     public String handleRegister(@Validated(Register.class) @ModelAttribute("register") UserDto dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "register";
         }
-
         try {
-            User user = userService.register(userMapper.fromDto(dto));
+            User user = userMapper.fromDto(dto);
+            MultipartFile profilePicture = dto.getProfilePicture();
+            if (!profilePicture.isEmpty()) {
+                String originalFilename = profilePicture.getOriginalFilename();
+                String directory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main"
+                        + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
+                profilePicture.transferTo(new File(directory + originalFilename));
+            }
+            userService.register(user);
             return "redirect:/auth/login";
         } catch (EntityDuplicateException e) {
             bindingResult.rejectValue("username", "auth_error", e.getMessage());
             //email error
+            return "register";
+        } catch (IOException e) {
+            bindingResult.rejectValue("profilePicture", "auth_error", e.getMessage());
             return "register";
         }
     }

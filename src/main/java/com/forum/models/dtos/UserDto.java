@@ -8,6 +8,7 @@ import com.forum.models.dtos.interfaces.UserUpdate;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -32,8 +33,7 @@ public class UserDto {
     @Email(message = "Invalid email", groups = {Register.class, UserUpdate.class, AdminUpdate.class})
     @NotEmpty(message = "Email can't be empty", groups = {Register.class, UserUpdate.class, AdminUpdate.class})
     private String email;
-    private String profilePicture;
-
+    private MultipartFile profilePicture;
     private String phone;
     private Set<Role> roles;
     private boolean isBlocked;
@@ -95,11 +95,11 @@ public class UserDto {
         this.email = email;
     }
 
-    public String getProfilePicture() {
+    public MultipartFile getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(String profilePicture) {
+    public void setProfilePicture(MultipartFile profilePicture) {
         this.profilePicture = profilePicture;
     }
 

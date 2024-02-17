@@ -28,7 +28,6 @@ import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
 
-@SecurityRequirement(name = "Authorization")
 @RestController
 @RequestMapping("/api/posts")
 public class PostRestController {
@@ -91,6 +90,7 @@ public class PostRestController {
     }
 
 
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/byId/{id}")
     public PostResponseDto getPostById(@PathVariable int id,
                                        @RequestHeader HttpHeaders headers) {

@@ -1,6 +1,7 @@
 package com.forum.controllers.mvc;
 
 import com.forum.models.Post;
+import com.forum.models.filters.PostFilterOptions;
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -48,8 +49,8 @@ public class HomeMvcController {
 
     @GetMapping("/search")
     public String searchPosts(@RequestParam("query") String query, Model model) {
-
-        List<Post> searchResults = postService.getByContentOrTitle(query);
+        PostFilterOptions filterOptions = new PostFilterOptions(null, query, query, null, null, null, null);
+        List<Post> searchResults = postService.getByContentOrTitle(filterOptions);
 
         // Add the search results to the model
         model.addAttribute("posts", searchResults);
@@ -67,6 +68,7 @@ public class HomeMvcController {
     public long populateUsersCount() {
         return userService.getCount();
     }
+
     @ModelAttribute("postsCount")
     public long populatePostsCount() {
         return postService.getCount();

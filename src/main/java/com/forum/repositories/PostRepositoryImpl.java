@@ -36,7 +36,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> findAll(int page, int size) {
+    public Page<Post> findAll(int page, int size, PostFilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
             List<Post> resultList = session.createQuery("FROM Post WHERE isArchived = false", Post.class)
                     .setFirstResult((page - 1) * size)
@@ -77,21 +77,21 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getByContentOrTitle(String sentence) {
-    try (Session session = sessionFactory.openSession()) {
-        String queryStr = "from Post p " +
-                "where (:title is null or p.title LIKE CONCAT('%', :content, '%')) or " +
-                "(:content is null or p.content LIKE CONCAT('%', :content, '%'))";
+    public List<Post> getByContentOrTitle(PostFilterOptions filterOptions) {
+        try (Session session = sessionFactory.openSession()) {
+            String queryStr = "from Post p " +
+                    "where (:title is null or p.title LIKE CONCAT('%', :title, '%')) or " +
+                    "(:content is null or p.content LIKE CONCAT('%', :content, '%')) " + sortOrder(filterOptions);
 
-        Query<Post> query = session.createQuery(queryStr, Post.class);
-        query.setParameter("title", sentence);
-        query.setParameter("content", sentence);
-        if (query.list().isEmpty()) {
-            throw new EntityNotFoundException("No posts were found within the criteria");
+            Query<Post> query = session.createQuery(queryStr, Post.class);
+            query.setParameter("title", filterOptions.getTitle().orElse(null));
+            query.setParameter("content", filterOptions.getContent().orElse(null));
+            if (query.list().isEmpty()) {
+                throw new EntityNotFoundException("No posts were found within the criteria");
+            }
+            return query.list();
         }
-        return query.list();
     }
-}
 
     @Override
     public long getCount() {
