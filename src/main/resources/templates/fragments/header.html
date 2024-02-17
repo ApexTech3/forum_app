@@ -20,7 +20,19 @@
             </form>
         </div>
 
-        <!-- Your other buttons -->
+        <div class="button-wrapper align-items-center" >
+            <a href="@{/}" th:href="@{/}" class="btn btn-xs text-muted has-icon" title="Home">
+                <i class="fa-solid fa-house fa-2x" style="color: #1890ec;"></i>
+            </a>
+
+            <a th:unless="${isAuthenticated}" href="#" th:href="@{/auth/login}" class="btn btn-primary mr-2" role="button" th:text="#{auth.login}">Login</a>
+
+            <a th:if="${isAuthenticated && session.isAdmin}" href="#" th:href="@{/users}" class="btn btn-primary mr-5" th:text="#{navigation.all-users}">Browse all Users</a>
+
+            <a th:if="${isAuthenticated}" href="#" th:href="@{/auth/logout}" class="btn btn-primary mr-2" th:text="#{auth.logout}">Logout</a>
+
+            <a th:unless="${isAuthenticated}" href="#" th:href="@{/auth/register}" class="btn btn-primary" th:text="#{auth.register}">Register</a>
+        </div>
     </div>
 </div>
 
