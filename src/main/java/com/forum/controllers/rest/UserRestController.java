@@ -26,7 +26,6 @@ import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SecurityRequirement(name = "Authorization")
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
