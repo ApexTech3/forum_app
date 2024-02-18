@@ -16,12 +16,17 @@
                     <div th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></div>
 
                     <!-- Forum List -->
-                    <div class="inner-main-body p-2 p-sm-3">
+                    <div class="inner-main-body p-3 ">
                         <div class="card mb-2" th:each="post : ${posts}">
-                            <div class="card-body p-2 p-sm-3">
+                            <div class="card-body">
                                 <div class="media forum-item">
-                                    <a href="#" th:href="@{/users/{id}(id=${post.createdBy.id})}"><img th:src="@{${post.createdBy.profilePicture != null ? post.createdBy.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-circle" width="50" alt="User" /></a>
-                                    <div class="media-body">
+                                    <div class="card-link" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                    <a href="#" th:href="@{/users/{id}(id=${post.createdBy.id})}"><img th:src="@{${post.createdBy.profilePicture != null ? post.createdBy.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle" width="50" alt="User" /></a>
+                                    <a href="#" th:href="@{/users/{id}(id=${post.createdBy.id})}" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary"></a>
+                                        <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'dd/MM/yyyy')}">01.01.2024</small>
+                                        <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'HH:mm')}">12:55</small>
+                                    </div>
+                                        <div class="media-body ml-3">
                                         <div class="d-flex justify-content-between">
                                             <div>
                                                 <h6><a th:href="@{/posts/{id}(id=${post.id})}" href="#" class="text-body" th:text="${post.title}">Title</a></h6>
