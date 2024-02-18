@@ -113,9 +113,7 @@
                                     <small class="text-muted ml-2" th:text="${#dates.format(reply.stampCreated, 'HH:mm')}">01.01.2024</small>
                                 </div>
                                 <div class="media-body ml-3" style="display: flex; justify-content: space-between;">
-                                    <div class="mt-3" style="flex-grow: 1;">
                                         <p th:utext="${reply.getContent()}">Content</p>
-                                    </div>
                                     <div th:unless="${isBlocked}">
                                         <a th:if="${session.currentUser} == ${reply.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/comments/{commentId}/edit(id = ${post.getId()}, commentId = ${reply.getCommentId()})}" class="btn btn-outline-warning" style="height: 36px">Edit</a>
                                         <a th:if="${session.currentUser} == ${reply.getCreatedBy().getUsername()} or ${isAdmin}" th:href="@{/posts/comments/{commentId}(commentId = ${reply.getCommentId()})}" class="btn btn-outline-danger mr-5" style="height: 36px">Delete</a>

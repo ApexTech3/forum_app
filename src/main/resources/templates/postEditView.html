@@ -20,16 +20,15 @@
                     <div class="card mb-2">
                         <div class="card-body">
                             <div class="media forum-item">
-                                <a href="#" class="card-link">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle"
+                                <div class="card-link" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                    <img th:src="@{${post.createdBy.profilePicture != null ? post.createdBy.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle"
                                          width="50"
                                          alt="User"/>
-                                    <small class="d-block text-center text-muted">Newbie</small>
-                                </a>
+                                    <a href="#" th:href="@{/users/{id}(id=${post.getCreatedBy().getId()})}" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">Mokrani</a>
+                                    <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'dd/MM/yyyy')}">01.01.2024</small>
+                                    <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'HH:mm')}">01.01.2024</small>
+                                </div>
                                 <div class="media-body ml-3" >
-                                            <a href="#" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">Mokrani</a>
-                                            <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
-
                                     <div class="mt-3 font-size-sm">
                                         <form th:object="${postDto}" th:action="@{/posts/{id}/edit(id=${post.id})}" method="post">
                                             <div class="form-group">
@@ -51,20 +50,18 @@
                     <div th:each="reply : ${post.replies}" class="card mb-2">
                         <div class="card-body">
                             <div class="media forum-item">
-                                <a href="#" class="card-link">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="rounded-circle"
+                                <div class="card-link" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                    <img th:src="@{${reply.createdBy.profilePicture != null ? reply.createdBy.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle"
                                          width="50"
                                          alt="User"/>
-                                    <small class="d-block text-center text-muted">Pro</small>
-                                </a>
+                                    <a href="#" th:href="@{/users/{id}(id=${reply.getCreatedBy().getId()})}" th:text="${reply.getCreatedBy().getUsername()}" class="text-secondary">Mokrani</a>
+                                    <small class="text-muted ml-2" th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy')}">01.01.2024</small>
+                                    <small class="text-muted ml-2" th:text="${#dates.format(reply.stampCreated, 'HH:mm')}">01.01.2024</small>
+                                </div>
                                 <div class="media-body ml-3">
-                                    <a href="#" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary">drewdan</a>
-                                    <small class="text-muted ml-2"
-                                           th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour
-                                        ago</small>
-                                    <div class="mt-3 font-size-sm">
+
                                         <p th:utext="${reply.content}">Content</p>
-                                    </div>
+
 
                                 </div>
                             </div>
