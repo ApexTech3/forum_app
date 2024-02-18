@@ -61,6 +61,7 @@ public class UserMvcController {
         model.addAttribute("postsCount", postService.getCount());
     }
 
+
     @ModelAttribute("requestURI")
     public String requestURI(final HttpServletRequest request) {
         return request.getRequestURI();

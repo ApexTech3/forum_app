@@ -57,6 +57,7 @@ public class PostMvcController {
     }
 
 
+
     @ModelAttribute
     public void populateAttributes(HttpSession httpSession, Model model) {
         boolean isAuthenticated = httpSession.getAttribute("currentUser") != null;

@@ -34,6 +34,7 @@ public class AuthenticationHelper {
         return user.isBlocked();
     }
 
+
     public User tryGetUser(HttpHeaders headers) throws AuthenticationException {
         if (!headers.containsKey(AUTHORIZATION_HEADER_NAME)) {
             throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);

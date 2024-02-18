@@ -39,12 +39,14 @@ public class HomeMvcController {
 
         model.addAttribute("usersCount", userService.getCount());
         model.addAttribute("postsCount", postService.getCount());
+
     }
 
     @ModelAttribute("postFilterOptions")
     public PostFilterDto createFilterOptions() {
         return new PostFilterDto();
     }
+
 
     @GetMapping
     public String getAllPosts(@RequestParam(name = "page", defaultValue = "1") int page,
@@ -80,5 +82,6 @@ public class HomeMvcController {
     public String showAboutPage() {
         return "about";
     }
+
 }
 
