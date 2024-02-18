@@ -30,6 +30,9 @@ public class AuthenticationHelper {
     public static boolean isAdmin(User user) {
         return user.getRoles().stream().anyMatch(r -> r.getRole().equals("ADMIN"));
     }
+    public static boolean isBlocked(User user) {
+        return user.isBlocked();
+    }
 
     public User tryGetUser(HttpHeaders headers) throws AuthenticationException {
         if (!headers.containsKey(AUTHORIZATION_HEADER_NAME)) {

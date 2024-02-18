@@ -8,6 +8,7 @@ import com.forum.models.User;
 import com.forum.models.dtos.UserDto;
 import com.forum.models.dtos.interfaces.Login;
 import com.forum.models.dtos.interfaces.Register;
+import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -28,16 +29,25 @@ public class AuthenticationMvcController {
     private final AuthenticationHelper authenticationHelper;
     private final UserService userService;
     private final UserMapper userMapper;
+    private final PostService postService;
 
-    public AuthenticationMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper) {
+    public AuthenticationMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, PostService postService) {
         this.authenticationHelper = authenticationHelper;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.postService = postService;
     }
 
-    @ModelAttribute("isAuthenticated")
-    public boolean populateIsAuthenticated(HttpSession httpSession) {
-        return httpSession.getAttribute("currentUser") != null;
+    @ModelAttribute
+    public void populateAttributes(HttpSession httpSession, Model model) {
+        boolean isAuthenticated = httpSession.getAttribute("currentUser") != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
+        model.addAttribute("isAdmin", isAuthenticated ? httpSession.getAttribute("isAdmin") : false);
+        model.addAttribute("isBlocked", isAuthenticated ? httpSession.getAttribute("isBlocked") : false);
+
+        model.addAttribute("usersCount", userService.getCount());
+        model.addAttribute("postsCount", postService.getCount());
     }
 
     @ModelAttribute("profilePicturePath")
@@ -61,6 +71,7 @@ public class AuthenticationMvcController {
             User user = authenticationHelper.verifyAuthentication(dto.getUsername(), dto.getPassword());
             session.setAttribute("currentUser", dto.getUsername());
             session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(user));
+            session.setAttribute("isBlocked", AuthenticationHelper.isBlocked(user));
             session.setAttribute("userId", user.getId());
             return "redirect:/";
         } catch (AuthenticationFailureException e) {

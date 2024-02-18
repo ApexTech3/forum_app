@@ -29,14 +29,23 @@ public class HomeMvcController {
         this.postService = postService;
     }
 
-    @ModelAttribute("isAuthenticated")
-    public boolean populateIsAuthenticated(HttpSession httpSession) {
-        return httpSession.getAttribute("currentUser") != null;
+    @ModelAttribute
+    public void populateAttributes(HttpSession httpSession, Model model) {
+        boolean isAuthenticated = httpSession.getAttribute("currentUser") != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
+        model.addAttribute("isAdmin", isAuthenticated ? httpSession.getAttribute("isAdmin") : false);
+        model.addAttribute("isBlocked", isAuthenticated ? httpSession.getAttribute("isBlocked") : false);
+
+        model.addAttribute("usersCount", userService.getCount());
+        model.addAttribute("postsCount", postService.getCount());
     }
+
     @ModelAttribute("postFilterOptions")
     public PostFilterDto createFilterOptions() {
         return new PostFilterDto();
     }
+
     @GetMapping
     public String getAllPosts(@RequestParam(name = "page", defaultValue = "1") int page,
                               @RequestParam(name = "size", defaultValue = "10") int size,
@@ -71,14 +80,5 @@ public class HomeMvcController {
     public String showAboutPage() {
         return "about";
     }
-
-    @ModelAttribute("usersCount")
-    public long populateUsersCount() {
-        return userService.getCount();
-    }
-
-    @ModelAttribute("postsCount")
-    public long populatePostsCount() {
-        return postService.getCount();
-    }
 }
+

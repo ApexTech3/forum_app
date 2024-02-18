@@ -4,9 +4,13 @@
         <a th:unless="${isAuthenticated}" th:href="@{/auth/login}" class="btn btn-primary has-icon btn-block">
             LOGIN TO POST
         </a>
-        <a th:if="${isAuthenticated}" th:href="@{/posts/new}" class="btn btn-primary has-icon btn-block">
-            NEW POST
+        <a th:if="${isAuthenticated} and ${!isBlocked}" th:href="@{/posts/new}" class="btn btn-primary has-icon btn-block">
+        NEW POST
         </a>
+        <a th:if="${isAuthenticated} and ${isBlocked}" class="btn btn-danger has-icon btn-block">
+            BLOCKED
+        </a>
+
     </div>
     <!-- /Inner sidebar header -->
 

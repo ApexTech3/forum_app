@@ -49,9 +49,16 @@ public class UserMvcController {
         this.commentService = commentService;
     }
 
-    @ModelAttribute("isAuthenticated")
-    public boolean populateIsAuthenticated(HttpSession httpSession) {
-        return httpSession.getAttribute("currentUser") != null;
+    @ModelAttribute
+    public void populateAttributes(HttpSession httpSession, Model model) {
+        boolean isAuthenticated = httpSession.getAttribute("currentUser") != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
+        model.addAttribute("isAdmin", isAuthenticated ? httpSession.getAttribute("isAdmin") : false);
+        model.addAttribute("isBlocked", isAuthenticated ? httpSession.getAttribute("isBlocked") : false);
+
+        model.addAttribute("usersCount", userService.getCount());
+        model.addAttribute("postsCount", postService.getCount());
     }
 
     @ModelAttribute("requestURI")
@@ -234,6 +241,7 @@ public class UserMvcController {
             }
             userService.update(mapper.fromDto(userDto, id), user);
             session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(userService.get(user.getId())));
+            session.setAttribute("isBlocked", AuthenticationHelper.isBlocked(userService.get(user.getId())));
             return "redirect:/users";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
@@ -278,15 +286,5 @@ public class UserMvcController {
         if (!AuthenticationHelper.isAdmin(user) && user.getId() != id) {
             throw new AuthorizationException("You are not allowed to perform this operation");
         }
-    }
-
-    @ModelAttribute("usersCount")
-    public long populateUsersCount() {
-        return userService.getCount();
-    }
-
-    @ModelAttribute("postsCount")
-    public long populatePostsCount() {
-        return postService.getCount();
     }
 }
