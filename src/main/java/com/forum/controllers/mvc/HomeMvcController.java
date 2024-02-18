@@ -33,19 +33,15 @@ public class HomeMvcController {
     public void populateAttributes(HttpSession httpSession, Model model) {
         boolean isAuthenticated = httpSession.getAttribute("currentUser") != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
+        model.addAttribute("postFilterOptions", new PostFilterDto());
 
         model.addAttribute("isAdmin", isAuthenticated ? httpSession.getAttribute("isAdmin") : false);
         model.addAttribute("isBlocked", isAuthenticated ? httpSession.getAttribute("isBlocked") : false);
 
         model.addAttribute("usersCount", userService.getCount());
         model.addAttribute("postsCount", postService.getCount());
-
     }
 
-    @ModelAttribute("postFilterOptions")
-    public PostFilterDto createFilterOptions() {
-        return new PostFilterDto();
-    }
 
 
     @GetMapping
@@ -65,7 +61,6 @@ public class HomeMvcController {
     @GetMapping("/search")
     public String searchPosts(@ModelAttribute("postFilterOptions") PostFilterDto filterDto, Model model) {
         try {
-            model.addAttribute("postFilterOptions", filterDto);
             PostFilterOptions filterOptions = new PostFilterOptions(null, filterDto.getQuery(), filterDto.getQuery(),
                     null, null, filterDto.getSortBy(), filterDto.getSortOrder());
             List<Post> searchResults = postService.getByContentOrTitle(filterOptions);

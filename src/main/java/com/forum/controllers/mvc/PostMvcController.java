@@ -11,6 +11,7 @@ import com.forum.models.Post;
 import com.forum.models.Tag;
 import com.forum.models.User;
 import com.forum.models.dtos.CommentRequestDto;
+import com.forum.models.dtos.PostFilterDto;
 import com.forum.models.dtos.PostRequestDto;
 import com.forum.models.dtos.TagDto;
 import com.forum.models.filters.PostFilterOptions;
@@ -32,7 +33,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/posts")
-@SessionAttributes("postFilterOptions")
 public class PostMvcController {
 
     private final PostService postService;
@@ -62,6 +62,7 @@ public class PostMvcController {
     public void populateAttributes(HttpSession httpSession, Model model) {
         boolean isAuthenticated = httpSession.getAttribute("currentUser") != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
+        model.addAttribute("postFilterOptions", new PostFilterDto());
 
         model.addAttribute("isAdmin", isAuthenticated ? httpSession.getAttribute("isAdmin") : false);
         model.addAttribute("isBlocked", isAuthenticated ? httpSession.getAttribute("isBlocked") : false);

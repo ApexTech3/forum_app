@@ -9,6 +9,7 @@ import com.forum.helpers.UserMapper;
 import com.forum.models.Comment;
 import com.forum.models.Post;
 import com.forum.models.User;
+import com.forum.models.dtos.PostFilterDto;
 import com.forum.models.dtos.UserDto;
 import com.forum.models.dtos.UserFilterDto;
 import com.forum.models.dtos.interfaces.AdminUpdate;
@@ -33,7 +34,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/users")
-@SessionAttributes("postFilterOptions")
 public class UserMvcController {
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
@@ -50,9 +50,11 @@ public class UserMvcController {
     }
 
     @ModelAttribute
-    public void populateAttributes(HttpSession httpSession, Model model) {
+    public void populateAttributes(HttpSession httpSession, Model model, HttpServletRequest request) {
         boolean isAuthenticated = httpSession.getAttribute("currentUser") != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
+        model.addAttribute("postFilterOptions", new PostFilterDto());
+        model.addAttribute("requestURI", request.getRequestURI());
 
         model.addAttribute("isAdmin", isAuthenticated ? httpSession.getAttribute("isAdmin") : false);
         model.addAttribute("isBlocked", isAuthenticated ? httpSession.getAttribute("isBlocked") : false);
@@ -61,11 +63,6 @@ public class UserMvcController {
         model.addAttribute("postsCount", postService.getCount());
     }
 
-
-    @ModelAttribute("requestURI")
-    public String requestURI(final HttpServletRequest request) {
-        return request.getRequestURI();
-    }
 
     @GetMapping
     public String showAllUsers(@ModelAttribute("filterOptions") UserFilterDto filterDto, Model model, HttpSession session) {
