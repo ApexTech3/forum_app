@@ -39,10 +39,6 @@ public class PostServiceImpl implements PostService {
         return repository.findAll(page, size,new PostFilterOptions());//todo
     }
 
-    public Page<Post> getAllPosts(int page, int size) {
-        return repository.findAll(page, size);
-    }
-
     @Override
     public long getCount() {
         return repository.getCount();
