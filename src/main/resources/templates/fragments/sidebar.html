@@ -5,11 +5,13 @@
             LOGIN TO POST
         </a>
         <a th:if="${isAuthenticated} and ${!isBlocked}" th:href="@{/posts/new}" class="btn btn-primary has-icon btn-block">
-            NEW POST
+
+        NEW POST
         </a>
         <a th:if="${isAuthenticated} and ${isBlocked}" class="btn btn-danger has-icon btn-block">
             BLOCKED
         </a>
+
     </div>
     <!-- /Inner sidebar header -->
 

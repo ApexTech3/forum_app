@@ -32,6 +32,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/posts")
+@SessionAttributes("postFilterOptions")
 public class PostMvcController {
 
     private final PostService postService;
@@ -54,6 +55,8 @@ public class PostMvcController {
         this.tagService = tagService;
         this.userService = userService;
     }
+
+
 
     @ModelAttribute
     public void populateAttributes(HttpSession httpSession, Model model) {

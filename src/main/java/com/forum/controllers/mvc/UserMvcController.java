@@ -33,6 +33,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/users")
+@SessionAttributes("postFilterOptions")
 public class UserMvcController {
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
@@ -241,6 +242,7 @@ public class UserMvcController {
             }
             userService.update(mapper.fromDto(userDto, id), user);
             session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(userService.get(user.getId())));
+            session.setAttribute("isBlocked", AuthenticationHelper.isBlocked(userService.get(user.getId())));
             return "redirect:/users";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());

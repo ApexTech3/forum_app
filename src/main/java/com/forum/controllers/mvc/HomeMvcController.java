@@ -1,23 +1,24 @@
 package com.forum.controllers.mvc;
 
+import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Post;
+import com.forum.models.dtos.PostFilterDto;
 import com.forum.models.filters.PostFilterOptions;
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/")
+@SessionAttributes("postFilterOptions")
 public class HomeMvcController {
     private final UserService userService;
     private final PostService postService;
@@ -38,6 +39,12 @@ public class HomeMvcController {
 
         model.addAttribute("usersCount", userService.getCount());
         model.addAttribute("postsCount", postService.getCount());
+
+    }
+
+    @ModelAttribute("postFilterOptions")
+    public PostFilterDto createFilterOptions() {
+        return new PostFilterDto();
     }
 
 
@@ -56,15 +63,19 @@ public class HomeMvcController {
     }
 
     @GetMapping("/search")
-    public String searchPosts(@RequestParam("query") String query, Model model) {
-        PostFilterOptions filterOptions = new PostFilterOptions(null, query, query, null, null, null, null);
-        List<Post> searchResults = postService.getByContentOrTitle(filterOptions);
-
-        // Add the search results to the model
-        model.addAttribute("posts", searchResults);
-
-        // Return the name of the view that should display the search results
-        return "mainView";
+    public String searchPosts(@ModelAttribute("postFilterOptions") PostFilterDto filterDto, Model model) {
+        try {
+            model.addAttribute("postFilterOptions", filterDto);
+            PostFilterOptions filterOptions = new PostFilterOptions(null, filterDto.getQuery(), filterDto.getQuery(),
+                    null, null, filterDto.getSortBy(), filterDto.getSortOrder());
+            List<Post> searchResults = postService.getByContentOrTitle(filterOptions);
+            model.addAttribute("posts", searchResults);
+            return "mainView";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
+        }
     }
 
     @GetMapping("/about")
@@ -73,3 +84,4 @@ public class HomeMvcController {
     }
 
 }
+

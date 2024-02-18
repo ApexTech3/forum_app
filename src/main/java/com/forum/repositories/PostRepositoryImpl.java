@@ -43,7 +43,7 @@ public class PostRepositoryImpl implements PostRepository {
                     .setMaxResults(size)
                     .list();
 
-            long totalCount = (Long) session.createQuery("SELECT COUNT(*) FROM Post")
+            long totalCount = session.createQuery("SELECT COUNT(*) FROM Post", Long.class)
                     .uniqueResult();
 
             return new PageImpl<>(resultList, PageRequest.of(page - 1, size), totalCount);
@@ -81,8 +81,9 @@ public class PostRepositoryImpl implements PostRepository {
         try (Session session = sessionFactory.openSession()) {
             String queryStr = "from Post p " +
                     "where (:title is null or p.title LIKE CONCAT('%', :title, '%')) or " +
-                    "(:content is null or p.content LIKE CONCAT('%', :content, '%')) " + sortOrder(filterOptions);
-
+                    "(:content is null or p.content LIKE CONCAT('%', :content, '%')) or " +
+                    "(:content is null or p.createdBy.username LIKE CONCAT('%',:content,'%')) "
+                    + sortOrder(filterOptions);
             Query<Post> query = session.createQuery(queryStr, Post.class);
             query.setParameter("title", filterOptions.getTitle().orElse(null));
             query.setParameter("content", filterOptions.getContent().orElse(null));
@@ -262,7 +263,7 @@ public class PostRepositoryImpl implements PostRepository {
     public Post likeDislike(int userId, int postId, String likeDislike) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            String sql = "INSERT INTO  likes_dislikes (post_id, user_id, like_dislike) VALUES " +
+            String sql = "INSERT INTO forum.likes_dislikes (post_id, user_id, like_dislike) VALUES " +
                     "(:postId, :userId, :likeDislike) on duplicate key update like_dislike = :likeDislike";
             Query<?> nativeQuery = session.createNativeQuery(sql, Integer.class);
             nativeQuery.setParameter("postId", postId);

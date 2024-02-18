@@ -40,7 +40,7 @@
                                             <a th:if="${session.currentUser} == ${post.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/edit(id = ${post.id})}" class="btn btn-warning" style="height: 36px">Edit</a>
                                             <a th:if="${session.currentUser} == ${post.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/archive(id = ${post.id})}" class="btn btn-danger mr-5" style="height: 36px">Delete</a>
                                         </div>
-                                        </div>
+                                    </div>
                                     <div class="mt-3 font-size-sm">
                                         <p th:text="${post.content}">
                                             I'm newbie with laravel and i want to fetch data from database in realtime
@@ -116,7 +116,7 @@
                                         <div>
                                             <a href="#" th:href="@{/users/{id}(id=${reply.getCreatedBy().getUsername()})}" th:text="${reply.getCreatedBy().getUsername()}" class="text-secondary">drewdan</a>
                                             <small class="text-muted ml-2"
-                                           th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
+                                                   th:text="${#dates.format(reply.stampCreated, 'dd/MM/yyyy HH:mm')}">1 hour ago</small>
                                         </div>
                                         <div th:unless="${isBlocked}">
                                             <a th:if="${session.currentUser} == ${reply.getCreatedBy().getUsername()}" th:href="@{/posts/{id}/comments/{commentId}/edit(id = ${post.getId()}, commentId = ${reply.getCommentId()})}" class="btn btn-outline-warning" style="height: 36px">Edit</a>
@@ -142,18 +142,18 @@
                         <div class="card-body">
 
                             <div class="w-auto">
-                            <a th:unless="${isAuthenticated}" th:href="@{/auth/login}" class="btn btn-primary has-icon btn-block" style="width: 100%;">
-                                LOGIN TO REPLY
-                            </a>
+                                <a th:unless="${isAuthenticated}" th:href="@{/auth/login}" class="btn btn-primary has-icon btn-block" style="width: 100%;">
+                                    LOGIN TO REPLY
+                                </a>
                             </div>
                             <div id="quotedContent" style="font-style: italic;" th:id="quotedContent"></div>
                             <div id="newComment" th:if="${isAuthenticated}">
                                 <div style="font-style: italic; color: #4a5568">Reply must not be empty.</div>
 
-                                    <form id="commentForm" th:object="${comment}" th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
-                                        <textarea id="commentInput" name="content" class="form-control" placeholder="Write your reply..." rows="3" th:field="*{content}"></textarea>
-                                        <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
-                                    </form>
+                                <form id="commentForm" th:object="${comment}" th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
+                                    <textarea id="commentInput" name="content" class="form-control" placeholder="Write your reply..." rows="3" th:field="*{content}"></textarea>
+                                    <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                                </form>
 
                             </div>
                         </div>
