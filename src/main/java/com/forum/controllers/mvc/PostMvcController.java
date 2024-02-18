@@ -32,6 +32,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/posts")
+@SessionAttributes("postFilterOptions")
 public class PostMvcController {
 
     private final PostService postService;

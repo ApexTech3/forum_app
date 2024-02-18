@@ -33,6 +33,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/users")
+@SessionAttributes("postFilterOptions")
 public class UserMvcController {
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
