@@ -34,6 +34,7 @@ public class UserDto {
     @NotEmpty(message = "Email can't be empty", groups = {Register.class, UserUpdate.class, AdminUpdate.class})
     private String email;
     private MultipartFile profilePicture;
+    private String profilePictureURL;
     private String phone;
     private Set<Role> roles;
     private boolean isBlocked;
@@ -101,6 +102,14 @@ public class UserDto {
 
     public void setProfilePicture(MultipartFile profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public String getProfilePictureURL() {
+        return profilePictureURL;
+    }
+
+    public void setProfilePictureURL(String profilePictureURL) {
+        this.profilePictureURL = profilePictureURL;
     }
 
     public String getPhone() {

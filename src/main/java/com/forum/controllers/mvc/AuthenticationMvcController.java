@@ -1,5 +1,6 @@
 package com.forum.controllers.mvc;
 
+import com.forum.services.CloudinaryUploadService;
 import com.forum.exceptions.AuthenticationFailureException;
 import com.forum.exceptions.EntityDuplicateException;
 import com.forum.helpers.AuthenticationHelper;
@@ -30,12 +31,14 @@ public class AuthenticationMvcController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final PostService postService;
+    private final CloudinaryUploadService cloudinaryUploadService;
 
-    public AuthenticationMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, PostService postService) {
+    public AuthenticationMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, PostService postService, CloudinaryUploadService cloudinaryUploadService) {
         this.authenticationHelper = authenticationHelper;
         this.userService = userService;
         this.userMapper = userMapper;
         this.postService = postService;
+        this.cloudinaryUploadService = cloudinaryUploadService;
     }
 
     @ModelAttribute
@@ -93,7 +96,6 @@ public class AuthenticationMvcController {
         return "register";
     }
 
-    //@RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture,
     @PostMapping("/register")
     public String handleRegister(@Validated(Register.class) @ModelAttribute("register") UserDto dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -103,10 +105,10 @@ public class AuthenticationMvcController {
             User user = userMapper.fromDto(dto);
             MultipartFile profilePicture = dto.getProfilePicture();
             if (!profilePicture.isEmpty()) {
-                String originalFilename = profilePicture.getOriginalFilename();
-                String directory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main"
-                        + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
-                profilePicture.transferTo(new File(directory + originalFilename));
+                File pictureFile = File.createTempFile("temp", profilePicture.getOriginalFilename());
+                profilePicture.transferTo(pictureFile);
+                String pictureUrl = cloudinaryUploadService.uploadImage(pictureFile);
+                user.setProfilePicture(pictureUrl);
             }
             userService.register(user);
             return "redirect:/auth/login";

@@ -1,5 +1,6 @@
 package com.forum.controllers.mvc;
 
+import com.forum.services.CloudinaryUploadService;
 import com.forum.exceptions.AuthenticationFailureException;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
@@ -41,12 +42,15 @@ public class UserMvcController {
     private final PostService postService;
     private final CommentService commentService;
 
-    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper mapper, PostService postService, CommentService commentService) {
+    private final CloudinaryUploadService cloudinaryUploadService;
+
+    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper mapper, PostService postService, CommentService commentService, CloudinaryUploadService cloudinaryUploadService) {
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.mapper = mapper;
         this.postService = postService;
         this.commentService = commentService;
+        this.cloudinaryUploadService = cloudinaryUploadService;
     }
 
     @ModelAttribute
@@ -164,10 +168,10 @@ public class UserMvcController {
         try {
             MultipartFile profilePicture = userDto.getProfilePicture();
             if (!profilePicture.isEmpty()) {
-                String originalFilename = profilePicture.getOriginalFilename();
-                String directory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main"
-                        + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
-                profilePicture.transferTo(new File(directory + originalFilename));
+                File pictureFile = File.createTempFile("temp", profilePicture.getOriginalFilename());
+                profilePicture.transferTo(pictureFile);
+                String pictureUrl = cloudinaryUploadService.uploadImage(pictureFile);
+                userDto.setProfilePictureURL(pictureUrl);
             }
             userService.update(mapper.fromDto(userDto, id), user);
             session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(userService.get(user.getId())));
@@ -232,10 +236,10 @@ public class UserMvcController {
         try {
             MultipartFile profilePicture = userDto.getProfilePicture();
             if (!profilePicture.isEmpty()) {
-                String originalFilename = profilePicture.getOriginalFilename();
-                String directory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main"
-                        + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator;
-                profilePicture.transferTo(new File(directory + originalFilename));
+                File pictureFile = File.createTempFile("temp", profilePicture.getOriginalFilename());
+                profilePicture.transferTo(pictureFile);
+                String pictureUrl = cloudinaryUploadService.uploadImage(pictureFile);
+                userDto.setProfilePictureURL(pictureUrl);
             }
             userService.update(mapper.fromDto(userDto, id), user);
             session.setAttribute("isAdmin", AuthenticationHelper.isAdmin(userService.get(user.getId())));

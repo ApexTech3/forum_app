@@ -48,8 +48,8 @@ public class UserMapper {
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPhone(userDto.getPhone());
-        if (!userDto.getProfilePicture().isEmpty()) {
-            user.setProfilePicture("/uploads/" + userDto.getProfilePicture().getOriginalFilename());
+        if (!userDto.getProfilePictureURL().isEmpty()) {
+            user.setProfilePicture(userDto.getProfilePictureURL());
         }
         if (userDto.getRoles() == null) {
             userDto.setRoles(Set.of(roleService.get("USER")));
@@ -70,8 +70,8 @@ public class UserMapper {
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPhone(userDto.getPhone());
-        if (!userDto.getProfilePicture().isEmpty()) {
-            user.setProfilePicture("/uploads/" + userDto.getProfilePicture().getOriginalFilename());
+        if (!userDto.getProfilePictureURL().isEmpty()) {
+            user.setProfilePicture(userDto.getProfilePictureURL());
         }
         if (userDto.getRoles() == null) {
             userDto.setRoles(Set.of(roleService.get("USER")));
