@@ -9,9 +9,9 @@ import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +43,6 @@ public class HomeMvcController {
     }
 
 
-
     @GetMapping
     public String getAllPosts(@RequestParam(name = "page", defaultValue = "1") int page,
                               @RequestParam(name = "size", defaultValue = "10") int size,
@@ -59,7 +58,10 @@ public class HomeMvcController {
     }
 
     @GetMapping("/search")
-    public String searchPosts(@ModelAttribute("postFilterOptions") PostFilterDto filterDto, Model model) {
+    public String searchPosts(@ModelAttribute("postFilterOptions") PostFilterDto filterDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "userUpdateView";
+        }
         try {
             PostFilterOptions filterOptions = new PostFilterOptions(null, filterDto.getQuery(), filterDto.getQuery(),
                     null, null, filterDto.getSortBy(), filterDto.getSortOrder());
@@ -67,9 +69,8 @@ public class HomeMvcController {
             model.addAttribute("posts", searchResults);
             return "mainView";
         } catch (EntityNotFoundException e) {
-            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
-            model.addAttribute("error", e.getMessage());
-            return "errorView";
+            bindingResult.rejectValue("query", "error", e.getMessage());
+            return "mainView";
         }
     }
 
