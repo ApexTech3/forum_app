@@ -4,8 +4,10 @@ import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.filters.PostFilterOptions;
 import org.springframework.data.domain.Page;
+
 import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface PostService {

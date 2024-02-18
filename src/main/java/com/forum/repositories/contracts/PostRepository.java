@@ -4,6 +4,7 @@ import com.forum.models.Post;
 import com.forum.models.filters.PostFilterOptions;
 import org.springframework.data.domain.Page;
 
+
 import java.util.List;
 
 public interface PostRepository {
@@ -45,5 +46,6 @@ public interface PostRepository {
     Post likeDislike(int userId, int postId, String likeDislike);
 
     List<Post> getPostsByTag(String tagName);
+
 
 }

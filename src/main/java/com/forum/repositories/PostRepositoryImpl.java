@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,14 +37,17 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+
     public Page<Post> findAll(int page, int size, PostFilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
             List<Post> resultList = session.createQuery("FROM Post WHERE isArchived = false", Post.class)
+
                     .setFirstResult((page - 1) * size)
                     .setMaxResults(size)
                     .list();
 
             long totalCount = session.createQuery("SELECT COUNT(*) FROM Post", Long.class)
+
                     .uniqueResult();
 
             return new PageImpl<>(resultList, PageRequest.of(page - 1, size), totalCount);
@@ -287,6 +291,8 @@ public class PostRepositoryImpl implements PostRepository {
             return posts;
         }
     }
+
+
 
 
 }
