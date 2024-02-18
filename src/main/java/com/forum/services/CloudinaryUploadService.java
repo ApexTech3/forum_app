@@ -2,20 +2,24 @@ package com.forum.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+
 @Service
+@PropertySource("classpath:application.properties")
 public class CloudinaryUploadService {
     private Cloudinary cloudinary;
 
-    public CloudinaryUploadService() {
+    public CloudinaryUploadService(Environment env) {
         cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "dhixuwvrk",
-                "api_key", "931492867779326",
-                "api_secret", "PtFXxvTkbizlxuhz5n_pteHN3FY"));
+                "cloud_name", env.getProperty("cdn.cloud.name"),
+                "api_key", env.getProperty("cdn.api.key"),
+                "api_secret", env.getProperty("cdn.api.secret")));
     }
 
     public String uploadImage(File file) {

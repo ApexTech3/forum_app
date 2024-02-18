@@ -48,7 +48,7 @@ public class UserMapper {
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPhone(userDto.getPhone());
-        if (!userDto.getProfilePictureURL().isEmpty()) {
+        if (userDto.getProfilePictureURL()!=null) {
             user.setProfilePicture(userDto.getProfilePictureURL());
         }
         if (userDto.getRoles() == null) {
@@ -70,7 +70,7 @@ public class UserMapper {
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPhone(userDto.getPhone());
-        if (!userDto.getProfilePictureURL().isEmpty()) {
+        if (userDto.getProfilePictureURL()!=null) {
             user.setProfilePicture(userDto.getProfilePictureURL());
         }
         if (userDto.getRoles() == null) {
