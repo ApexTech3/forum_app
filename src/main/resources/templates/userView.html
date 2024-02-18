@@ -14,78 +14,75 @@
                 <!-- Inner main header -->
                 <div th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></div>
                 <div class="inner-main-body p-2 p-sm-3">
-                    <div class="d-flex justify-content-center">
-                        <div class="card mb-2 content text-center d-inline-block  p-5">
+                    <div class="d-flex pb-2" style="height: 650px">
+                        <div class="card col-4">
+                            <img width="350" height="350" class="card-img-top rounded-3" th:src="@{${user.profilePicture != null ? user.profilePicture : '/uploads/chichkotrevichko.png'}}" alt="Profile Picture">
+                            <br/>
+                            <div class="card-body mb-10" th:style="text-align">
+                                <h2 class="card-title" th:text="${user.username}">Username</h2>
+                                <p
+                                   th:text="#{user.label.first-name}  + ': ' +       ${user.firstName}">Pesho</p>
+                                <p
+                                   th:text="#{user.label.last-name} + ': ' +      ${user.lastName}">
+                                    Peshov</p>
+                                <p  th:text="#{user.label.email}  + ': ' + ${user.email}">
+                                    pesho@peshomail.com</p>
+                                <p th:if="${session.isAdmin}"
+                                   th:text="#{user.label.roles}  + ': ' + ${user.roles}">USER</p>
 
-                            <div class="body-content" th:align="center">
-                                <h2 th:text="${user.username}">Username</h2>
-                                <img th:src="@{${user.profilePicture != null ? user.profilePicture : '/uploads/chichkotrevichko.png'}}"
-                                     alt="Profile Picture">
-                                <br/>
-                                <div th:style="text-align">
-                                    <p class="margin12"
-                                       th:text="#{user.label.first-name}  + ': ' +       ${user.firstName}">Pesho</p>
-                                    <p class="margin12"
-                                       th:text="#{user.label.last-name} + ': ' +      ${user.lastName}">
-                                        Peshov</p>
-                                    <p class="margin12" th:text="#{user.label.email}  + ': ' + ${user.email}">
-                                        pesho@peshomail.com</p>
-                                    <p th:if="${session.isAdmin}" class="margin12"
-                                       th:text="#{user.label.roles}  + ': ' + ${user.roles}">USER</p>
-                                </div>
-                                <h3 th:if="${adminOrCurrentUser}">
+                                <div th:if="${adminOrCurrentUser}">
                                     <a href="#" th:if="${session.isAdmin}" th:href="@{__${requestURI}__/admin-edit}"
                                        class="btn btn-warning" style="height: 36px">Edit</a>
                                     <a href="#" th:unless="${session.isAdmin}" th:href="@{__${requestURI}__/edit}"
                                        class="btn btn-warning" style="height: 36px">Edit</a>
                                     <a href="#" th:href="@{__${requestURI}__/delete}" class="btn btn-danger mr-5"
                                        style="height: 36px">Delete</a>
-                                </h3>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div>Posts</div>
-                    <div class="card mb-2" th:each="post : ${userPosts}">
-                        <div class="card-body p-2 p-sm-3">
-                            <div class="media forum-item">
-                                <a href="#"><img th:src="@{${user.profilePicture != null ? user.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                 class="mr-3 rounded-circle" width="50" alt="User"/></a>
-                                <div class="media-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h6><a th:href="@{/posts/{id}(id=${post.id})}" href="#" class="text-body"
-                                                   th:text="${post.title}">Title</a></h6>
+                        <div class="card col-8 d-flex" >
+                            <div class="inner-main-body overflow-auto">
+                                <h5 class="card-title bg-secondary rounded-2 p-1" th:text="#{user.comments.label} + ' ' + ${user.username} + ':' ">Comments by: Username</h5>
+                                <div class="card-body" th:each="comment : ${userComments}">
+                                    <div class="media forum-item">
+                                        <div class="media-body">
+                                            <div class="card-title inline-flex">
+                                                <h6 class="text-body">
+                                                    <a th:text="'Replied to: ' + ${comment.parentPost.title}" th:href="@{/posts/{id}(id=${comment.parentPost.id})}" href="#" class="text-body">Title
+                                                    </a>
+                                                </h6>
+                                            </div>
+                                                <div class="card-text text-secondary">
+                                                    <span th:if="${#strings.length(comment.content) > 150}" th:text="${#strings.abbreviate(comment.content, 150)}"></span>
+                                                    <span th:if="${#strings.length(comment.content) <= 150}" th:text="${comment.content}"></span>
+                                                </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div>Comments</div>
-                    <div class="card mb-2" th:each="comment : ${userComments}">
-                        <div class="card-body p-2 p-sm-3">
+                    <div class="card p-2 p-sm-3">
+                        <h5 class="card-title bg-secondary rounded-2 p-1" th:text="#{user.posts.label} + ' ' + ${user.username} + ':' ">Comments by: Username</h5>
+                        <div class="card-body" th:each="post : ${userPosts}">
                             <div class="media forum-item">
-                                <a href="#"><img th:src="@{${user.profilePicture != null ? user.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                                 class="mr-3 rounded-circle" width="50" alt="User"/></a>
                                 <div class="media-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h6><a th:href="@{/posts/{id}(id=${comment.parentPost.id})}" href="#" class="text-body"
-                                                   th:text="${comment.content}">Title</a></h6>
-                                        </div>
-
+                                    <div class="card-title inline-flex">
+                                        <h6 class="text-body">
+                                            <a th:text="${post.title}" th:href="@{/posts/{id}(id=${post.id})}" href="#" class="text-body">Title
+                                            </a>
+                                        </h6>
                                     </div>
-
+                                    <div class="card-text text-secondary">
+                                        <span th:if="${#strings.length(post.content) > 250}" th:text="${#strings.abbreviate(post.content, 250)}"></span>
+                                        <span th:if="${#strings.length(post.content) <= 250}" th:text="${post.content}"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
 
             </div>
