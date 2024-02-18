@@ -134,6 +134,11 @@ public class Post {
         this.stampCreated = stampCreated;
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.stampCreated = new Timestamp(System.currentTimeMillis());
+    }
+
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;

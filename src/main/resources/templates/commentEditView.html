@@ -149,6 +149,7 @@
                                             <div class="form-group">
                                                 <textarea id="content" class="form-control" rows="3" th:field="*{content}" style="font-style: italic; color: black;"></textarea>
                                             </div>
+                                            <label class="form-error text-danger" th:errors="*{content}">Content error placeholder</label></br>
                                             <button type="submit" class="btn btn-primary">Update</button>
                                         </form>
                                     </div>

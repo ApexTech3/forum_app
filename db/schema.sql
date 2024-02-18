@@ -60,7 +60,7 @@ CREATE TABLE `pictures`
 (
     `picture_id` int(11)     NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `user_id`    int(11)     NOT NULL,
-    `picture`    varchar(50) NOT NULL,
+    `picture`    varchar(256) NOT NULL,
     CONSTRAINT `pictures_users_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 );
 

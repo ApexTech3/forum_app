@@ -19,11 +19,12 @@
     <div class="inner-main-body p-2 p-sm-3">
         <div class="content">
 
-                <div class="header d-flex align-items-center bg-primary text-white">
-                    <h6 class="title mb-0" id="threadTitleLabel" style="font-size: 20px; color: white; padding: 10px;">Create new post</h6>
-                </div>
-                <div class="card body p-2">
-                    <div class="d-flex">
+
+                <div class="card body pt-0">
+                    <div class="header d-flex align-items-center bg-primary text-white rounded">
+                        <h5 class="title mb-0" id="threadTitleLabel" style="font-size: 20px; color: white; padding: 10px;">Create new post</h5>
+                    </div>
+                    <div class="d-flex p-2">
                     <div class="dropdown dropend">
                         <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 10px;">
                             Add a Tag
@@ -34,8 +35,8 @@
                     </div>
                     <button type="button" id="openModalButton" class="btn btn-primary" style="margin-left: 10px;">New Tag</button>
                     </div>
-                    <a>Tags: </a>
-                    <div id="tagsTab" class="small-tab">
+                    <a class="text-dark p-2">Tags: </a>
+                    <div id="tagsTab" class="small-tab p-2">
                     </div>
                     <form id="newPostForm" th:object="${postDto}" th:action="@{/posts/new}" method="post">
                     <div class="form-group">
@@ -43,15 +44,15 @@
                         <input type="text" class="form-control" id="threadTitle" th:field="*{title}" placeholder="Enter title"
                                autofocus=""/>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group p-2">
                         <label for="postContent">Content</label>
                         <textarea class="form-control" id="postContent" rows="3" th:field="*{content}" placeholder="Enter content"></textarea>
                     </div>
-                    <label class="form-error" th:errors="*{title}">Username error placeholder</label>
-                    <label class="form-error" th:errors="*{content}">Username error placeholder</label>
+                    <label class="form-error text-danger" th:errors="*{title}">Username error placeholder</label><br/>
+                    <label class="form-error text-danger" th:errors="*{content}">Username error placeholder</label>
                         <input type="hidden" id="tagsList" name="tagsList" th:value="${postDto.tags}">
-                    <div class="footer">
-                        <button type="reset" class="btn btn-light">Cancel</button>
+                    <div class="footer p-2">
+                        <a th:href="@{/}" class="btn btn-light">Cancel</a>
                         <button type="submit" class="btn btn-primary" onclick="submitPost()">Post</button>
                     </div>
                     </form>
@@ -69,7 +70,7 @@
                                             <input type="text" class="form-control" id="newTagThread" placeholder="Enter tag name" th:field="*{name}" autofocus="" />
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer p-2">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-primary">Post</button>
                                     </div>

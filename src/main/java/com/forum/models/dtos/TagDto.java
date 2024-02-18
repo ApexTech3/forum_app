@@ -1,6 +1,9 @@
 package com.forum.models.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class TagDto {
+    @NotBlank(message = "The name can't be empty")
     private String name;
 
     public TagDto() {

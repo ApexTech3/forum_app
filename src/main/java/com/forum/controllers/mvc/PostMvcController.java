@@ -180,15 +180,16 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(httpSession);
-        } catch(AuthenticationFailureException e) {
-            // Log the exception
-            System.out.println("Authentication failed: " + e.getMessage());
+        } catch (AuthenticationFailureException e) {
             return "redirect:/auth/login";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
         }
 
         if(bindingResult.hasErrors()) {
-            // Log the validation errors
-            System.out.println("Validation errors: " + bindingResult.getAllErrors());
+            model.addAttribute("errors", bindingResult.getAllErrors());
             return "newPostView";
         }
         try {
@@ -214,14 +215,18 @@ public class PostMvcController {
         User user;
         try {
             user = authenticationHelper.tryGetUser(httpSession);
-        } catch(AuthenticationFailureException e) {
-            // Log the exception
-            System.out.println("Authentication failed: " + e.getMessage());
+        } catch (AuthenticationFailureException e) {
             return "redirect:/auth/login";
+        } catch (AuthorizationException e) {
+            model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "errorView";
         }
 
         if(bindingResult.hasErrors()) {
             // Log the validation errors
+            model.addAttribute("post", postService.getById(id));
+            model.addAttribute("errors", bindingResult.getAllErrors());
             System.out.println("Validation errors: " + bindingResult.getAllErrors());
             return "postEditView";
         }
@@ -279,7 +284,8 @@ public class PostMvcController {
         }
 
         if(bindingResult.hasErrors()) {
-            // Log the validation errors
+            model.addAttribute("post", postService.getById(postId));
+            model.addAttribute("errors", bindingResult.getAllErrors());
             System.out.println("Validation errors: " + bindingResult.getAllErrors());
             return "commentEditView";
         }
@@ -297,9 +303,9 @@ public class PostMvcController {
     public String createTag(@Valid @ModelAttribute("tagDto") TagDto tagDto, BindingResult bindingResult, Model model,
                             HttpSession httpSession) {
         if(bindingResult.hasErrors()) {
-            // Log the validation errors
+            model.addAttribute("errors", bindingResult.getAllErrors());
             System.out.println("Validation errors: " + bindingResult.getAllErrors());
-            return "newPostView";
+            return "redirect:/posts/new";
         }
         try {
             Tag tag = postMapper.fromTagDto(tagDto.getName());
@@ -347,11 +353,9 @@ public class PostMvcController {
             return "redirect:/posts/" + postId;
 
         } catch(AuthenticationFailureException e) {
-            // Log the exception
             System.out.println("Authentication failed: " + e.getMessage());
             return "redirect:/auth/login";
         } catch(Exception e) {
-            // Log any other exceptions
             System.out.println("Error archiving post: " + e.getMessage());//TODO clear all console logs
         }
 
