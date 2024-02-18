@@ -5,58 +5,32 @@
             LOGIN TO POST
         </a>
         <a th:if="${isAuthenticated} and ${!isBlocked}" th:href="@{/posts/new}" class="btn btn-primary has-icon btn-block">
-
-        NEW POST
+            NEW POST
         </a>
         <a th:if="${isAuthenticated} and ${isBlocked}" class="btn btn-danger has-icon btn-block">
             BLOCKED
         </a>
-
     </div>
     <!-- /Inner sidebar header -->
 
-    <!-- Inner sidebar body -->
+    <!-- Tags list -->
     <div class="inner-sidebar-body p-0">
         <div class="p-3 h-100">
-            <div class="simplebar-wrapper" style="margin: -16px;">
-                <div class="simplebar-height-auto-observer-wrapper">
-                    <div class="simplebar-height-auto-observer"></div>
+            <nav class="nav nav-pills nav-gap-y-1 flex-column" style="overflow-y: auto;">
+                <a th:if="${isAuthenticated}" th:href="@{/}" class="nav-link nav-link-faded">All Threads</a>
+                <a th:href="@{/posts/mostLiked}" class="nav-link nav-link-faded has-icon">Most Liked</a>
+                <a th:href="@{/posts/mostCommented}" class="nav-link nav-link-faded has-icon">Most Replied</a>
+                <!-- Title for Tags aligned with other links -->
+                <div class="tags-title" style="margin-top: 10px; margin-bottom: 5px; text-align: center;">Tags</div>
+                <!-- List all tags with icon -->
+                <div class="tags-list" style="max-height: 200px; overflow-y: auto;">
+                    <a th:each="tag : ${tags}" th:href="@{/posts/tag/{tagName}(tagName=${tag.getName()})}" class="nav-link nav-link-faded" style="display: flex; align-items: center;">
+                        <span class="tag-icon" style="margin-right: 5px;">&#9750;</span> <!-- Tag icon -->
+                        <span th:text="${tag.getName()}"></span> <!-- Tag name -->
+                    </a>
                 </div>
-                <div class="simplebar-mask">
-                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                        <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;">
-                            <div class="simplebar-content" style="padding: 16px;">
-                                <nav class="nav nav-pills nav-gap-y-1 flex-column">
-                                    <a th:if="${isAuthenticated}" th:href="@{/}" class="nav-link nav-link-faded">All Threads</a>
-                                    <a th:href="@{/posts/mostLiked}" class="nav-link nav-link-faded has-icon">Most Liked</a>
-                                    <a th:href="@{/posts/mostCommented}" class="nav-link nav-link-faded has-icon">Most Replied</a>
-<!--                                    <a th:if="${isAuthenticated}" href="#" class="nav-link nav-link-faded has-icon">No-->
-<!--                                        replies yet</a>-->
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="simplebar-placeholder" style="width: 234px; height: 292px;"></div>
-            </div>
-            <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-                <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
-            </div>
-            <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
-                <div class="simplebar-scrollbar"
-                     style="height: 151px; display: block; transform: translate3d(0px, 0px, 0px);"></div>
-            </div>
+            </nav>
         </div>
     </div>
-    <!-- /Inner sidebar body -->
+    <!-- /Tags list -->
 </div>
-
-
-<!--<label for="sort-select" class="mr-2" style="font-size: 14px;">Sort by:</label>-->
-<!--<select id="sort-select" class="custom-select custom-select-sm mr-3" style="width: auto;">-->
-<!--    <option selected="">Latest</option>-->
-<!--    <option value="1">Popular</option>-->
-<!--    <option value="3">Solved</option>-->
-<!--    <option value="3">Unsolved</option>-->
-<!--    <option value="3">No Replies Yet</option>-->
-<!--</select>-->

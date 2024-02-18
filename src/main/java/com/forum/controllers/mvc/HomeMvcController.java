@@ -5,6 +5,7 @@ import com.forum.models.Post;
 import com.forum.models.dtos.PostFilterDto;
 import com.forum.models.filters.PostFilterOptions;
 import com.forum.services.contracts.PostService;
+import com.forum.services.contracts.TagService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,13 @@ import java.util.List;
 public class HomeMvcController {
     private final UserService userService;
     private final PostService postService;
+    private final TagService tagService;
 
     @Autowired
-    public HomeMvcController(UserService userService, PostService postService) {
+    public HomeMvcController(UserService userService, PostService postService, TagService tagService) {
         this.userService = userService;
         this.postService = postService;
+        this.tagService = tagService;
     }
 
     @ModelAttribute
@@ -40,6 +43,8 @@ public class HomeMvcController {
 
         model.addAttribute("usersCount", userService.getCount());
         model.addAttribute("postsCount", postService.getCount());
+        model.addAttribute("tags", tagService.get());
+
     }
 
 

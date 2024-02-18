@@ -4,6 +4,7 @@ import com.forum.models.Post;
 import com.forum.models.User;
 import com.forum.models.filters.PostFilterOptions;
 import org.springframework.data.domain.Page;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.util.List;
 
@@ -46,6 +47,6 @@ public interface PostService {
     void associateTagWithPost(int postId, int tagId);
 
     public void dissociateTagWithPost(int postId, int tagId);
-
+    List<Post> getPostsByTag(String tagName);
 
 }

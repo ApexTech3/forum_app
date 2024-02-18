@@ -10,6 +10,7 @@ import com.forum.models.dtos.UserDto;
 import com.forum.models.dtos.interfaces.Login;
 import com.forum.models.dtos.interfaces.Register;
 import com.forum.services.contracts.PostService;
+import com.forum.services.contracts.TagService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -32,13 +33,15 @@ public class AuthenticationMvcController {
     private final UserMapper userMapper;
     private final PostService postService;
     private final CloudinaryUploadService cloudinaryUploadService;
+    private final TagService tagService;
 
-    public AuthenticationMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, PostService postService, CloudinaryUploadService cloudinaryUploadService) {
+    public AuthenticationMvcController(AuthenticationHelper authenticationHelper, UserService userService, UserMapper userMapper, PostService postService, CloudinaryUploadService cloudinaryUploadService, TagService tagService) {
         this.authenticationHelper = authenticationHelper;
         this.userService = userService;
         this.userMapper = userMapper;
         this.postService = postService;
         this.cloudinaryUploadService = cloudinaryUploadService;
+        this.tagService = tagService;
     }
 
     @ModelAttribute
@@ -51,6 +54,8 @@ public class AuthenticationMvcController {
 
         model.addAttribute("usersCount", userService.getCount());
         model.addAttribute("postsCount", postService.getCount());
+        model.addAttribute("tags", tagService.get());
+
     }
 
     @ModelAttribute("profilePicturePath")

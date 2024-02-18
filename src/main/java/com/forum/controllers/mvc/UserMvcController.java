@@ -18,6 +18,7 @@ import com.forum.models.dtos.interfaces.UserUpdate;
 import com.forum.models.filters.UserFilterOptions;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
+import com.forum.services.contracts.TagService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -41,15 +42,16 @@ public class UserMvcController {
     private final UserMapper mapper;
     private final PostService postService;
     private final CommentService commentService;
-
+    private final TagService tagService;
     private final CloudinaryUploadService cloudinaryUploadService;
 
-    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper mapper, PostService postService, CommentService commentService, CloudinaryUploadService cloudinaryUploadService) {
+    public UserMvcController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper mapper, PostService postService, CommentService commentService, TagService tagService, CloudinaryUploadService cloudinaryUploadService) {
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
         this.mapper = mapper;
         this.postService = postService;
         this.commentService = commentService;
+        this.tagService = tagService;
         this.cloudinaryUploadService = cloudinaryUploadService;
     }
 
@@ -65,6 +67,8 @@ public class UserMvcController {
 
         model.addAttribute("usersCount", userService.getCount());
         model.addAttribute("postsCount", postService.getCount());
+        model.addAttribute("tags", tagService.get());
+
     }
 
 

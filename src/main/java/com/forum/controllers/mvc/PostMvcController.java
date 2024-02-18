@@ -363,6 +363,13 @@ public class PostMvcController {
 
     }
 
+    @GetMapping("/tag/{tagName}")
+    public String showPostsByTag(@PathVariable String tagName, Model model) {
+        List<Post> postsByTag = postService.getPostsByTag(tagName);
+        model.addAttribute("posts", postsByTag);
+        return "mainView";
+    }
+
 
 
 

@@ -275,5 +275,18 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
+    public List<Post> getPostsByTag(String tagName) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            // Create HQL query to fetch posts by tag name
+            String hql = "SELECT p FROM Post p JOIN p.tags t WHERE t.name = :tagName";
+            Query<Post> query = session.createQuery(hql, Post.class);
+            query.setParameter("tagName", tagName);
+            List<Post> posts = query.getResultList();
+            transaction.commit();
+            return posts;
+        }
+    }
+
 
 }

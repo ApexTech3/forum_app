@@ -146,4 +146,9 @@ public class PostServiceImpl implements PostService {
 
         repository.update(post);
     }
+
+    @Override
+    public List<Post> getPostsByTag(String tagName) {
+        return repository.getPostsByTag(tagName);
+    }
 }

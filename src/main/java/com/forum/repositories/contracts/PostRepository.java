@@ -44,5 +44,6 @@ public interface PostRepository {
 
     Post likeDislike(int userId, int postId, String likeDislike);
 
+    List<Post> getPostsByTag(String tagName);
 
 }
