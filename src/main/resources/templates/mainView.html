@@ -4,16 +4,17 @@
 <form th:replace="~{fragments/head.html::head('Posts')}"></form>
 
 <body>
-    <div class="container">
-        <div class="main-body p-0">
-            <div class="inner-wrapper">
-                <!-- Inner sidebar -->
-                <div th:replace="~{fragments/sidebar.html :: sidebar}"></div>
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">
+            <!-- Inner sidebar -->
+            <div th:replace="~{fragments/sidebar.html :: sidebar}"></div>
 
-                <!-- Inner main -->
-                <div class="inner-main">
-                    <!-- Inner main header -->
-                    <div th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></div>
+            <!-- Inner main -->
+            <div class="inner-main">
+                <!-- Inner main header -->
+                <div th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></div>
+
 
                     <!-- Forum List -->
                     <div class="inner-main-body p-3 ">
@@ -62,10 +63,9 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                         </div>
                     </div>
+
 
 
 

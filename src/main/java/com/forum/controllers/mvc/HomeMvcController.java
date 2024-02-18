@@ -1,9 +1,11 @@
 package com.forum.controllers.mvc;
 
+
 import com.forum.exceptions.EntityNotFoundException;
 import com.forum.models.Post;
 import com.forum.models.dtos.PostFilterDto;
 import com.forum.models.filters.PostFilterOptions;
+
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.TagService;
 import com.forum.services.contracts.UserService;
@@ -12,10 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/")
@@ -62,6 +66,7 @@ public class HomeMvcController {
         return "mainView";
     }
 
+
     @GetMapping("/search")
     public String searchPosts(@ModelAttribute("postFilterOptions") PostFilterDto filterDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
@@ -83,6 +88,5 @@ public class HomeMvcController {
     public String showAboutPage() {
         return "about";
     }
-
 }
 
