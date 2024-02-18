@@ -70,7 +70,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("createdBy", filterOptions.getCreator().orElse(null));
             query.setParameterList("tagIds", filterOptions.getTags().orElse(null));
             if (query.list().isEmpty()) {
-                throw new EntityNotFoundException("No posts were found within the criteria");
+                throw new EntityNotFoundException("No posts were found within the criteria.");
             }
             return query.list();
         }
@@ -88,7 +88,7 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("title", filterOptions.getTitle().orElse(null));
             query.setParameter("content", filterOptions.getContent().orElse(null));
             if (query.list().isEmpty()) {
-                throw new EntityNotFoundException("No posts were found within the criteria");
+                throw new EntityNotFoundException("No posts were found within the criteria.");
             }
             return query.list();
         }
