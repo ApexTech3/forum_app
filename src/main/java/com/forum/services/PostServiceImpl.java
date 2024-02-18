@@ -34,6 +34,10 @@ public class PostServiceImpl implements PostService {
     public List<Post> getAll() {
         return repository.getAll();
     }
+    @Override
+    public Page<Post> getAllPosts(int page, int size) {
+        return repository.findAll(page, size,new PostFilterOptions());//todo
+    }
 
     public Page<Post> getAllPosts(int page, int size) {
         return repository.findAll(page, size);
@@ -62,6 +66,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> get(PostFilterOptions filterOptions) {
         return repository.get(filterOptions);
+    }
+
+    @Override
+    public List<Post> getByContentOrTitle(PostFilterOptions filterOptions) {
+        return repository.getByContentOrTitle(filterOptions);
     }
 
     @Override
@@ -140,5 +149,10 @@ public class PostServiceImpl implements PostService {
         post.getTags().remove(tag);
 
         repository.update(post);
+    }
+
+    @Override
+    public List<Post> getPostsByTag(String tagName) {
+        return repository.getPostsByTag(tagName);
     }
 }

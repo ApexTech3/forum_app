@@ -4,24 +4,46 @@
 
 
 <body>
-<form action="#" th:action="@{/auth/login}" th:object="${login}" method="post">
-    <label th:text="#{user.label.username}"></label>
-    <br/>
-    <label>
-        <input type="text" th:field="*{username}">
-    </label>
-    <label class="error" th:errors="*{username}">Username error placeholder.</label>
-    <br/><br/>
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">
+            <!-- Inner sidebar -->
+            <form th:replace="~{fragments/sidebar.html :: sidebar}"></form>
 
-    <label th:text="#{user.label.password}"></label>
-    <br/>
-    <label>
-        <input type="password" th:field="*{password}">
-    </label>
-    <label class="error" th:errors="*{password}">Password error placeholder</label>
-    <br/><br/>
+            <!-- Inner main -->
+            <div class="inner-main">
+                <!-- Inner main header -->
+                <form th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></form>
+                <div class="inner-main-body p-2 p-sm-3">
 
-    <input type="submit" value="Login">
-</form>
+                    <div class="d-flex justify-content-center">
+                        <div class="card mb-2 content text-center d-inline-block  p-5">
+
+
+                        <form action="#" th:action="@{/auth/login}" th:object="${login}" method="post">
+                            <label th:text="#{user.label.username}"></label>
+                            <br/>
+                                <input type="text" th:field="*{username}" class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none">
+                            <br/>
+                            <label class="error" th:errors="*{username}">Username error placeholder.</label>
+                            <br/>
+                            <label th:text="#{user.label.password}"></label>
+                            <br/>
+                                <input type="password" th:field="*{password}" class="form-control form-control-sm bg-gray-200 border-gray-200 shadow-none">
+                            <br/>
+                            <label class="error" th:errors="*{password}">Password error placeholder</label>
+                            <br/>
+
+                            <button type="submit" class="btn btn-primary mt-2">Login</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<form th:replace="~{fragments/footer.html :: footer}"></form>
 </body>
 </html>

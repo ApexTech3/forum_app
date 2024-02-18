@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<form th:replace="~{fragments/head.html::head(${user.username})}"></form>
+
+<body>
+<div class="container">
+    <div class="main-body p-0">
+        <div class="inner-wrapper">
+            <!-- Inner sidebar -->
+            <form th:replace="~{fragments/sidebar.html :: sidebar}"></form>
+
+            <!-- Inner main -->
+            <div class="inner-main">
+                <!-- Inner main header -->
+                <div th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></div>
+                <div class="inner-main-body p-2 p-sm-3">
+                    <div class="row">
+                        <div class="col">
+                        <div class="card mb-2 content text-center d-inline-block p-5 w-50">
+
+                            <div class="body-content">
+                                <h2 th:text="${user.username}">Username</h2>
+                                <img th:src="@{${user.profilePicture != null ? user.profilePicture : '/uploads/chichkotrevichko.png'}}"
+                                     alt="Profile Picture">
+                                <br/>
+                                <div th:style="text-align">
+                                    <p class="margin12"
+                                       th:text="#{user.label.first-name}  + ': ' +       ${user.firstName}">Pesho</p>
+                                    <p class="margin12"
+                                       th:text="#{user.label.last-name} + ': ' +      ${user.lastName}">
+                                        Peshov</p>
+                                    <p class="margin12" th:text="#{user.label.email}  + ': ' + ${user.email}">
+                                        pesho@peshomail.com</p>
+                                    <p th:if="${session.isAdmin}" class="margin12"
+                                       th:text="#{user.label.roles}  + ': ' + ${user.roles}">USER</p>
+                                </div>
+                                <h3 th:if="${adminOrCurrentUser}">
+                                    <a href="#" th:if="${session.isAdmin}" th:href="@{__${requestURI}__/admin-edit}"
+                                       class="btn btn-warning" style="height: 36px">Edit</a>
+                                    <a href="#" th:unless="${session.isAdmin}" th:href="@{__${requestURI}__/edit}"
+                                       class="btn btn-warning" style="height: 36px">Edit</a>
+                                    <a href="#" th:href="@{__${requestURI}__/delete}" class="btn btn-danger mr-5"
+                                       style="height: 36px">Delete</a>
+                                </h3>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="col">
+                            <h5>Comments</h5>
+                            <div class="card mb-2" th:each="comment : ${userComments}">
+                                <div class="card-body p-2 p-sm-3">
+                                    <div class="media forum-item">
+                                        <a href="#"><img th:src="@{${user.profilePicture != null ? user.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                         class="mr-3 rounded-circle" width="50" alt="User"/></a>
+                                        <div class="media-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h6><a th:href="@{/posts/{id}(id=${comment.parentPost.id})}" href="#" class="text-body"
+                                                           th:text="${comment.content}">Title</a></h6>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>Posts</div>
+                    <div class="card mb-2" th:each="post : ${userPosts}">
+                        <div class="card-body p-2 p-sm-3">
+                            <div class="media forum-item">
+                                <a href="#"><img th:src="@{${user.profilePicture != null ? user.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                                                 class="mr-3 rounded-circle" width="50" alt="User"/></a>
+                                <div class="media-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6><a th:href="@{/posts/{id}(id=${post.id})}" href="#" class="text-body"
+                                                   th:text="${post.title}">Title</a></h6>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<form th:replace="~{fragments/footer.html::footer}"></form>
+
+</body>
+</html>

@@ -1,7 +1,10 @@
 package com.forum.models.dtos;
 
+import com.forum.models.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 
 public class PostRequestDto {
@@ -11,8 +14,7 @@ public class PostRequestDto {
     @NotNull(message = "The content can't be empty")
     @Size(min = 32, max = 8192, message = "The content should be between 32 and 8192 symbols")
     private String content;
-
-
+    private List<Tag> tags;
     public PostRequestDto() {
     }
 
@@ -37,5 +39,11 @@ public class PostRequestDto {
         this.content = content;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
 
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 }

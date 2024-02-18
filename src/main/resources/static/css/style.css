@@ -4,6 +4,7 @@ body{
     color: #1a202c;
     text-align: left;
     background-color: #e2e8f0;
+    overflow: hidden;
 }
 .inner-wrapper {
     position: relative;
@@ -105,9 +106,7 @@ body{
 .nav-link {
     color: #4a5568;
 }
-.card {
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
-}
+
 
 .card {
     position: relative;
@@ -119,6 +118,7 @@ body{
     background-clip: border-box;
     border: 0 solid rgba(0,0,0,.125);
     border-radius: .25rem;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
 }
 
 .card-body {
@@ -135,4 +135,30 @@ body{
 .media-body{
     flex: 1;
     padding-left: 10px;
+}
+
+.badge-primary {
+    color: #fff;
+    background-color: #007bff;
+}
+
+.badge {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.error {
+    color: red;
 }

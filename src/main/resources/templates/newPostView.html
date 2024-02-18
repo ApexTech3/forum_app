@@ -3,6 +3,8 @@
 
 <form id="head" th:replace="~{fragments/head.html::head('Create New Post')}"></form>
 
+
+
 <body>
 <div class="container">
     <div class="main-body p-0">
@@ -14,52 +16,96 @@
             <div class="inner-main">
                 <!-- Inner main header -->
                 <form th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></form>
-    <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+    <div class="inner-main-body p-2 p-sm-3">
         <div class="content">
 
-                <div class="header d-flex align-items-center bg-primary text-white">
-                    <h6 class="title mb-0" id="threadTitleLabel" style="font-size: 20px; color: white; padding: 10px;">Create new post</h6>
-                </div>
-                <div class="card body">
+
+                <div class="card body pt-0">
+                    <div class="header d-flex align-items-center bg-primary text-white rounded">
+                        <h5 class="title mb-0" id="threadTitleLabel" style="font-size: 20px; color: white; padding: 10px;">Create new post</h5>
+                    </div>
+                    <div class="d-flex p-2">
+                    <div class="dropdown dropend">
+                        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 10px;">
+                            Add a Tag
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" th:each="tag : ${tags}" th:text="${tag.name}" th:onclick="addTag([[${tag.name}]])"></button></li>
+                        </ul>
+                    </div>
+                    <button type="button" id="openModalButton" class="btn btn-primary" style="margin-left: 10px;">New Tag</button>
+                    </div>
+                    <a class="text-dark p-2">Tags: </a>
+                    <div id="tagsTab" class="small-tab p-2">
+                    </div>
                     <form id="newPostForm" th:object="${postDto}" th:action="@{/posts/new}" method="post">
                     <div class="form-group">
                         <label for="threadTitle">Title</label>
                         <input type="text" class="form-control" id="threadTitle" th:field="*{title}" placeholder="Enter title"
                                autofocus=""/>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group p-2">
                         <label for="postContent">Content</label>
                         <textarea class="form-control" id="postContent" rows="3" th:field="*{content}" placeholder="Enter content"></textarea>
                     </div>
-                    <label class="form-error" th:errors="*{title}">Username error placeholder</label>
-                    <label class="form-error" th:errors="*{content}">Username error placeholder</label>
-<!--                    <div class="dropdown dropend">-->
-<!--                        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 10px;">-->
-<!--                            Add a Tag-->
-<!--                        </button>-->
-<!--                        <ul class="dropdown-menu">-->
-<!--                            <li><button class="dropdown-item" th:each="tag : ${tags}" th:text="${tag.name}" onclick=addTag(`${tag.name}`)></button></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-<!--                    <input type="hidden" id="tagsField" th:field="*{tags}">-->
-<!--                    <div id="tagsTab" class="small-tab">-->
-<!--                        &lt;!&ndash; Tags will be visualized here &ndash;&gt;-->
-<!--                    </div>-->
-                    <div class="footer">
-                        <button type="reset" class="btn btn-light">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Post</button>
+                    <label class="form-error text-danger" th:errors="*{title}">Username error placeholder</label><br/>
+                    <label class="form-error text-danger" th:errors="*{content}">Username error placeholder</label>
+                        <input type="hidden" id="tagsList" name="tagsList" th:value="${postDto.tags}">
+                    <div class="footer p-2">
+                        <a th:href="@{/}" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn btn-primary" onclick="submitPost()">Post</button>
                     </div>
                     </form>
+
+                    <div class="modal fade" id="threadModal" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <form th:object="${tagDto}" th:action="@{/posts/newTag}" method="post">
+                                    <div class="modal-header d-flex align-items-center bg-primary text-white">
+                                        <h6 class="modal-title mb-0" id="threadModalLabel">Create a New Tag</h6>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="newTagThread">Name</label>
+                                            <input type="text" class="form-control" id="newTagThread" placeholder="Enter tag name" th:field="*{name}" autofocus="" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer p-2">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Post</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
                 </div>
         </div>
     </div>
 
 
 
+        </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
-</div>
-</div>
-</div>
+
+
 <form th:replace="~{fragments/footer.html::footer}"></form>
+
+<script>
+    $(document).ready(function(){
+        $("#openModalButton").click(function(){
+            try {
+                $("#threadModal").modal('show');
+            } catch (error) {
+                console.error("An error occurred: ", error);
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,14 +37,17 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> findAll(int page, int size) {
+
+    public Page<Post> findAll(int page, int size, PostFilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
-            List<Post> resultList = session.createQuery("FROM Post", Post.class)
+            List<Post> resultList = session.createQuery("FROM Post WHERE isArchived = false", Post.class)
+
                     .setFirstResult((page - 1) * size)
                     .setMaxResults(size)
                     .list();
 
-            long totalCount = (Long) session.createQuery("SELECT COUNT(*) FROM Post")
+            long totalCount = session.createQuery("SELECT COUNT(*) FROM Post", Long.class)
+
                     .uniqueResult();
 
             return new PageImpl<>(resultList, PageRequest.of(page - 1, size), totalCount);
@@ -61,7 +64,7 @@ public class PostRepositoryImpl implements PostRepository {
                     "(:content is null or p.content LIKE CONCAT('%', :content, '%')) and " +
                     "(:createdBy is null or p.createdBy.id = :createdBy) and " +
                     "(EXISTS (SELECT 1 FROM p.tags t WHERE t.tagId IN (:tagIds))) AND " +
-                    " p.isArchived = false "+
+                    " p.isArchived = false " +
                     sortOrder(filterOptions);
 
             Query<Post> query = session.createQuery(queryStr, Post.class);
@@ -71,7 +74,25 @@ public class PostRepositoryImpl implements PostRepository {
             query.setParameter("createdBy", filterOptions.getCreator().orElse(null));
             query.setParameterList("tagIds", filterOptions.getTags().orElse(null));
             if (query.list().isEmpty()) {
-                throw new EntityNotFoundException("No posts were found within the criteria");
+                throw new EntityNotFoundException("No posts were found within the criteria.");
+            }
+            return query.list();
+        }
+    }
+
+    @Override
+    public List<Post> getByContentOrTitle(PostFilterOptions filterOptions) {
+        try (Session session = sessionFactory.openSession()) {
+            String queryStr = "from Post p " +
+                    "where (:title is null or p.title LIKE CONCAT('%', :title, '%')) or " +
+                    "(:content is null or p.content LIKE CONCAT('%', :content, '%')) or " +
+                    "(:content is null or p.createdBy.username LIKE CONCAT('%',:content,'%')) "
+                    + sortOrder(filterOptions);
+            Query<Post> query = session.createQuery(queryStr, Post.class);
+            query.setParameter("title", filterOptions.getTitle().orElse(null));
+            query.setParameter("content", filterOptions.getContent().orElse(null));
+            if (query.list().isEmpty()) {
+                throw new EntityNotFoundException("No posts were found within the criteria.");
             }
             return query.list();
         }
@@ -246,7 +267,7 @@ public class PostRepositoryImpl implements PostRepository {
     public Post likeDislike(int userId, int postId, String likeDislike) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            String sql = "INSERT INTO  likes_dislikes (post_id, user_id, like_dislike) VALUES " +
+            String sql = "INSERT INTO forum.likes_dislikes (post_id, user_id, like_dislike) VALUES " +
                     "(:postId, :userId, :likeDislike) on duplicate key update like_dislike = :likeDislike";
             Query<?> nativeQuery = session.createNativeQuery(sql, Integer.class);
             nativeQuery.setParameter("postId", postId);
@@ -255,6 +276,19 @@ public class PostRepositoryImpl implements PostRepository {
             nativeQuery.executeUpdate();
             transaction.commit();
             return get(postId);
+        }
+    }
+
+    public List<Post> getPostsByTag(String tagName) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            // Create HQL query to fetch posts by tag name
+            String hql = "SELECT p FROM Post p JOIN p.tags t WHERE t.name = :tagName";
+            Query<Post> query = session.createQuery(hql, Post.class);
+            query.setParameter("tagName", tagName);
+            List<Post> posts = query.getResultList();
+            transaction.commit();
+            return posts;
         }
     }
 

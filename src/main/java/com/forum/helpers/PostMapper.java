@@ -1,6 +1,7 @@
 package com.forum.helpers;
 
 import com.forum.models.Post;
+import com.forum.models.Tag;
 import com.forum.models.User;
 import com.forum.models.dtos.PostRequestDto;
 import com.forum.models.dtos.PostResponseDto;
@@ -8,6 +9,7 @@ import com.forum.services.contracts.PostService;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -51,6 +53,7 @@ public class PostMapper {
         post.setTitle(postRequestDto.getTitle());
         post.setContent(postRequestDto.getContent());
         post.setCreatedBy(creator);
+        post.setTags(new HashSet<>(postRequestDto.getTags()));
         return post;
     }
 
@@ -60,5 +63,11 @@ public class PostMapper {
             dtos.add(toPostResponseDto(post));
         }
         return dtos;
+    }
+
+    public Tag fromTagDto(String name) {
+        Tag tag = new Tag();
+        tag.setName(name);
+        return tag;
     }
 }

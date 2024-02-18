@@ -15,55 +15,78 @@
                 <!-- Inner main header -->
                 <div th:replace="~{fragments/header.html :: inner-main-header}" class="inner-main-header"></div>
 
-                <!-- Forum List -->
-                <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
-                    <div class="card mb-2" th:each="post : ${posts}">
-                        <div class="card-body p-2 p-sm-3">
-                            <div class="media forum-item">
-                                <a href="#" data-toggle="collapse" data-target=".forum-content"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-circle" width="50" alt="User" /></a>
-                                <div class="media-body">
-                                    <h6><a th:href="@{/posts/{id}(id=${post.id})}" href="#" data-toggle="collapse"
-                                           data-target=".forum-content"
-                                           class="text-body" th:text="${post.title}">Title</a></h6>
-                                    <p class="text-secondary" th:text="${post.content}">
-                                        Content
-                                    </p>
-                                    <p class="text-muted"><a href="javascript:void(0)">drewdan</a> replied <span class="text-secondary font-weight-bold">13 minutes ago</span></p>
+
+                    <!-- Forum List -->
+                    <div class="inner-main-body p-3 ">
+                        <div class="card mb-2" th:each="post : ${posts}">
+                            <div class="card-body">
+                                <div class="media forum-item">
+                                    <div class="card-link" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                    <a href="#" th:href="@{/users/{id}(id=${post.createdBy.id})}"><img th:src="@{${post.createdBy.profilePicture != null ? post.createdBy.profilePicture : '/uploads/chichkotrevichko.png'}}" src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle" width="50" alt="User" /></a>
+                                    <a href="#" th:href="@{/users/{id}(id=${post.createdBy.id})}" th:text="${post.getCreatedBy().getUsername()}" class="text-secondary"></a>
+                                        <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'dd/MM/yyyy')}">01.01.2024</small>
+                                        <small class="text-muted ml-2" th:text="${#dates.format(post.stampCreated, 'HH:mm')}">12:55</small>
+                                    </div>
+                                        <div class="media-body ml-3">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6><a th:href="@{/posts/{id}(id=${post.id})}" href="#" class="text-body" th:text="${post.title}">Title</a></h6>
+                                            </div>
+                                            <div>
+                                                <h6><span th:each="tag : ${post.getTags()}" th:text="${tag.name}" class="badge bg-primary rounded-pill"></span></h6>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <p class="text-secondary">
+                                                <span th:if="${#strings.length(post.content) > 300}" th:text="${#strings.abbreviate(post.content, 300)}"></span>
+                                                <span th:if="${#strings.length(post.content) <= 300}" th:text="${post.content}"></span>
+                                                <a th:if="${#strings.length(post.content) > 300}" th:href="@{/posts/{id}(id=${post.id})}" class="btn btn-outline-primary btn-sm">Read more</a>
+                                            </p>
+<!--                                            <div class="d-flex justify-content-between">-->
+<!--                                                <div class="d-flex align-items-center rounded bg-transparent p-0.2">-->
+<!--                                                    <span><i class="fa-solid fa-heart" style="color: cornflowerblue;"></i></span>-->
+<!--                                                    <a th:text="${post.getLikes()}" style="font-size: 16px;margin-right: 3px;color: cornflowerblue;">3</a>-->
+<!--                                                    <span><i class="far fa-comment ml-2"></i></span>-->
+<!--                                                    <a th:text="${post.getReplies().size()}" style="font-size: 16px;margin-right: 3px;">3</a>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+                                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                                <div class="d-flex align-items-center rounded bg-transparent p-0.2">
+                                                    <span><i class="fa-solid fa-heart" style="color: cornflowerblue; font-size: 24px;"></i></span>
+                                                    <a th:text="${post.getLikes()}" style="font-size: 20px;margin-right: 3px;color: cornflowerblue;">3</a>
+                                                </div>
+                                                <div class="d-flex align-items-center rounded bg-transparent p-0.2">
+                                                    <span><i class="far fa-comment ml-2" style="font-size: 24px;"></i></span>
+                                                    <a th:text="${post.getReplies().size()}" style="font-size: 20px;margin-right: 3px;">3</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <div class="d-flex align-items-center rounded bg-transparent p-0.2">
-                                    <span><i class="fa-solid fa-heart" style="color: cornflowerblue;"></i></span>
-                                    <a th:text="${post.getLikes()}" style="font-size: 16px;margin-right: 3px;color: cornflowerblue;">3</a>
-                                    <span><i class="far fa-comment ml-2"></i> 3</span>
-                                    <a th:text="${(post.getReplies().size())}" style="font-size: 16px;margin-right: 3px;">3</a>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
 
 
 
-                    <ul class="pagination pagination-sm pagination-circle justify-content-center mb-0">
-                        <!-- Previous Page -->
-                        <li class="page-item" th:class="${currentPage == 1 ? 'disabled' : ''}">
-                            <a class="page-link" th:href="@{/?page=__${currentPage - 1}__}">Previous</a>
-                        </li>
 
-                        <!-- Page Numbers -->
-                        <li class="page-item" th:each="page, iterStat : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage == page ? 'active' : ''}">
-                            <a class="page-link" th:href="@{/?page=__${page}__}">[[${page}]]</a>
-                        </li>
+                        <ul class="pagination pagination-sm pagination-circle justify-content-center mb-0" th:if="${showPagination}">
+                            <!-- Previous Page -->
+                            <li class="page-item" th:class="${currentPage == 1 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/?page=__${currentPage - 1}__}">Previous</a>
+                            </li>
 
-                        <!-- Next Page -->
-                        <li class="page-item" th:class="${currentPage == totalPages ? 'disabled' : ''}">
-                            <a class="page-link" th:href="@{/?page=__${currentPage + 1}__}">Next</a>
-                        </li>
-                    </ul>
+                            <!-- Page Numbers -->
+                            <li class="page-item" th:each="page, iterStat : ${#numbers.sequence(1, totalPages)}" th:class="${currentPage == page ? 'active' : ''}">
+                                <a class="page-link" th:href="@{/?page=__${page}__}">[[${page}]]</a>
+                            </li>
 
-
-
+                            <!-- Next Page -->
+                            <li class="page-item" th:class="${currentPage == totalPages ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/?page=__${currentPage + 1}__}">Next</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ package com.forum.models.filters;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class PostFilterOptions {
     private Optional<Integer> id;
@@ -23,9 +24,9 @@ public class PostFilterOptions {
         this.title = Optional.ofNullable(title);
         this.content = Optional.ofNullable(content);
         this.creator = Optional.ofNullable(creator);
-        this.tags = Optional.ofNullable(tags);
-        this.sortBy = Optional.ofNullable(sortBy);
-        this.sortOrder = Optional.ofNullable(sortOrder);
+        this.tags = Optional.ofNullable(tags).filter(Predicate.not(List::isEmpty));
+        this.sortBy = Optional.ofNullable(sortBy).filter(Predicate.not(String::isEmpty));
+        this.sortOrder = Optional.ofNullable(sortOrder).filter(Predicate.not(String::isEmpty));
 
     }
 

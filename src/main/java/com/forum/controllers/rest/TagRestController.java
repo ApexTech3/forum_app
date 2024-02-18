@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.naming.AuthenticationException;
 import java.util.List;
 
-@SecurityRequirement(name = "Authorization")
 @RestController
 @RequestMapping("/api/tags")
 public class TagRestController {
@@ -53,6 +52,7 @@ public class TagRestController {
     }
 
 
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/{tagId}")
     public void deleteTag(@RequestHeader HttpHeaders headers, @PathVariable int tagId) {
         try {

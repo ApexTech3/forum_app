@@ -1,5 +1,6 @@
 package com.forum.repositories.contracts;
 
+import com.forum.models.Post;
 import com.forum.models.Tag;
 
 import java.util.List;
