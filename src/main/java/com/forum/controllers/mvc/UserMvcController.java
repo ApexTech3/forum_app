@@ -98,7 +98,6 @@ public class UserMvcController {
             User user = authenticationHelper.tryGetCurrentUser(session);
             model.addAttribute("user", userService.get(id));
             model.addAttribute("adminOrCurrentUser", user.getId() == id || AuthenticationHelper.isAdmin(userService.get(user.getId())));
-            model.addAttribute("isCurrentUserAdmin", AuthenticationHelper.isAdmin(userService.get(id)));
             try {
                 List<Post> userPosts = postService.getByUserId(id);
                 List<Comment> userComments = commentService.getByUserId(id);
