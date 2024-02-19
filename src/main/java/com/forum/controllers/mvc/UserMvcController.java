@@ -64,7 +64,6 @@ public class UserMvcController {
 
         model.addAttribute("isAdmin", isAuthenticated ? httpSession.getAttribute("isAdmin") : false);
         model.addAttribute("isBlocked", isAuthenticated ? httpSession.getAttribute("isBlocked") : false);
-
         model.addAttribute("usersCount", userService.getCount());
         model.addAttribute("postsCount", postService.getCount());
         model.addAttribute("tags", tagService.get());

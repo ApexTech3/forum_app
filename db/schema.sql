@@ -11,7 +11,7 @@ create table `users`
     `password`   varchar(30) not null,
     `first_name` varchar(32) not null,
     `last_name`  varchar(32) not null,
-    `email`      varchar(30) not null,
+    `email`      varchar(50) not null,
     `is_blocked` tinyint(1)           default 0 not null,
     `is_deleted` tinyint(1)  NOT NULL DEFAULT 0,
     UNIQUE KEY `users_pk` (`username`),
