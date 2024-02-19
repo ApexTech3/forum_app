@@ -27,7 +27,7 @@
                                     Peshov</p>
                                 <p  th:text="#{user.label.email}  + ': ' + ${user.email}">
                                     pesho@peshomail.com</p>
-                                <p th:if="${isCurrentUserAdmin}" th:text="#{user.label.phone}  + ': ' + ${user.phone}">
+                                <p th:if="${user.phone != null}" th:text="#{user.label.phone}  + ': ' + ${user.phone}">
                                     0888123456</p>
                                 <p th:if="${session.isAdmin}"
                                    th:text="#{user.label.roles}  + ': ' + ${user.roles}">USER</p>
