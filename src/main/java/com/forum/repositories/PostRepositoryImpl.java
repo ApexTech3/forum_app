@@ -267,7 +267,7 @@ public class PostRepositoryImpl implements PostRepository {
     public Post likeDislike(int userId, int postId, String likeDislike) {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            String sql = "INSERT INTO forum.likes_dislikes (post_id, user_id, like_dislike) VALUES " +
+            String sql = "INSERT INTO likes_dislikes (post_id, user_id, like_dislike) VALUES " +
                     "(:postId, :userId, :likeDislike) on duplicate key update like_dislike = :likeDislike";
             Query<?> nativeQuery = session.createNativeQuery(sql, Integer.class);
             nativeQuery.setParameter("postId", postId);
