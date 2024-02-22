@@ -9,9 +9,8 @@ import com.forum.models.filters.UserFilterOptions;
 import com.forum.repositories.contracts.UserRepository;
 import com.forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,9 +39,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> get(UserFilterOptions filterOptions, User user) {
+    public Page<User> get(int page, int size, UserFilterOptions filterOptions, User user) {
         tryAuthorizeAdmin(user);
-        return repository.get(filterOptions);
+        return repository.get(page, size, filterOptions);
     }
 
     @Override

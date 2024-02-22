@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
 
 @Entity
 @Table(name = "posts")
@@ -28,7 +29,7 @@ public class Post {
     @Column(name = "archived")
     private boolean isArchived;
     @OneToMany(mappedBy = "parentPost", fetch = FetchType.EAGER)
-    private Set<Comment> replies;
+    private SortedSet<Comment> replies;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -44,7 +45,7 @@ public class Post {
     }
 
     public Post(int id, String title, int likes, int dislikes, String content,
-                User createdBy, boolean isArchived, Set<Comment> replies, Set<Tag> tags, Timestamp localDate) {
+                User createdBy, boolean isArchived, SortedSet<Comment> replies, Set<Tag> tags, Timestamp localDate) {
         this.id = id;
         this.title = title;
         this.likes = likes;
@@ -114,11 +115,11 @@ public class Post {
         isArchived = archived;
     }
 
-    public Set<Comment> getReplies() {
+    public SortedSet<Comment> getReplies() {
         return replies;
     }
 
-    public void setReplies(Set<Comment> replies) {
+    public void setReplies(SortedSet<Comment> replies) {
         this.replies = replies;
     }
 

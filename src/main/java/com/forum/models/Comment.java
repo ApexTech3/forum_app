@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "comments")
-public class Comment {
+public class Comment implements Comparable<Comment>{
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -89,5 +89,13 @@ public class Comment {
     @Override
     public int hashCode() {
         return Objects.hash(getCommentId());
+    }
+
+    @Override
+    public int compareTo(Comment o) {
+        if (this.stampCreated == null || o.stampCreated == null) {
+            return this.stampCreated == null ? -1 : 1;
+        }
+        return this.stampCreated.compareTo(o.stampCreated);
     }
 }

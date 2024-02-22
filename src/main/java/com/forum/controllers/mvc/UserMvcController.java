@@ -1,6 +1,5 @@
 package com.forum.controllers.mvc;
 
-import com.forum.services.CloudinaryUploadService;
 import com.forum.exceptions.AuthenticationFailureException;
 import com.forum.exceptions.AuthorizationException;
 import com.forum.exceptions.EntityDuplicateException;
@@ -16,12 +15,14 @@ import com.forum.models.dtos.UserFilterDto;
 import com.forum.models.dtos.interfaces.AdminUpdate;
 import com.forum.models.dtos.interfaces.UserUpdate;
 import com.forum.models.filters.UserFilterOptions;
+import com.forum.services.CloudinaryUploadService;
 import com.forum.services.contracts.CommentService;
 import com.forum.services.contracts.PostService;
 import com.forum.services.contracts.TagService;
 import com.forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,14 +73,19 @@ public class UserMvcController {
 
 
     @GetMapping
-    public String showAllUsers(@ModelAttribute("filterOptions") UserFilterDto filterDto, Model model, HttpSession session) {
+    public String showAllUsers(@RequestParam(name = "page", defaultValue = "1") int page,
+                               @RequestParam(name = "size", defaultValue = "10") int size,
+                               @ModelAttribute("filterOptions") UserFilterDto filterDto, Model model, HttpSession session) {
         User user;
         try {
             user = authenticationHelper.tryGetCurrentUser(session);
             model.addAttribute("filterOptions", filterDto);
-            model.addAttribute("users", userService.get(
-                    new UserFilterOptions(filterDto.getUsername(), filterDto.getEmail(), filterDto.getFirstName(),
-                            filterDto.getSortBy(), filterDto.getSortOrder()), user));
+            Page<User> userPage = userService.get(page, size, new UserFilterOptions(filterDto.getUsername(), filterDto.getEmail(), filterDto.getFirstName(),
+                    filterDto.getSortBy(), filterDto.getSortOrder()), user);
+            model.addAttribute("users", userPage.getContent());
+            model.addAttribute("currentPage", userPage.getNumber() + 1);
+            model.addAttribute("totalPages", userPage.getTotalPages());
+            model.addAttribute("showPagination", true);
             return "usersView";
         } catch (AuthorizationException e) {
             model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.getReasonPhrase());

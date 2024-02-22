@@ -107,6 +107,10 @@ public class AuthenticationMvcController {
             return "register";
         }
         try {
+            if (!dto.getPassword().equals(dto.getPasswordConfirmation())) {
+                bindingResult.rejectValue("password", "error", "Passwords do not match");
+                return "register";
+            }
             User user = userMapper.fromDto(dto);
             MultipartFile profilePicture = dto.getProfilePicture();
             if (!profilePicture.isEmpty()) {
@@ -115,6 +119,7 @@ public class AuthenticationMvcController {
                 String pictureUrl = cloudinaryUploadService.uploadImage(pictureFile);
                 user.setProfilePicture(pictureUrl);
             }
+
             userService.register(user);
             return "redirect:/auth/login";
         } catch (EntityDuplicateException e) {

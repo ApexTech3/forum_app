@@ -7,6 +7,7 @@ import com.forum.models.filters.UserFilterOptions;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 
 public class Helpers {
 
@@ -51,7 +52,7 @@ public class Helpers {
         post.setDislikes(1);
         post.setCreatedBy(createMockUser());
         post.setTags(new HashSet<>(Set.of(createMockTag())));
-        post.setReplies(new HashSet<>(Set.of(createMockComment())));
+        post.setReplies((SortedSet<Comment>) new HashSet<>(Set.of(createMockComment())));
         return post;
     }
 
