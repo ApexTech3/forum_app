@@ -156,7 +156,7 @@
 
                                 <!-- Next Page -->
                                 <li class="page-item" th:class="${currentPage == totalPages ? 'disabled' : ''}">
-                                    <a class="page-link" th:href="@{/users/?page=__${currentPage + 1}__}">Next</a>
+                                    <a class="page-link" th:href="@{/users?page=__${currentPage + 1}__}">Next</a>
                                 </li>
                             </ul>
 
