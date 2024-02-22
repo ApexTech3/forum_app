@@ -32,7 +32,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public List<Comment> getByPostId(int postId) {
         try (Session session = sessionFactory.openSession()) {
-            Query<Comment> query = session.createQuery("from Comment where parentPost = :postId", Comment.class);
+            Query<Comment> query = session.createQuery("from Comment c where parentPost = :postId order by c.stampCreated", Comment.class);
             query.setParameter("postId", postId);
             return query.list();
         }
@@ -40,7 +40,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public List<Comment> getByUserId(int userId) {
         try (Session session = sessionFactory.openSession()) {
-            Query<Comment> query = session.createQuery("from Comment where createdBy.id = :userId", Comment.class);
+            Query<Comment> query = session.createQuery("from Comment c where createdBy.id = :userId", Comment.class);
             query.setParameter("userId", userId);
             return query.list();
         }
