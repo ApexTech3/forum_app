@@ -8,6 +8,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -70,16 +73,18 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public List<User> get(UserFilterOptions filterOptions) {
+    public Page<User> get(int page, int size, UserFilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
-            String queryStr = "from User where (:username is null or username = :username) and " +
-                    "(:email is null or email = :email) and (:firstName is null or firstName like :firstName) and isDeleted = false "
+            String queryStr = "from User where (:username is null or username LIKE CONCAT('%', :username, '%')) and " +
+                    "(:email is null or email LIKE CONCAT('%', :email, '%')) and " +
+                    "(:firstName is null or firstName LIKE CONCAT('%', :firstName, '%')) and isDeleted = false "
                     + sortOrder(filterOptions);
-            Query<User> query = session.createQuery(queryStr, User.class);
+            Query<User> query = session.createQuery(queryStr, User.class).setFirstResult((page - 1) * size)
+                    .setMaxResults(size);
             query.setParameter("username", filterOptions.getUsername().orElse(null));
             query.setParameter("email", filterOptions.getEmail().orElse(null));
             query.setParameter("firstName", filterOptions.getFirstName().orElse(null));
-            return query.list();
+            return new PageImpl<>(query.list(), PageRequest.of(page - 1, size), getCount());
         }
     }
 

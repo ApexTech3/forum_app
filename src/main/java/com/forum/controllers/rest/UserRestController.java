@@ -6,8 +6,8 @@ import com.forum.exceptions.EntityNotFoundException;
 import com.forum.helpers.AuthenticationHelper;
 import com.forum.helpers.UserMapper;
 import com.forum.models.User;
-import com.forum.models.dtos.UserDto;
 import com.forum.models.dtos.UserAdminDto;
+import com.forum.models.dtos.UserDto;
 import com.forum.models.dtos.UserResponse;
 import com.forum.models.dtos.UserUpdateDto;
 import com.forum.models.dtos.interfaces.Register;
@@ -53,13 +53,15 @@ public class UserRestController {
 
     @SecurityRequirement(name = "Authorization")
     @GetMapping
-    public List<UserResponse> get(@RequestHeader HttpHeaders headers, @RequestParam(required = false) String username,
+    public List<UserResponse> get(@RequestParam(name = "page", defaultValue = "1") int page,
+                                  @RequestParam(name = "size", defaultValue = "10") int size,
+                                  @RequestHeader HttpHeaders headers, @RequestParam(required = false) String username,
                                   @RequestParam(required = false) String email, @RequestParam(required = false) String firstName,
                                   @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
         try {
             User user = helper.tryGetUser(headers);
             UserFilterOptions filterOptions = new UserFilterOptions(username, email, firstName, sortBy, sortOrder);
-            return service.get(filterOptions, user).stream().map(mapper::toDto).collect(Collectors.toList());
+            return service.get(page, size, filterOptions, user).stream().map(mapper::toDto).collect(Collectors.toList());
         } catch (AuthorizationException | AuthenticationException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (EntityNotFoundException e) {

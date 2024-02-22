@@ -2,8 +2,7 @@ package com.forum.services.contracts;
 
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface UserService {
 
@@ -13,7 +12,7 @@ public interface UserService {
 
     User get(String username);
 
-    List<User> get(UserFilterOptions filterOptions, User user);
+    Page<User> get(int page, int size, UserFilterOptions filterOptions, User user);
 
     User register(User user);
 

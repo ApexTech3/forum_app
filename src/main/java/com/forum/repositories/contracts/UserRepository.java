@@ -2,8 +2,7 @@ package com.forum.repositories.contracts;
 
 import com.forum.models.User;
 import com.forum.models.filters.UserFilterOptions;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface UserRepository {
     User get(int id);
@@ -14,7 +13,7 @@ public interface UserRepository {
 
     User getByEmail(String email);
 
-    List<User> get(UserFilterOptions filterOptions);
+    Page<User> get(int page, int size, UserFilterOptions filterOptions);
 
     User register(User user);
 
